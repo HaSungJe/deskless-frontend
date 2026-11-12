@@ -2,7 +2,7 @@
 
 roomless 이용자 · 업체 관리자 · 관리자 화면 (Next.js 16 App Router · React 19).
 
-화면 · API 지침은 [frontend/README.md](frontend/README.md), 코드 구조와 규칙은 [CLAUDE.md](CLAUDE.md).
+화면 · API 지침은 [frontend/README.md](frontend/README.md), 코드 구조와 규칙은 [AGENTS.md](AGENTS.md).
 
 ## 로컬 개발
 

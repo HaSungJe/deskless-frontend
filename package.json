@@ -6,7 +6,8 @@
     "dev": "next dev -p 5000",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "vitest"
   },
   "dependencies": {
     "apexcharts": "^5.16.0",
@@ -24,14 +25,19 @@
     "react-spinners": "^0.17.1"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.2",
+    "@testing-library/react": "^16.3.3",
     "@types/jsonwebtoken": "^9.0.10",
     "@types/node": "^22",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitejs/plugin-react": "^6.3.0",
     "babel-plugin-react-compiler": "^1.0.0",
     "eslint": "^9",
     "eslint-config-next": "^16.4.6",
-    "typescript": "^5"
+    "jsdom": "^29.1.1",
+    "typescript": "^5",
+    "vitest": "^5.1.0"
   },
   "overrides": {
     "js-yaml": "^4.1.1"
