@@ -1,0 +1,135 @@
+'use client';
+import { useContext, useEffect, useState } from "react";
+import { IsLoginContext, RootLayoutLoadingContext } from "@/shared/providers/RootLayoutProvider";
+import { useRouter } from "next/navigation";
+import { setAccessToken, setRefreshToken } from "@/shared/api/cookie";
+import { validateAction } from "@/shared/utils/validation";
+import { axiosErrorHandle } from "@/shared/api/axios-error";
+import { LoginDto } from "./dto";
+import axios from "axios";
+import Loading from "@/shared/components/Loading";
+import useInput, { UseInputType } from "@/shared/hooks/useInput";
+
+export default function LoginContent(): React.ReactNode {
+    const router = useRouter();
+    const rootLayoutLoadingContext: boolean = useContext(RootLayoutLoadingContext);
+    const isLogin: boolean = useContext(IsLoginContext);
+    const [loading, setLoading] = useState<boolean>(true);
+
+    // 커스텀 훅 사용
+    const loginId: UseInputType = useInput('');
+    const loginPw: UseInputType = useInput('');
+    const [isSaveId, setIsSaveId] = useState<boolean>(false);
+
+    // 이미 로그인된 경우 대시보드로 이동
+    useEffect(() => {
+        if (rootLayoutLoadingContext) {
+            setLoading(true);
+        } else {
+            if (isLogin) {
+                router.push('/');
+            } else {
+                const saveId: string = localStorage.getItem('saveId');
+                if (saveId) {
+                    setIsSaveId(true);
+                    loginId.setValue(saveId)
+                }
+                setLoading(false);
+            }
+        }
+    }, [rootLayoutLoadingContext, isLogin]);
+
+    // 로그인
+    async function login(): Promise<void> {
+        const dto = new LoginDto({login_id: loginId.value, login_pw: loginPw.value});
+        const vCheck = await validateAction(dto);
+        if (vCheck) {
+            try {
+                const response = await axios.post(`${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/login`, dto);
+
+                // 아이디 저장하기 선택상태일 경우, 아이디 저장
+                if (isSaveId) {
+                    localStorage.setItem('saveId', loginId.value);
+                } else {
+                    localStorage.removeItem('saveId');
+                } 
+
+                // 로그인 정보 저장
+                await setRefreshToken(response.data.refresh_token, response.data.refresh_token_end_dt);
+                await setAccessToken(response.data.access_token, response.data.access_token_end_dt);
+                router.push('/');
+            } catch (error) {
+                await axiosErrorHandle(error);
+            }
+        }
+    }
+
+    // 엔터키 입력 반응
+    async function enterScope(e: React.KeyboardEvent<HTMLInputElement>): Promise<void> {
+        if (e.key === 'Enter') {
+            await login();
+        }
+    }
+
+    if (loading) {
+        return (
+            <Loading />
+        )
+    } else {
+        return (
+            <>
+                <table>
+                    <colgroup>
+                        <col style={{width: '20%'}}/>
+                        <col style={{width: '80%'}}/>
+                    </colgroup>
+                    <tbody>
+                        <tr>
+                            <th>아이디</th>
+                            <td>
+                                <input 
+                                    type="text" 
+                                    value={loginId.value} 
+                                    onChange={loginId.onChange} 
+                                    onKeyDown={enterScope}
+                                />
+                                <span data-type="validation-alert" data-id="login_id" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>비밀번호</th>
+                            <td>
+                                <input 
+                                    type="password" 
+                                    value={loginPw.value} 
+                                    onChange={loginPw.onChange}
+                                    onKeyDown={enterScope}
+                                />
+                                <span data-type="validation-alert" data-id="login_pw" />
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>아이디 저장</th>
+                            <td>
+                                <input 
+                                    type="checkbox" 
+                                    className="checkbox"
+                                    id={'save-id-checkbox'}
+                                    checked={isSaveId}
+                                    onChange={() => setIsSaveId(!isSaveId)}
+                                />
+                                <label htmlFor={'save-id-checkbox'}>아이디 저장하기</label>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+    
+                <button 
+                    type="button" 
+                    onClick={() => login()}
+                >로그인
+                </button>
+            </>
+        )
+    }
+}

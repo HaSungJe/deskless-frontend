@@ -1,0 +1,39 @@
+{
+  "name": "roomless-frontend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 5000",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "apexcharts": "^5.16.0",
+    "axios": "^1.21.1",
+    "class-validator": "^0.14.4",
+    "dayjs": "^1.11.23",
+    "jsonwebtoken": "^9.0.3",
+    "next": "^16.4.6",
+    "next-auth": "^4.24.15",
+    "nextjs-toploader": "^3.9.17",
+    "react": "^19.3.1",
+    "react-apexcharts": "^1.9.0",
+    "react-dom": "^19.3.1",
+    "react-quill-new": "^3.8.3",
+    "react-spinners": "^0.17.1"
+  },
+  "devDependencies": {
+    "@types/jsonwebtoken": "^9.0.10",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "eslint": "^9",
+    "eslint-config-next": "^16.4.6",
+    "typescript": "^5"
+  },
+  "overrides": {
+    "js-yaml": "^4.1.1"
+  }
+}

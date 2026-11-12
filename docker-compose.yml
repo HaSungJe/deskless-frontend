@@ -1,0 +1,16 @@
+services:
+  frontend:
+    build:
+      context: .
+      secrets:
+        - dotenv
+    image: roomless-frontend
+    container_name: roomless-frontend
+    env_file: .env.production
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+
+secrets:
+  dotenv:
+    file: .env.production
