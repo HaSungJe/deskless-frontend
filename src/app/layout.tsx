@@ -1,5 +1,14 @@
 import type { Metadata, Viewport } from 'next';
+import { Noto_Sans_KR } from 'next/font/google';
 import RootLayoutContent from './RootLayoutContent';
+import './css/globals.css';
+
+const notoSansKr = Noto_Sans_KR({
+    subsets: ['latin'],
+    weight: ['400', '500', '700'],
+    display: 'swap',
+    variable: '--font-noto-sans-kr',
+});
 
 const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
 const serverName = process.env.NEXT_PUBLIC_SERVER_NAME;
@@ -39,11 +48,18 @@ export const metadata: Metadata = {
     other: adsensePublisherId ? { 'google-adsense-account': adsensePublisherId } : undefined,
 }
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+type RootLayoutProps = {
+    children: React.ReactNode;
+    modal: React.ReactNode; // src/app/@modal — 경로 모달 슬롯
+};
+
+export default function RootLayout({ children, modal }: RootLayoutProps): React.ReactNode {
     return (
-        <html lang="ko">
+        // 문서 — 글꼴 변수를 <html> 에 붙인다
+        <html lang="ko" className={notoSansKr.variable}>
             <body>
-                <RootLayoutContent>
+                {/* 로그인 상태 · Provider · 경로 모달 */}
+                <RootLayoutContent modal={modal}>
                     {children}
                 </RootLayoutContent>
             </body>

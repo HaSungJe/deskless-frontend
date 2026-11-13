@@ -35,7 +35,7 @@ export function showValidationErrors(errors: Array<ValidationErrorType>, key?: s
         if (alertElement) {
             shownCount++;
             alertElement.innerText = error.message;
-            alertElement.style.color = 'red';
+            alertElement.style.color = 'var(--danger)';
             alertElement.style.display = 'block';
         }
     }

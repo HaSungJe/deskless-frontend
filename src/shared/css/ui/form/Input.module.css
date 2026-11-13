@@ -1,0 +1,30 @@
+.input {
+    display: block;
+    width: 100%;
+    height: var(--control-h);
+    padding: 0 var(--control-px);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--fg);
+    font: inherit;
+    font-size: var(--control-font);
+}
+
+.input[readonly],
+.input:disabled {
+    background: var(--surface-2);
+    color: var(--muted);
+}
+
+.invalid {
+    border-color: var(--danger);
+}
+
+.textarea {
+    height: auto;
+    min-height: calc(var(--control-h) * 2);
+    padding: 10px var(--control-px);
+    line-height: 1.6;
+    resize: vertical;
+}

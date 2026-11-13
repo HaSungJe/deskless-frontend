@@ -1,0 +1,96 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 1440px;
+    margin: 0 auto;
+    padding: 32px 16px 96px;
+}
+
+.head {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.headTitle {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.headDesc {
+    margin: 0;
+    color: var(--muted);
+}
+
+.columns {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 520px), 1fr));
+    gap: 24px;
+    align-items: start;
+}
+
+.column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+    padding: 20px;
+    border: 1px dashed var(--faint);
+    border-radius: var(--radius-lg);
+}
+
+.columnTitle {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+}
+
+.sectionTitle {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 700;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.swatches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 8px;
+}
+
+.swatch {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 12px;
+}
+
+.swatchChip {
+    flex: none;
+    width: 28px;
+    height: 28px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+}
+
+.note {
+    margin: 0;
+    color: var(--muted);
+    font-size: 13px;
+}

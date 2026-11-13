@@ -11,12 +11,12 @@ Vitest 5 + Testing Library(`@testing-library/react`) + jsdom (선택: 사용자 
   - `alert` · `localStorage` · `sessionStorage` — `vi.spyOn(window, 'alert')` 등
 - 실제 네트워크(백엔드 · 카카오 · 토스 · 다음 우편번호)는 단위 테스트에서 부르지 않는다.
 - Context 는 실제 Provider(`RootLayoutProvider`)로 감싸서 값을 넣는다 — Context 자체는 mock 하지 않는다.
-- class-validator DTO 는 mock 없이 실제 `validate()` 로 검증한다 (`src/features/user/login/dto.test.ts`).
+- class-validator DTO 는 mock 없이 실제 `validate()` 로 검증한다 (`src/app/(user)/login/dto.test.ts`).
 - `globals` 를 켜지 않으므로 `describe` · `it` · `expect` · `vi` 는 `vitest` 에서 import 한다. 렌더 정리는 `vitest.setup.ts` 의 `afterEach(cleanup)`.
 
 ## Location · Structure
 
-- 대상 파일 옆 `<대상>.test.ts` · `<대상>.test.tsx` (`src/features/user/login/dto.test.ts`, `src/shared/components/Pagination.test.tsx`). 수집 범위 `src/**/*.test.{ts,tsx}` (`vitest.config.mts`).
+- 대상 파일 옆 `<대상>.test.ts` · `<대상>.test.tsx` (`src/app/(user)/login/dto.test.ts`, `src/shared/components/Pagination.test.tsx`). 수집 범위 `src/**/*.test.{ts,tsx}` (`vitest.config.mts`).
 - `describe('<대상 이름>')` 안에 케이스 이름을 `[SUCCESS] …` / `[FAIL:<이유>] …` 로 시작한다 (`Pagination.test.tsx`).
 - 분기마다 하나 이상: 성공 · 입력 검증 실패 · 서버 실패(validationErrors 있음 / 없음) · 401 · 빈 값.
 

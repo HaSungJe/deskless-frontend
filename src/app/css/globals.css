@@ -1,0 +1,111 @@
+/* 디자인 토큰 (시안 frontend/design/*.html 의 :root, 밝은 화면 한 벌)
+   ::backdrop 은 옛 브라우저(Safari < 17.4 · Chrome < 122)에서 :root 변수를 받지 못해 같이 둔다 — 모달 뒤 --scrim */
+:root,
+::backdrop {
+    color-scheme: light;
+
+    /* 색 — 세 영역 공통 (이름은 콘솔 시안 기준) */
+    --bg: #F4F5F7;
+    --surface: #FFFFFF;
+    --surface-2: #F9FAFB;
+    --line: #E2E5EA;
+    --fg: #15171A;
+    --muted: #5A6170;
+    --faint: #6B7280;
+    --primary: #2457D6;
+    --primary-strong: #1C46AE;
+    --primary-soft: #E8EEFC;
+    --on-primary: #FFFFFF;
+    --ok: #1C7A4B;
+    --ok-soft: #E6F4EC;
+    --warn: #A85A00;
+    --warn-soft: #FDF1E2;
+    --danger: #C0362C;
+    --danger-soft: #FBE9E7;
+    --neutral-fg: #4B5260;
+    --neutral-bg: #EEF0F3;
+    --scrim: rgba(21, 23, 26, 0.45);
+    --shadow: 0 1px 2px rgba(21, 23, 26, 0.06);
+
+    /* 색 — 이용자 전용 */
+    --map-bg: #EEF1F5;
+    --map-grid: #DCE2EA;
+    --map-water: #D6E3F3;
+    --kakao: #FEE500;
+    --naver: #03C75A;
+    --primary-halo: rgba(36, 87, 214, 0.18);
+    --frame-shadow: 0 8px 28px rgba(21, 23, 26, 0.10);
+
+    /* 글꼴 — --font-noto-sans-kr 는 layout.tsx 의 next/font 가 <html> 에 붙인다 */
+    --font: var(--font-noto-sans-kr), system-ui, sans-serif;
+    --mono: ui-monospace, Menlo, Consolas, monospace;
+
+    /* 모서리 */
+    --radius: 8px;
+    --radius-lg: 12px;
+}
+
+/* 크기 — 이용자(기본) */
+:root,
+[data-area="user"] {
+    --font-size-base: 15px;
+    --control-h: 48px;
+    --control-h-lg: 52px;
+    --control-h-sm: 36px;
+    --control-font: 15px;
+    --control-weight: 700;
+    --control-px: 14px;
+    --badge-h: 24px;
+}
+
+/* 크기 — 콘솔(업체 관리자 · 관리자). 영역 layout 이 data-area="console" 을 붙인다 */
+[data-area="console"] {
+    --font-size-base: 14px;
+    --control-h: 40px;
+    --control-h-lg: 48px;
+    --control-h-sm: 32px;
+    --control-font: 14px;
+    --control-weight: 500;
+    --control-px: 12px;
+    --badge-h: 22px;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+html,
+body {
+    margin: 0;
+}
+
+body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: var(--font);
+    font-size: var(--font-size-base);
+    line-height: 1.5;
+}
+
+[data-area] {
+    font-size: var(--font-size-base);
+}
+
+a {
+    color: var(--primary);
+}
+
+a:hover {
+    color: var(--primary-strong);
+}
+
+::placeholder {
+    color: var(--faint);
+}
+
+:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}

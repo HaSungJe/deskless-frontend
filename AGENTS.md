@@ -33,35 +33,37 @@ Next.js 16.4 App Router (`package.json:17`) · React 19.3 + React Compiler (`nex
 
 ```
 src/
-├─ app/          라우팅만 — (user)/ · manager/ · admin/ 영역, api/ route handler
-├─ features/     화면 내용 — <영역>/<화면>/<화면>Content.tsx ('use client')
+├─ app/          라우팅 + 화면 — (user)/ · manager/ · admin/ 영역, page.tsx 옆 <화면>Content.tsx ('use client'), api/ route handler, css/ 전역 토큰 · 화면 css
 ├─ contracts/    백엔드 계약 — <도메인>/dto/*.dto.ts(지침서 사본) · <도메인>/api.ts
 └─ shared/       도메인을 모르는 공통 — api · components · hooks · utils · types · providers
 ```
-- import 방향은 `app → features → contracts → shared` 한쪽으로만. 거꾸로 가면 ESLint 오류 (`eslint.config.mjs:12`).
+- import 방향은 `app → contracts → shared` 한쪽으로만. 거꾸로 가면 ESLint 오류 (`eslint.config.mjs:12`).
 - `page.tsx` · `layout.tsx` 는 서버 컴포넌트로 얇게 두고 화면은 `<화면>Content` 를 그리기만 한다 (`src/app/(user)/login/page.tsx:3`).
+- 화면 파일(`<화면>Content.tsx` · `dto.ts` · 테스트)은 그 주소의 `page.tsx` 옆에 둔다(css 는 `src/app/css/<영역>/`) — 주소가 되는 건 `page` · `route` 같은 특수 파일뿐이라 옆 파일은 노출되지 않는다. 별도 `features/` 층은 두지 않는다 (선택: 사용자 · 표준: Next.js project-structure "Colocation").
 - 영역 폴더(`manager/` · `admin/` · `contracts/<도메인>`)는 그 화면 · API 를 만들 때 생긴다.
 
 → 자세히: [docs/architecture.md](docs/architecture.md)
 
 ## Conventions
-- 화면: `features/<영역>/<화면>/<화면>Content.tsx`, default export `<화면>Content` (`src/features/user/login/LoginContent.tsx:13`). 영역은 `user` · `manager` · `admin`.
+- 화면: `src/app/<영역 경로>/<주소>/<화면>Content.tsx`(page.tsx 옆), default export `<화면>Content` (`src/app/(user)/login/LoginContent.tsx:13`). 영역 경로는 `(user)/` · `manager/(console)/` · `admin/(console)/`. 그 화면 전용 부품이 여럿이면 `_components/` 로 묶는다(밑줄 폴더는 주소가 되지 않는다).
 - 주소: 정적 세그먼트 kebab-case, 동적 세그먼트 `[snake_case]` (지침서: frontend/screens.md — `/stores/[store_id]`). `trailingSlash: true` 라 링크는 `/` 로 끝난다 (`next.config.ts:36`).
 - 훅 `use<Name>.ts` default export + 반환 타입 `Use<Name>Type` export (`src/shared/hooks/useInput.ts:3,11`). 컴포넌트 PascalCase 파일 · default export · props 는 `type <Name>Props` (`src/shared/components/KakaoMap.tsx:10`).
 - 타입은 `type` 별칭 + `Type` 접미사 (`src/shared/types/pagination.ts:6`), Context 는 `<Name>Context` (`src/shared/providers/RootLayoutProvider.tsx:13-15`), 상수는 UPPER_SNAKE (`src/shared/api/axios.ts:12`).
-- 백엔드와 주고받는 키는 snake_case 그대로 (`src/features/user/login/dto.ts:6,9`).
-- 스타일은 `<Name>.module.css` 를 컴포넌트 옆에, 색 · 간격은 시안의 CSS 변수를 전역 토큰으로 (선택: 사용자 · 아직 CSS 없음).
+- 백엔드와 주고받는 키는 snake_case 그대로 (`src/app/(user)/login/dto.ts:6,9`).
+- 스타일은 css 폴더에 모은다 — 전역 토큰 `src/app/css/globals.css`, 화면 `src/app/css/<영역>/<화면>Content.module.css`, 공통 부품 `src/shared/css/<components 아래와 같은 경로>/<Name>.module.css`(예 `shared/components/ui/form/Input.tsx` ↔ `shared/css/ui/form/Input.module.css`). 색 · 크기는 토큰 `var(--…)` 만 — 색은 한 벌, 크기는 영역별(기본 이용자, `data-area="console"` 콘솔) (선택: 사용자).
+- 공통 부품은 `src/shared/components/ui/<종류>/` 를 먼저 쓴다 — `button/`(`Button` · `CopyButton`) · `form/`(`Input` · `Textarea` · `Field` · `Switch` · `Chip` · `Segmented`) · `display/`(`Badge` · `Band` · `Card` · `Table` · `EmptyState`) · `nav/`(`Tabs`) · `modal/`(`Modal` · `ConfirmModal` · `ReasonModal` · `RouteModal`). 입력 칸은 `<Field name="<DTO 필드>">` — 오류 span 을 `Field` 가 그린다. 미리보기 `/dev/ui`(개발 전용).
+- 컴포넌트 · 커스텀 훅 본문은 **변수 > 상태 > 계산 값 > 효과 > 함수 > JSX** — 영역 사이 빈 줄, 영역마다 한 줄 주석, 변수 · 상태 · 계산 값은 줄마다 오른쪽 역할 주석, JSX 는 덩어리마다 간략 주석. 새 코드와 고치는 파일부터 (선택: 사용자 2026-11-14) → [docs/conventions.md](docs/conventions.md) "컴포넌트 · 훅 안의 구조"
 
 → 자세히: [docs/conventions.md](docs/conventions.md)
 
 ## 화면 로직
-별도 서비스 계층은 없다 — 이벤트 처리 · 제출 흐름은 `<화면>Content` 안의 함수로 둔다 (`src/features/user/login/LoginContent.tsx:43-65`). 백엔드 호출은 `contracts/<도메인>/api.ts` 의 함수로 모은다(구조 결정 · 아직 미적용 — 지금 로그인은 axios 를 직접 부른다 `LoginContent.tsx:48`). 판단 기준: "다른 화면에서도 부를 것인가?" → 예면 아래 계층(contracts · shared)으로.
+별도 서비스 계층은 없다 — 이벤트 처리 · 제출 흐름은 `<화면>Content` 안의 함수로 둔다 (`src/app/(user)/login/LoginContent.tsx:43-65`). 백엔드 호출은 `contracts/<도메인>/api.ts` 의 함수로 모은다(구조 결정 · 아직 미적용 — 지금 로그인은 axios 를 직접 부른다 `LoginContent.tsx:48`). 판단 기준: "다른 화면에서도 부를 것인가?" → 예면 아래 계층(contracts · shared)으로.
 
 ## Shared Logic Separation
 - `shared/utils` — 상태 없는 함수(DOM · 스크립트를 만져도 React 상태는 없음) (`src/shared/utils/util.ts`, `validation.ts`, `address.ts`).
 - `shared/hooks` — React 상태를 가진 입력 로직, `shared/components` — 여러 화면이 쓰는 UI, `shared/providers` — 전역 Context.
 - `shared/api` — HTTP · 쿠키 · 실패 처리(도메인을 모름). 도메인별 엔드포인트는 `contracts/<도메인>/api.ts`.
-- 한 화면에서만 쓰면 그 `features/<영역>/<화면>/` 안에 둔다. 두 곳 이상에서 쓰게 되면 그때 옮긴다.
+- 한 화면에서만 쓰면 그 화면 폴더(`page.tsx` 옆)에 둔다. 두 곳 이상에서 쓰게 되면 그때 `contracts` · `shared` 로 옮긴다.
 
 ## Data Layer
 - 백엔드 호출은 axios 로 `${NEXT_PUBLIC_API_URL}/api/v1/...` (`LoginContent.tsx:48`). 로그인 토큰이 필요한 호출은 `axiosGet/Post/Put/Patch/Delete(access, url, body?, headers?)` (`src/shared/api/axios.ts:56-106` · 아직 호출처 0 — 미적용).
@@ -72,7 +74,7 @@ src/
 → 자세히: [docs/data-layer.md](docs/data-layer.md)
 
 ## Validation
-- 입력 DTO 는 class-validator 데코레이터 + 한국어 `message` 필수 (`src/features/user/login/dto.ts:5,8`).
+- 입력 DTO 는 class-validator 데코레이터 + 한국어 `message` 필수 (`src/app/(user)/login/dto.ts:5,8`).
 - 제출 전에 `validateAction(dto)` (`LoginContent.tsx:44-45`) → 오류는 칸 옆 `<span data-type="validation-alert" data-id="<필드>" />` 에 표시 (`LoginContent.tsx:96`). 중첩 DTO 는 `validateActionChildren(dto, key)` + `data-key` (`src/shared/utils/validation.ts:111` · 미적용).
 - 지침서 DTO 사본은 `contracts/` 에 그대로 두고 화면 검증에도 그대로 쓴다 (지침서: frontend/api.md:62).
 
@@ -92,6 +94,7 @@ src/
 - `window` 를 쓰는 라이브러리는 `next/dynamic` + `ssr: false` 로 감싼다 (`src/shared/components/Editor.tsx:7`, `chart/Chart.tsx:5`).
 - 외부 스크립트는 id 로 한 번만 붙이고 Promise 로 로드를 기다린다 (`KakaoMap.tsx:26`, `src/shared/utils/address.ts:19`).
 - `NEXT_PUBLIC_*` · `basePath` 는 빌드할 때 박힌다. Docker 운영 이미지는 `output: "standalone"` (`next.config.ts:34`) + `.env.production` 하나로 빌드 · 실행.
+- 주소가 있어야 하는 팝업은 경로 모달 — 루트 슬롯 `src/app/@modal/(.)<주소>/page.tsx` 에서 `<RouteModal>` 로 감싸고, 같은 주소의 보통 페이지도 둔다. 화면 내용은 보통 페이지 폴더에 두고 가로채기 page 가 `@/app/<영역 경로>/<주소>/<화면>Content` 로 가져온다. 주소가 필요 없는 확인 · 사유 입력은 `ConfirmModal` · `ReasonModal`. → [docs/architecture.md](docs/architecture.md) "경로 모달"
 
 ## Testing
 Vitest 5 + Testing Library + jsdom (`vitest.config.mts`) (선택: 사용자). 테스트는 대상 옆 `*.test.ts(x)`. HTTP · 라우터 · 쿠키 경계는 mock — 실제 네트워크 금지. 케이스는 `[SUCCESS]` / `[FAIL:<이유>]`, 호출 횟수 · 인자 · 실패 뒤 미호출까지 검증. 실행 `npx vitest run`, 하나만 `npx vitest run <이름>`.
@@ -100,8 +103,8 @@ Vitest 5 + Testing Library + jsdom (`vitest.config.mts`) (선택: 사용자). �
 
 ## Checklist
 - [ ] `page.tsx` 는 `'use client'` 없이 `<화면>Content` 만 그린다
-- [ ] 화면은 `src/features/<영역>/<화면>/<화면>Content.tsx` (`'use client'`, default export)
-- [ ] import 가 `app → features → contracts → shared` 방향을 거스르지 않는다
+- [ ] 화면은 그 주소 `page.tsx` 옆 `<화면>Content.tsx` (`'use client'`, default export)
+- [ ] import 가 `app → contracts → shared` 방향을 거스르지 않는다
 - [ ] 백엔드 DTO 는 `src/contracts/<도메인>/dto/<파일>.dto.ts` 에 지침서 사본 그대로(파일 이름 · 상대 import 유지)
 - [ ] 입력 DTO 필드마다 class-validator 데코레이터 + 한국어 `message`
 - [ ] 제출 전 `validateAction(dto)`, 입력 칸마다 `<span data-type="validation-alert" data-id="<필드>">`
@@ -111,6 +114,9 @@ Vitest 5 + Testing Library + jsdom (`vitest.config.mts`) (선택: 사용자). �
 - [ ] `window` 를 쓰는 라이브러리는 `next/dynamic` + `ssr: false`
 - [ ] 시크릿은 서버 코드(route handler)에서만 — 클라이언트 코드에 `NEXT_PUBLIC_JWT_CODE` 금지
 - [ ] 내부 링크는 `/` 로 끝난다 (`trailingSlash`)
-- [ ] 스타일은 `<Name>.module.css`, 색 · 간격은 전역 토큰 변수
+- [ ] 스타일은 `<Name>.module.css` 를 css 폴더에(화면 `src/app/css/<영역>/`, 공통 부품 `src/shared/css/…`), 색 · 크기는 `globals.css` 토큰 `var(--…)` 만 (값 직접 쓰지 않음 — 부품 고유 치수 · 간격 · 글자 크기 예외는 docs/conventions.md "스타일")
+- [ ] 공통 부품(`src/shared/components/ui/<종류>/`)이 있으면 새로 만들지 않고 쓴다 — 입력 칸은 `<Field name>`
+- [ ] 주소가 있는 팝업은 `@modal/(.)<주소>` + `RouteModal`, 같은 주소의 보통 페이지도 둔다
+- [ ] 컴포넌트 · 훅 본문이 변수 > 상태 > 계산 값 > 효과 > 함수 > JSX 순서 · 영역 빈 줄 · 영역 주석 · 변수/상태/계산 값 오른쪽 주석 · JSX 덩어리 주석을 지킨다
 - [ ] 새 코드 옆에 `*.test.ts(x)` — `[SUCCESS]`/`[FAIL:*]`, 호출 횟수 · 인자 · 미호출 검증
 - [ ] 커밋 메시지는 `YYYY.MM.DD` + `- 작업내용` 형식

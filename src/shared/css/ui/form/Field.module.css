@@ -1,0 +1,32 @@
+.field {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.label {
+    display: block;
+    margin: 0 0 6px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--fg);
+}
+
+.required {
+    color: var(--danger);
+}
+
+/* validation.ts 가 오류일 때 display:block 으로 연다 */
+.error {
+    display: none;
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--danger);
+}
+
+.hint {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+    line-height: 1.5;
+}

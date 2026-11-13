@@ -6,7 +6,7 @@
 ## 한눈에 보는 흐름
 ```mermaid
 flowchart LR
-  P1["Phase 1 · 디자인 기반 (2)"]:::todo
+  P1["Phase 1 · 디자인 기반 (2)"]:::inprog
   P2["Phase 2 · API 기반 (3)"]:::todo
   P3["Phase 3 · 영역별 로그인 기반 (3)"]:::todo
   P4["Phase 4 · 이용자 공통 인프라 (5)"]:::todo
@@ -56,33 +56,34 @@ flowchart LR
   classDef todo stroke:#8a949c,stroke-width:1px,stroke-dasharray:4 3
 ```
 
-- Phase 1 — 디자인 기반 · 유닛 2개 · 의존: — · 푼다: Phase 4 · 파일 집합: src/app/globals.css, src/shared/components/ui · todo
+- Phase 1 — 디자인 기반 · 유닛 2개 · 의존: — · 푼다: Phase 4 · 파일 집합: src/app/css, src/shared/components/ui, src/shared/css · in-progress
 - Phase 2 — API 기반 · 유닛 3개 · 의존: — · 푼다: Phase 3 · 파일 집합: src/shared/api, src/contracts/common, src/shared/utils · todo
 - Phase 3 — 영역별 로그인 기반 · 유닛 3개 · 의존: Phase 2 · 푼다: Phase 4 · 파일 집합: src/app/api/cookie, src/shared/api(auth), src/shared/providers, src/app/RootLayoutContent.tsx · todo
 - Phase 4 — 이용자 공통 인프라 · 유닛 5개 · 의존: Phase 1, Phase 3 · 푼다: Phase 5, Phase 6, Phase 10 · 파일 집합: src/shared/components(map·sms·upload), src/shared/payment, src/app/api/payments · todo
-- Phase 5 — 이용자 틀·로그인·가입 · 유닛 5개 · 의존: Phase 4 · 푼다: Phase 7, Phase 9 · 파일 집합: src/app/(user)/layout · login · signup · phone-verification · find-login-id, src/app/api/auth, src/features/user/auth, src/contracts/user · todo
-- Phase 6 — 업체 둘러보기 · 유닛 2개 · 의존: Phase 4 · 푼다: Phase 7 · 파일 집합: src/app/(user)/page · stores/[store_id], src/features/user/home · store, src/contracts/discovery · todo
-- Phase 7 — 예약·결제 · 유닛 2개 · 의존: Phase 5, Phase 6 · 푼다: Phase 8 · 파일 집합: src/app/(user)/stores/[store_id]/booking · payments, src/features/user/booking · payments, src/contracts/reservation · todo
-- Phase 8 — 내 예약 · 유닛 4개 · 의존: Phase 7 · 푼다: Phase 13 · 파일 집합: src/app/(user)/reservation, src/features/user/reservation, src/contracts/reservation · todo
-- Phase 9 — 마이페이지·입점 신청 · 유닛 4개 · 의존: Phase 5 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/(user)/me · store-applications, src/features/user/me · store-applications, src/contracts/user, src/contracts/store · todo
-- Phase 10 — 콘솔 틀·매니저 로그인 · 유닛 6개 · 의존: Phase 4 · 푼다: Phase 11, Phase 12, Phase 14, Phase 15 · 파일 집합: src/shared/components/console, src/app/manager, src/features/manager/auth, src/contracts/manager · todo
-- Phase 11 — 내 업체 설정 · 유닛 6개 · 의존: Phase 10 · 푼다: Phase 16 · 파일 집합: src/app/manager/(console)/store, src/features/manager/store, src/contracts/store · todo
-- Phase 12 — 상품·객실 · 유닛 4개 · 의존: Phase 10 · 푼다: Phase 13 · 파일 집합: src/app/manager/(console)/plans · room-groups · rooms, src/features/manager/plans · room-groups · rooms, src/contracts/room · todo
-- Phase 13 — 예약 현황 · 유닛 1개 · 의존: Phase 12, Phase 8 · 푼다: — · 파일 집합: src/app/manager/(console)/reservations, src/features/manager/reservations, src/contracts/reservation · todo
-- Phase 14 — 대시보드·업체 관리자 · 유닛 3개 · 의존: Phase 10 · 푼다: Phase 17 · 파일 집합: src/app/manager/(console)/page · staff, src/features/manager/dashboard · staff, src/contracts/stats, src/contracts/manager · todo
-- Phase 15 — 관리자 로그인 · 유닛 2개 · 의존: Phase 10 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/admin/login · (console)/layout · password, src/features/admin/auth, src/contracts/admin · todo
-- Phase 16 — 입점 신청·업체 관리 · 유닛 4개 · 의존: Phase 15, Phase 11, Phase 9 · 푼다: — · 파일 집합: src/app/admin/(console)/store-applications · stores, src/features/admin/store-applications · stores, src/contracts/store · todo
-- Phase 17 — 통계·계정·이용자 · 유닛 5개 · 의존: Phase 15, Phase 14, Phase 9 · 푼다: — · 파일 집합: src/app/admin/(console)/page · managers · users, src/features/admin/dashboard · managers · users, src/contracts/stats · manager · user · todo
+- Phase 5 — 이용자 틀·로그인·가입 · 유닛 5개 · 의존: Phase 4 · 푼다: Phase 7, Phase 9 · 파일 집합: src/app/(user)/layout · login · signup · phone-verification · find-login-id, src/app/api/auth, src/contracts/user · todo
+- Phase 6 — 업체 둘러보기 · 유닛 2개 · 의존: Phase 4 · 푼다: Phase 7 · 파일 집합: src/app/(user)/page · stores/[store_id], src/contracts/discovery · todo
+- Phase 7 — 예약·결제 · 유닛 2개 · 의존: Phase 5, Phase 6 · 푼다: Phase 8 · 파일 집합: src/app/(user)/stores/[store_id]/booking · payments, src/contracts/reservation · todo
+- Phase 8 — 내 예약 · 유닛 4개 · 의존: Phase 7 · 푼다: Phase 13 · 파일 집합: src/app/(user)/reservation, src/contracts/reservation · todo
+- Phase 9 — 마이페이지·입점 신청 · 유닛 4개 · 의존: Phase 5 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/(user)/me · store-applications, src/contracts/user, src/contracts/store · todo
+- Phase 10 — 콘솔 틀·매니저 로그인 · 유닛 6개 · 의존: Phase 4 · 푼다: Phase 11, Phase 12, Phase 14, Phase 15 · 파일 집합: src/shared/components/console, src/app/manager, src/contracts/manager · todo
+- Phase 11 — 내 업체 설정 · 유닛 6개 · 의존: Phase 10 · 푼다: Phase 16 · 파일 집합: src/app/manager/(console)/store, src/contracts/store · todo
+- Phase 12 — 상품·객실 · 유닛 4개 · 의존: Phase 10 · 푼다: Phase 13 · 파일 집합: src/app/manager/(console)/plans · room-groups · rooms, src/contracts/room · todo
+- Phase 13 — 예약 현황 · 유닛 1개 · 의존: Phase 12, Phase 8 · 푼다: — · 파일 집합: src/app/manager/(console)/reservations, src/contracts/reservation · todo
+- Phase 14 — 대시보드·업체 관리자 · 유닛 3개 · 의존: Phase 10 · 푼다: Phase 17 · 파일 집합: src/app/manager/(console)/page · staff, src/contracts/stats, src/contracts/manager · todo
+- Phase 15 — 관리자 로그인 · 유닛 2개 · 의존: Phase 10 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/admin/login · (console)/layout · password, src/contracts/admin · todo
+- Phase 16 — 입점 신청·업체 관리 · 유닛 4개 · 의존: Phase 15, Phase 11, Phase 9 · 푼다: — · 파일 집합: src/app/admin/(console)/store-applications · stores, src/contracts/store · todo
+- Phase 17 — 통계·계정·이용자 · 유닛 5개 · 의존: Phase 15, Phase 14, Phase 9 · 푼다: — · 파일 집합: src/app/admin/(console)/page · managers · users, src/contracts/stats · manager · user · todo
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: 진행 중 없음 · Next up: Phase 1
+지금: Phase 1 진행 중 · Next up: Phase 1
 
 ## 지금 할 일
-공통 기반부터 — Phase 1 디자인 기반과 Phase 2 API 기반은 같이 진행할 수 있다
-- 정하기 — 디자인 토큰을 전역 하나로 둘지, 이용자 · 콘솔로 나눌지 (#1)
-- 정하기 — API 호출을 axios 유지 + 큐만 fetch 로 갈지, fetch 하나로 통일할지 (#3)
-- 시작 — `/beaver:direct Phase 1` (Phase 2 와 서브에이전트로 같이 돌려도 된다)
+Phase 1 디자인 기반 — 만들어진 부품을 직접 확인하기
+- 화면에서 보기 — `npm run dev` 후 `/dev/ui/` (두 크기 · 오류 표시 · 확인 / 사유 입력 모달 · 경로 모달)
+  build 완료 — report: .beaver/output/report/ui/design-foundation-report.md
+- 테스트 · 배포 — `/beaver:ship` 으로 커밋 · 푸시, 이어서 `/beaver:test`
+- 다음 — Phase 2 API 기반: axios 유지 + 큐만 fetch 로 갈지, fetch 하나로 통일할지 (#3)
 
 ## Scope & Actors
 - **이용자** (모바일 웹 `/`, 카카오 · 네이버 로그인) — 주변 업체 찾기 → 예약 · 토스 결제 → QR 입실 · 취소 · 연장, 마이페이지 · 탈퇴, 입점 신청.
@@ -103,15 +104,18 @@ flowchart LR
 ### Phase 1 — 디자인 기반 (시안의 색 · 글꼴 · 기본 UI 를 코드로) · depends: —
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 1 | 디자인 토큰 · 전역 CSS · 글꼴 | 시안 `:root` 변수(색 · 간격 · 그림자)를 전역 토큰으로, Noto Sans KR 을 `next/font` 로 | 토큰을 전역 하나 vs 이용자 · 콘솔로 나눌지(변수 이름이 영역마다 조금 다름) | — | todo |
-| 2 | 공통 UI 컴포넌트 | 버튼 · 입력 · 배지 · 탭 · 모달(확인 · 사유 입력) · 빈 상태 · 복사 버튼 — 25개 화면이 같이 씀 | 모달을 `<dialog>` 로 할지 포털로 할지 | 1 | todo |
+| 1 | 디자인 토큰 · 전역 CSS · 글꼴 | 시안 `:root` 변수(색 · 간격 · 그림자)를 전역 토큰으로, Noto Sans KR 을 `next/font` 로 | 토큰을 전역 하나 vs 이용자 · 콘솔로 나눌지(변수 이름이 영역마다 조금 다름) | — | in-progress |
+| 2 | 공통 UI 컴포넌트 | 버튼 · 입력 · 배지 · 탭 · 모달(확인 · 사유 입력) · 빈 상태 · 복사 버튼 — 25개 화면이 같이 씀 | 모달을 `<dialog>` 로 할지 포털로 할지 | 1 | in-progress |
 
 **Expected modules**:
 
 | Unit | Module | Export | Purpose |
 |------|--------|--------|---------|
-| #1 | `src/app/globals.css` | `:root` 토큰 · 기본 스타일 | 시안 값 그대로 |
-| #2 | `src/shared/components/ui/` | `Button` · `Input` · `Badge` · `Tabs` · `Modal` · `ReasonModal` · `EmptyState` · `CopyButton` | 화면 공통 부품 |
+| #1 | `src/app/css/globals.css` · `src/app/layout.tsx` | 색 한 벌 · 크기 `data-area` · Noto Sans KR | 시안 값 그대로 |
+| #2 | `src/shared/components/ui/<종류>/` · `src/shared/css/ui/` | `Button` · `Input` · `Textarea` · `Field` · `Badge` · `Band` · `Switch` · `Chip` · `Segmented` · `Tabs` · `Card` · `Table` · `EmptyState` · `Modal` · `ConfirmModal` · `ReasonModal` · `RouteModal` · `CopyButton` | 화면 공통 부품 |
+| #2 | `src/app/@modal/` · `/dev/ui` | 경로 모달 슬롯 · 개발 전용 미리보기 | 경로 모달 규칙 · 확인 |
+
+> build 완료(2026-11-14) — report: `.beaver/output/report/ui/design-foundation-report.md`. 테스트는 `/beaver:test`, 화면은 `npm run dev` 후 `/dev/ui/`.
 
 ### Phase 2 — API 기반 (지침서 호출 방식 · 공통 계약 · 표시 형식) · depends: —
 | # | Unit | Goal | Key decision | Depends | Status |
@@ -393,7 +397,7 @@ flowchart LR
 - [ ] API 호출을 axios 유지 + 큐만 fetch 로 갈지, fetch 하나로 통일할지 — 모든 화면의 호출 코드 모양이 정해진다 (Phase 2 · #3)
 - [ ] 영역별 토큰 쿠키를 이름으로 나눌지 경로로 나눌지, 재발급을 브라우저 / Next 서버 중 어디서 할지 (Phase 3 · #6 · #7)
 - [ ] SNS 로그인을 next-auth 로 유지할지 카카오 · 네이버 SDK 를 직접 쓸지 (Phase 5 · #15)
-- [ ] 디자인 토큰을 전역 하나로 둘지 이용자 · 콘솔로 나눌지 (Phase 1 · #1)
+- [x] 디자인 토큰을 전역 하나로 둘지 이용자 · 콘솔로 나눌지 (Phase 1 · #1) — 색은 전역 한 벌, 크기만 영역별(`data-area="console"`) (선택: 사용자 2026-11-14)
 
 ## Notes / Risks
 - 이용자 화면을 먼저 만들기 때문에, 확인하려면 백엔드에 업체 · 객실 · 상품 데이터가 미리 있어야 한다(콘솔 화면은 나중) — 개발 백엔드의 시드 데이터를 확인할 것.

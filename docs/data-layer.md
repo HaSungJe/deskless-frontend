@@ -5,7 +5,7 @@
 ## 백엔드 API 호출
 
 ### 지금 코드 (예전 백엔드 기준)
-- axios 로 `${process.env.NEXT_PUBLIC_API_URL}/api/v1/...` 를 부른다 (`src/features/user/login/LoginContent.tsx:48`).
+- axios 로 `${process.env.NEXT_PUBLIC_API_URL}/api/v1/...` 를 부른다 (`src/app/(user)/login/LoginContent.tsx:48`).
 - 로그인 토큰이 필요한 호출은 `src/shared/api/axios.ts` 의 래퍼 — 401 이면 `/api/cookie/access` 로 토큰을 다시 받아 최대 5번 재시도, 그래도 안 되면 토큰을 지우고 에러를 던진다 (`axios.ts:20-47`). **호출처 0 — 미적용.** 시그니처(정의 그대로):
   ```ts
   axiosGet<T>(access: AccessType, url: string, headers?: Record<string, string>): Promise<AxiosResponse<T>>
@@ -90,4 +90,4 @@ function action() {
 
 ## Query DTO 생성자
 
-지침서 목록 query DTO 는 `PaginationDto` 를 extends 하고, 생성자에서 빠진 값을 `PAGINATION_DEFAULTS`(`page 1` · `size 20` · `page_size 10` · `all_search_yn 'N'`)로 채운다 (지침서: frontend/dto/common.md:13,38-43). 화면 DTO 도 생성자에서 입력 객체를 필드로 옮긴다 — 빈 값은 `null` (`src/features/user/login/dto.ts:11-15`).
+지침서 목록 query DTO 는 `PaginationDto` 를 extends 하고, 생성자에서 빠진 값을 `PAGINATION_DEFAULTS`(`page 1` · `size 20` · `page_size 10` · `all_search_yn 'N'`)로 채운다 (지침서: frontend/dto/common.md:13,38-43). 화면 DTO 도 생성자에서 입력 객체를 필드로 옮긴다 — 빈 값은 `null` (`src/app/(user)/login/dto.ts:11-15`).

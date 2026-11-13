@@ -2,7 +2,7 @@
 
 ## Basic Principles
 
-- 화면에서 API 를 부르는 곳은 `try/catch` 로 감싸고 catch 에서 `await axiosErrorHandle(error)` (`src/features/user/login/LoginContent.tsx:47-63`).
+- 화면에서 API 를 부르는 곳은 `try/catch` 로 감싸고 catch 에서 `await axiosErrorHandle(error)` (`src/app/(user)/login/LoginContent.tsx:47-63`).
 - 사용자에게는 칸 옆 오류(`<span data-type="validation-alert">`) 또는 `alert(message)` 로만 보여 준다. 따로 오류 화면 · error boundary · 토스트는 없다.
 - 메시지는 백엔드 응답 `message` · 검증 메시지(DTO 의 한국어 `message`) 를 그대로 쓴다 — 프론트에 메시지 상수 · i18n 은 없다.
 - route handler 와 쿠키 함수는 던지지 않는다 — 실패를 `{success: false}` · `null` · `false` 로 돌려준다.

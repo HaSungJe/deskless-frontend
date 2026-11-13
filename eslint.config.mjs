@@ -5,7 +5,7 @@ import nextTs from "eslint-config-next/typescript";
 const eslintConfig = defineConfig([
   ...nextVitals,
   ...nextTs,
-  // import 방향: app → features → contracts → shared (아래 계층이 위 계층을 가져오지 않는다)
+  // import 방향: app → contracts → shared (아래 계층이 위 계층을 가져오지 않는다)
   {
     files: ["src/**/*.{ts,tsx}"],
     rules: {
@@ -15,18 +15,13 @@ const eslintConfig = defineConfig([
           zones: [
             {
               target: "./src/shared",
-              from: ["./src/contracts", "./src/features", "./src/app"],
-              message: "shared 는 contracts · features · app 을 가져오지 않는다.",
+              from: ["./src/contracts", "./src/app"],
+              message: "shared 는 contracts · app 을 가져오지 않는다.",
             },
             {
               target: "./src/contracts",
-              from: ["./src/features", "./src/app"],
-              message: "contracts 는 features · app 을 가져오지 않는다.",
-            },
-            {
-              target: "./src/features",
               from: "./src/app",
-              message: "features 는 app 을 가져오지 않는다 — 공통은 shared 로 옮긴다.",
+              message: "contracts 는 app 을 가져오지 않는다 — 여러 화면이 쓰면 shared 로 옮긴다.",
             },
           ],
         },

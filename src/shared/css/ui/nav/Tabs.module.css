@@ -1,0 +1,33 @@
+.tabs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px;
+    border-bottom: 1px solid var(--line);
+}
+
+.tab {
+    display: inline-flex;
+    align-items: center;
+    height: 44px;
+    margin-bottom: -1px;
+    padding: 0 16px;
+    border: 0;
+    border-bottom: 2px solid transparent;
+    background: transparent;
+    color: var(--muted);
+    font: inherit;
+    font-size: var(--control-font);
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.tab:hover {
+    color: var(--fg);
+}
+
+.tab[aria-current] {
+    border-bottom-color: var(--primary);
+    color: var(--primary-strong);
+    font-weight: 700;
+}
