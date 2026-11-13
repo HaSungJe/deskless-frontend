@@ -6,7 +6,7 @@
 ## 한눈에 보는 흐름
 ```mermaid
 flowchart LR
-  P1["Phase 1 · 디자인 기반 (2)"]:::inprog
+  P1["Phase 1 · 디자인 기반 (2)"]:::done
   P2["Phase 2 · API 기반 (3)"]:::todo
   P3["Phase 3 · 영역별 로그인 기반 (3)"]:::todo
   P4["Phase 4 · 이용자 공통 인프라 (5)"]:::todo
@@ -56,7 +56,7 @@ flowchart LR
   classDef todo stroke:#8a949c,stroke-width:1px,stroke-dasharray:4 3
 ```
 
-- Phase 1 — 디자인 기반 · 유닛 2개 · 의존: — · 푼다: Phase 4 · 파일 집합: src/app/css, src/shared/components/ui, src/shared/css · in-progress
+- Phase 1 — 디자인 기반 · 유닛 2개 · 의존: — · 푼다: Phase 4 · 파일 집합: src/app/css, src/shared/components/ui, src/shared/css · done
 - Phase 2 — API 기반 · 유닛 3개 · 의존: — · 푼다: Phase 3 · 파일 집합: src/shared/api, src/contracts/common, src/shared/utils · todo
 - Phase 3 — 영역별 로그인 기반 · 유닛 3개 · 의존: Phase 2 · 푼다: Phase 4 · 파일 집합: src/app/api/cookie, src/shared/api(auth), src/shared/providers, src/app/RootLayoutContent.tsx · todo
 - Phase 4 — 이용자 공통 인프라 · 유닛 5개 · 의존: Phase 1, Phase 3 · 푼다: Phase 5, Phase 6, Phase 10 · 파일 집합: src/shared/components(map·sms·upload), src/shared/payment, src/app/api/payments · todo
@@ -76,14 +76,16 @@ flowchart LR
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: Phase 1 진행 중 · Next up: Phase 1
+지금: 진행 중 없음 · Next up: Phase 2
 
 ## 지금 할 일
-Phase 1 디자인 기반 — 만들어진 부품을 직접 확인하기
-- 화면에서 보기 — `npm run dev` 후 `/dev/ui/` (두 크기 · 오류 표시 · 확인 / 사유 입력 모달 · 경로 모달)
-  build 완료 — report: .beaver/output/report/ui/design-foundation-report.md
-- 테스트 · 배포 — `/beaver:ship` 으로 커밋 · 푸시, 이어서 `/beaver:test`
-- 다음 — Phase 2 API 기반: axios 유지 + 큐만 fetch 로 갈지, fetch 하나로 통일할지 (#3)
+Phase 2 API 기반 시작하기
+- #3 백엔드 호출 클라이언트
+- #4 공통 계약
+- #5 표시 형식 유틸
+- 시작 전에 정하기
+  API 호출을 axios 유지 + 큐만 fetch 로 갈지, fetch 하나로 통일할지 — 모든 화면의 호출 코드 모양이 정해진다 (Phase 2 · #3)
+- ok → 다음
 
 ## Scope & Actors
 - **이용자** (모바일 웹 `/`, 카카오 · 네이버 로그인) — 주변 업체 찾기 → 예약 · 토스 결제 → QR 입실 · 취소 · 연장, 마이페이지 · 탈퇴, 입점 신청.
@@ -104,8 +106,8 @@ Phase 1 디자인 기반 — 만들어진 부품을 직접 확인하기
 ### Phase 1 — 디자인 기반 (시안의 색 · 글꼴 · 기본 UI 를 코드로) · depends: —
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 1 | 디자인 토큰 · 전역 CSS · 글꼴 | 시안 `:root` 변수(색 · 간격 · 그림자)를 전역 토큰으로, Noto Sans KR 을 `next/font` 로 | 토큰을 전역 하나 vs 이용자 · 콘솔로 나눌지(변수 이름이 영역마다 조금 다름) | — | in-progress |
-| 2 | 공통 UI 컴포넌트 | 버튼 · 입력 · 배지 · 탭 · 모달(확인 · 사유 입력) · 빈 상태 · 복사 버튼 — 25개 화면이 같이 씀 | 모달을 `<dialog>` 로 할지 포털로 할지 | 1 | in-progress |
+| 1 | 디자인 토큰 · 전역 CSS · 글꼴 | 시안 `:root` 변수(색 · 간격 · 그림자)를 전역 토큰으로, Noto Sans KR 을 `next/font` 로 | 토큰을 전역 하나 vs 이용자 · 콘솔로 나눌지(변수 이름이 영역마다 조금 다름) | — | done(a32706e) |
+| 2 | 공통 UI 컴포넌트 | 버튼 · 입력 · 배지 · 탭 · 모달(확인 · 사유 입력) · 빈 상태 · 복사 버튼 — 25개 화면이 같이 씀 | 모달을 `<dialog>` 로 할지 포털로 할지 | 1 | done(a32706e) |
 
 **Expected modules**:
 
@@ -379,8 +381,8 @@ Phase 1 디자인 기반 — 만들어진 부품을 직접 확인하기
 | #60 | `/admin/users` | A6 · `GET user` | 이용자 목록 |
 | #61 | `/admin/users/[user_id]` | A6 · `GET user/:id` · `/reservation` · `PATCH /state` | 이용 제한 |
 
-**Progress**: 0/61 units done (0/17 phases)
-**Next up**: Phase 1 디자인 기반 — 의존 없음, 모든 화면이 쓰는 토큰 · UI (Phase 2 와 동시 가능)
+**Progress**: 2/61 units done (1/17 phases)
+**Next up**: Phase 2 API 기반 — 의존 없음
 
 ## Cross-Cutting Rules
 - 주소 · 화면 키 · 쓰는 API 는 `frontend/screens.md` 그대로. ★ 주소(`/reservation/[reservation_id]` · `…/cancel-request`)는 SMS 링크라 바꾸지 않는다.
