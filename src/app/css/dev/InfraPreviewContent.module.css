@@ -1,0 +1,50 @@
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 960px;
+    margin: 0 auto;
+    padding: 32px 16px 96px;
+}
+
+.head {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.desc,
+.result {
+    margin: 0;
+    color: var(--muted);
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 20px;
+    border: 1px dashed var(--faint);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+}
+
+.sectionTitle {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.map {
+    --store-map-h: 360px;
+}
+
+.narrow {
+    max-width: 420px;
+}

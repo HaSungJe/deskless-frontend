@@ -1,0 +1,61 @@
+/* 시안 frontend/design/user.html:935-954 */
+.sms {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.row {
+    display: flex;
+    gap: 8px;
+}
+
+.row > input {
+    flex: 1;
+    min-width: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.sent {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--ok);
+}
+
+.codeBox {
+    position: relative;
+}
+
+.codeBox > input {
+    width: 100%;
+    padding-right: 72px;
+    letter-spacing: 2px;
+    font-variant-numeric: tabular-nums;
+}
+
+.timer {
+    position: absolute;
+    top: 50%;
+    right: 14px;
+    transform: translateY(-50%);
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--danger);
+    font-variant-numeric: tabular-nums;
+}
+
+.expired {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--danger);
+}
+
+.notice {
+    margin: 0;
+    padding: 12px;
+    border-radius: var(--radius);
+    background: var(--surface-2);
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+}

@@ -7,12 +7,12 @@
 | 화면 컴포넌트 | `<화면>Content`, 파일 이름 같음, default export | `UiPreviewContent` (`src/app/dev/ui/UiPreviewContent.tsx:63`) |
 | page 컴포넌트 | 화면을 나타내는 PascalCase 함수, default export | `Login` (`src/app/(user)/login/page.tsx:4`), `Home` (`src/app/(user)/page.tsx`) |
 | layout 컴포넌트 | `<영역>Layout` | `RootLayout` (`src/app/layout.tsx`) |
-| 공통 컴포넌트 | PascalCase 파일 · default export · props 는 `type <Name>Props` | `KakaoMap` / `KakaoMapProps` (`src/shared/components/KakaoMap.tsx:11,54`) |
+| 공통 컴포넌트 | PascalCase 파일 · default export · props 는 `type <Name>Props` | `StoreMap` / `StoreMapProps` (`src/shared/components/map/StoreMap.tsx:20,40`) |
 | 훅 | `use<Name>.ts` default export, 반환 타입 `Use<Name>Type` export | `useInput` / `UseInputType` (`src/shared/hooks/useInput.ts:3,11`) |
 | 타입 | `type` 별칭 + `Type` 접미사 (`interface` 쓰지 않음) | `PaginationType` (`src/shared/types/pagination.ts:11`), `AuthContextType` (`src/shared/providers/RootLayoutProvider.tsx:6`) |
 | Context | `<Name>Context` | `AuthContext` (`src/shared/providers/RootLayoutProvider.tsx:18`) |
-| 함수 | camelCase 동사 | `createQueryString` (`src/shared/utils/util.ts:7`), `loadAddressSearchScript` (`src/shared/utils/address.ts:20`) |
-| 상수 | UPPER_SNAKE | `API_BASE_URL` (`src/shared/api/request.ts:5`), `KAKAO_MAP_SCRIPT_ID` (`KakaoMap.tsx:22`) |
+| 함수 | camelCase 동사 | `createQueryString` (`src/shared/utils/util.ts:7`), `loadAddressSearchScript` (`src/shared/utils/address.ts:35`) |
+| 상수 | UPPER_SNAKE | `API_BASE_URL` (`src/shared/api/request.ts:5`), `KAKAO_MAP_SCRIPT_ID` (`src/shared/utils/kakao-map.ts:8`) |
 | 화면 DTO | `<동작>Dto` class, 화면 폴더의 `dto.ts` | (지금 없음 — 첫 입력 화면 Phase 5) |
 | 백엔드 DTO | 지침서 이름 그대로 — `<도메인><기능>Dto` · 응답 `…ResultDto` · path `…ParamDto` | `UserFindLoginIdDto` / `UserFindLoginIdResultDto` (지침서: frontend/dto/user.md:128,138) |
 | 백엔드 키 | snake_case 그대로 (변환하지 않음) | `refresh_token`, `access_token_expires_at` (`src/contracts/user/dto/user-token-refresh.dto.ts:6,17`) |
@@ -36,7 +36,7 @@
 
 ## 화면 · 컴포넌트 입력
 
-- 컴포넌트 props 는 `type <Name>Props` 로 정의하고 구조 분해로 받는다. 기본값은 구조 분해 기본값으로 (`src/shared/components/Loading.tsx:15`, `KakaoMap.tsx:54`).
+- 컴포넌트 props 는 `type <Name>Props` 로 정의하고 구조 분해로 받는다. 기본값은 구조 분해 기본값으로 (`src/shared/components/Loading.tsx:15`, `StoreMap.tsx:40`).
 - 컴포넌트 함수는 반환 타입 `React.ReactNode` 를 적는다 (`UiPreviewContent.tsx:63`, `AuthGuard.tsx:19`).
 - 함수 콜백 props 는 `Function` 대신 시그니처로 (`closeFunc?: () => void` — `src/shared/components/Timer.tsx:7`).
 - catch 의 error 는 `unknown` 으로 받아 좁힌다 (`src/shared/api/error.ts:21`).
@@ -52,10 +52,10 @@
   - 화면: `src/app/css/<영역>/<화면>Content.module.css` — 예 `src/app/css/dev/UiPreviewContent.module.css`.
   - 공통 부품: `src/shared/css/` 아래에 `src/shared/components/` 와 같은 경로 — `shared/components/ui/form/Input.tsx` ↔ `shared/css/ui/form/Input.module.css`, `shared/components/Loading.tsx` ↔ `shared/css/Loading.module.css`. `shared` 의 css 를 `app/css` 에 두지 않는다(shared → app import 금지 — `eslint.config.mjs`).
   - import 는 별칭으로 — `import styles from '@/shared/css/ui/form/Input.module.css'`. 한 css 를 두 부품이 같이 쓸 수 있다(`Textarea` 가 `Input.module.css`).
-- 색 · 크기 · 모서리는 토큰 `var(--…)` 만 쓰고 값(#hex, 높이 px)을 직접 쓰지 않는다. 계산되는 값(높이 %, 좌표)만 인라인 `style`.
+- 색 · 크기 · 모서리는 토큰 `var(--…)` 만 쓰고 값(#hex, 높이 px)을 직접 쓰지 않는다. 계산되는 값(높이 %, 좌표 — 끄는 동안 위치 `ImageUploader` 의 @dnd-kit `transform`)만 인라인 `style`. 부품 크기를 화면이 바꿔야 하면 CSS 변수로 받는다(`StoreMap` 높이 `--store-map-h`).
   - 예외 — 영역(이용자 / 콘솔)에 따라 바뀌지 않는 **부품 고유 치수**는 시안 값을 그 부품 `module.css` 에 그대로 쓴다: 탭 높이 44px(`frontend/design/manager.html` `.tabs a`) · 스위치 40×24(손잡이 18) · 모달 닫기 32×32 · 모달 최대 너비 520px · 칩 최소 너비 40px · 선택 버튼 묶음 안쪽 모서리 6px · 알약 모양 모서리 999px · 페이지 탭 32×32(시안 `.pager a`) (`Tabs` · `Switch` · `Modal` · `Chip` · `Segmented` · `Badge` · `Pagination` `.module.css`). 영역 따라 바뀌는 높이(버튼 · 입력 · 배지)는 토큰.
   - 간격(`gap` · `padding`)과 글자 크기는 토큰이 없어 시안 값을 그대로 쓴다.
-- 공통 부품은 `src/shared/components/ui/<종류>/` 를 먼저 쓴다. 모습은 개발 전용 `/dev/ui` 에서 본다.
+- 공통 부품은 `src/shared/components/ui/<종류>/` 를 먼저 쓴다. 모습은 개발 전용 `/dev/ui` 에서 본다. 지도 · 인증번호 · 사진 · 결제 부품(`map/` · `sms/` · `upload/` · `payment/`)은 [integrations.md](integrations.md) — 미리보기 `/dev/infra`.
   - `button/` — `Button`(`buttonClass()` 로 `<Link>` 를 버튼 모양으로) · `CopyButton`
   - `form/` — `Input` · `Textarea` · `Field`(라벨 + 오류 span + 도움말) · `Switch` · `Chip` · `Segmented`
   - `display/` — `Badge` · `Band`(상태 안내 띠) · `Card` · `Table` · `EmptyState`
@@ -118,4 +118,4 @@ function ReasonModalBody({maxLength = 200, required = true, busy = false, onConf
 - `src/` 는 4칸 들여쓰기 · 세미콜론 (`src/shared/utils/validation.ts` 등). 설정 파일(`eslint.config.mjs`, `tsconfig.json`)은 2칸.
 - export 하는 함수 · 컴포넌트에는 한국어 JSDoc — 한 줄 설명 + `@param` (`src/shared/utils/validation.ts:10-17`, `src/shared/api/request.ts`).
 - 배열 타입은 `Array<T>` (`src/shared/utils/validation.ts:32`, `useInputDate.ts:31`).
-- `any` 는 쓰지 않는다 — 외부 SDK 전역(`window.kakao` · `window.daum`)만 이유를 단 `eslint-disable-next-line` 주석으로 (`src/shared/components/KakaoMap.tsx:6`). catch 에서 쓰지 않는 오류는 `catch {`.
+- `any` 는 쓰지 않는다 — 외부 SDK 전역(`window.kakao` · `window.daum`)만 이유를 단 `eslint-disable-next-line` 주석으로 (`src/shared/utils/kakao-map.ts:3`). catch 에서 쓰지 않는 오류는 `catch {`.

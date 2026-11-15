@@ -22,21 +22,21 @@ src/
 │  │  └─ (console)/                  콘솔 layout + 매니저 AuthGuard — M2~M8
 │  ├─ admin/                         관리자 `/admin` · PC 콘솔 (첫 화면을 만들 때 생김)
 │  │  └─ (console)/                  콘솔 layout + 관리자 AuthGuard — A2~A6
-│  └─ api/                           route handler — cookie/[area] · cookie/[area]/refresh (영역 토큰 쿠키) · cookie/token-cookie.ts · cookie/sns · auth/[...nextauth] (SNS)
+│  └─ api/                           route handler — cookie/[area] · cookie/[area]/refresh (영역 토큰 쿠키) · cookie/token-cookie.ts · cookie/sns · auth/[...nextauth] (SNS) · payments/confirm (토스 결제 승인) · route-util.ts(json · isSameSiteJson)
 ├─ contracts/                        백엔드 계약 — 지침서 frontend/dto/*.md 의 사본 (첫 API 를 만들 때 생김)
 │  ├─ common/                        pagination.dto.ts · fail-result.dto.ts · roles.ts · sse.ts · reservation.constants.ts (지침서 사본) · lookup.ts
 │  └─ <도메인>/                       user · manager · admin(재발급 — Phase 3) · discovery · reservation · store · room · stats
 │     ├─ dto/<파일>.dto.ts           지침서 파일 이름 그대로
 │     └─ api.ts                      그 도메인 엔드포인트 함수
 ├─ shared/                           도메인을 모르는 공통
-   ├─ api/                           request.ts(동기 · ApiError · NetworkError) · queue.ts(큐 SSE) · sse.ts · auth.ts(withAuth) · error.ts(handleApiError) · cookie.ts(영역 토큰 쿠키 route handler 부르기)
-   ├─ components/                    AuthGuard · Editor · KakaoMap · Loading · Timer · Scripts · chart/
+   ├─ api/                           request.ts(동기 · ApiError · NetworkError) · queue.ts(큐 SSE) · sse.ts · auth.ts(withAuth) · error.ts(handleApiError) · cookie.ts(영역 토큰 쿠키 route handler 부르기) · upload.ts(uploadFile) · payment.ts(requestTossConfirm)
+   ├─ components/                    AuthGuard · Editor · Loading · Timer · Scripts · chart/ · 외부 연동 map/(StoreMap) · sms/(SmsVerification) · upload/(ImageUploader) · payment/(TossPaymentWidget) (docs/integrations.md)
    │  └─ ui/                         공통 UI 부품 — button/ · form/ · display/ · nav/(Tabs · Pagination) · modal/(… · ErrorPopup) (docs/conventions.md 스타일)
    ├─ css/                           공통 부품 css — components/ 와 같은 경로 (ui/form/Input.module.css · Loading.module.css)
-   ├─ hooks/                         useInput · useInputNumber · useInputFloat · useInputDate · useInputTime · useCheckboxGroup
+   ├─ hooks/                         useInput · useInputNumber · useInputFloat · useInputDate · useInputTime · useCheckboxGroup · useMyLocation
    ├─ providers/                     RootLayoutProvider (RootLayoutLoadingContext · AuthContext)
-   ├─ types/                         pagination.ts
-   └─ utils/                         validation.ts · address.ts · util.ts · format.ts(한국 시각 · 금액 · 요일) · area.ts(영역 · 로그인 주소) · error-popup.ts(오류 팝업 저장소)
+   ├─ types/                         pagination.ts · map.ts
+   └─ utils/                         validation.ts · address.ts(우편번호 · 주소 → 좌표) · kakao-map.ts(카카오 SDK) · file.ts(사진 형식) · util.ts · format.ts(한국 시각 · 금액 · 요일) · area.ts(영역 · 로그인 주소) · error-popup.ts(오류 팝업 저장소)
 └─ test/                             테스트 — src 와 같은 경로 (shared/api/request.test.ts …)
 ```
 
@@ -80,7 +80,7 @@ src/contracts/<도메인>/api.ts                      (처음 쓰는 API 면) �
 
 ### Entry Points
 - **page / layout**: 서버 컴포넌트, `'use client'` 없음 (`src/app/(user)/login/page.tsx:1-9`, `src/app/(user)/page.tsx`). 화면 컴포넌트에서 `'use client'` 를 선언한다 (`src/app/dev/ui/UiPreviewContent.tsx:1`).
-- **route handler**: `src/app/api/**/route.ts` 에서 `GET` · `POST` · `DELETE` 를 export, 응답은 `new Response(JSON.stringify({success, data?}), {headers})` — 토큰 쿠키 route handler 는 `json({success, data?, retry?})` (`src/app/api/cookie/token-cookie.ts:66`). 동적 세그먼트 인자는 `RouteContext<'/api/cookie/[area]'>` (`src/app/api/cookie/[area]/route.ts:10`). `'use server'` 는 붙이지 않는다.
+- **route handler**: `src/app/api/**/route.ts` 에서 `GET` · `POST` · `DELETE` 를 export, 응답은 `new Response(JSON.stringify({success, data?}), {headers})` — 토큰 쿠키 · 결제 승인 route handler 는 `json({success, data?, retry?, message?, code?})` (`src/app/api/route-util.ts:15`). 동적 세그먼트 인자는 `RouteContext<'/api/cookie/[area]'>` (`src/app/api/cookie/[area]/route.ts:11`). route 파일은 Next.js 가 허용한 이름(`GET` · `POST` …)만 export 하므로 상수 · 함수는 옆 파일에 둔다(`src/app/api/payments/confirm/toss-confirm.ts`). `'use server'` 는 붙이지 않는다.
 
 ### Data Layer
 → [data-layer.md](data-layer.md)
@@ -113,7 +113,7 @@ src/contracts/<도메인>/api.ts                      (처음 쓰는 API 면) �
 `window` 를 쓰는 라이브러리는 `next/dynamic(() => import(...), { ssr: false })` 로 감싼 래퍼를 통해서만 쓴다 (`src/shared/components/Editor.tsx:6`, `src/shared/components/chart/Chart.tsx:5`).
 
 ### 외부 스크립트
-`document.getElementById(<ID>)` 로 이미 붙었는지 보고, 없으면 한 번만 붙인 뒤 `load` 를 Promise 로 기다린다 (`src/shared/components/KakaoMap.tsx:27-46`, `src/shared/utils/address.ts:20-39`).
+`document.getElementById(<ID>)` 로 이미 붙었는지 보고, 없으면 한 번만 붙인 뒤 `load` 를 Promise 로 기다린다 (`src/shared/utils/kakao-map.ts:15-38`, `src/shared/utils/address.ts:35-58`). npm 으로 들인 SDK(토스 `@tosspayments/tosspayments-sdk`)는 효과 안에서 `import()` 로 불러 서버 렌더에 넣지 않는다 (`src/shared/components/payment/TossPaymentWidget.tsx`).
 
 ### Import Alias
 `@/*` → `./src/*` 하나만 (`tsconfig.json:30`). 테스트도 같은 별칭 (`vitest.config.mts` 의 `resolve.tsconfigPaths`).

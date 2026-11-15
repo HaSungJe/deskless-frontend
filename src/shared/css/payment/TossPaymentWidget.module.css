@@ -1,0 +1,25 @@
+.widget {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.deadline {
+    margin: 0;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.time {
+    color: var(--danger);
+    font-variant-numeric: tabular-nums;
+}
+
+.notice {
+    margin: 0;
+    padding: 12px;
+    border-radius: var(--radius);
+    background: var(--danger-soft);
+    font-size: 13px;
+    color: var(--danger);
+}

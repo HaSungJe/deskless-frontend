@@ -49,7 +49,7 @@
 
 | 쿠키 | 쓰는 곳 | 옵션 |
 |---|---|---|
-| `<area>_access_token` | `POST /api/cookie/<area>/`(로그인 결과 저장), `GET` · `POST …/refresh/` 안의 재발급 (`token-cookie.ts:96`) | `httpOnly`, `path: "/"`, `domain: SERVER_DOMAIN`(빈 값이면 없음), `sameSite: SERVER_DOMAIN ? "lax" : "strict"`, `secure: 개발이면 false, 아니면 x-forwarded-proto 가 https`, 만료 = `access_token_expires_at` − 60초 |
+| `<area>_access_token` | `POST /api/cookie/<area>/`(로그인 결과 저장), `GET` · `POST …/refresh/` 안의 재발급 (`token-cookie.ts:88`) | `httpOnly`, `path: "/"`, `domain: SERVER_DOMAIN`(빈 값이면 없음), `sameSite: SERVER_DOMAIN ? "lax" : "strict"`, `secure: 개발이면 false, 아니면 x-forwarded-proto 가 https`, 만료 = `access_token_expires_at` − 60초 |
 | `<area>_refresh_token` | 같은 곳 | 같은 옵션, 만료 = `refresh_token_expires_at` |
 | `sns` | next-auth `signIn` 콜백 (`src/app/api/auth/[...nextauth]/route.ts`) | `httpOnly`, `sameSite: "lax"`, 1시간 |
 

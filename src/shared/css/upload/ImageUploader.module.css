@@ -1,0 +1,88 @@
+/* 시안 frontend/design/manager.html:157-161 */
+.thumbs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.thumb {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    width: 176px;
+    max-width: 100%;
+    margin: 0;
+    background: var(--surface);
+}
+
+.dragging {
+    position: relative;
+    z-index: 1;
+    opacity: 0.6;
+}
+
+.image {
+    position: relative;
+    aspect-ratio: 4 / 3;
+    border-radius: var(--radius);
+    background: var(--surface-2);
+    overflow: hidden;
+}
+
+.img {
+    object-fit: cover;
+}
+
+.caption {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 6px;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.upload {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    width: 176px;
+    max-width: 100%;
+    aspect-ratio: 4 / 3;
+    border: 1px dashed var(--faint);
+    border-radius: var(--radius);
+    background: var(--surface);
+    font-size: 13px;
+    color: var(--fg);
+    cursor: pointer;
+}
+
+.upload[aria-disabled="true"] {
+    color: var(--muted);
+    cursor: default;
+}
+
+.upload:focus-within {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+.uploadHint {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+/* 파일 칸은 보이지 않게 두고 라벨로 연다(키보드 초점은 받는다) */
+.file {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+}

@@ -1,0 +1,7 @@
+.map {
+    width: 100%;
+    height: var(--store-map-h, 320px);
+    border-radius: var(--radius);
+    background: var(--map-bg);
+    overflow: hidden;
+}

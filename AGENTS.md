@@ -47,11 +47,11 @@ src/
 ## Conventions
 - 화면: `src/app/<영역 경로>/<주소>/<화면>Content.tsx`(page.tsx 옆), default export `<화면>Content` (`src/app/dev/ui/UiPreviewContent.tsx:63`). 영역 경로는 `(user)/` · `manager/(console)/` · `admin/(console)/`. 그 화면 전용 부품이 여럿이면 `_components/` 로 묶는다(밑줄 폴더는 주소가 되지 않는다).
 - 주소: 정적 세그먼트 kebab-case, 동적 세그먼트 `[snake_case]` (지침서: frontend/screens.md — `/stores/[store_id]`). `trailingSlash: true` 라 링크는 `/` 로 끝난다 (`next.config.ts:36`).
-- 훅 `use<Name>.ts` default export + 반환 타입 `Use<Name>Type` export (`src/shared/hooks/useInput.ts:3,11`). 컴포넌트 PascalCase 파일 · default export · props 는 `type <Name>Props` (`src/shared/components/KakaoMap.tsx:11`).
+- 훅 `use<Name>.ts` default export + 반환 타입 `Use<Name>Type` export (`src/shared/hooks/useInput.ts:3,11`). 컴포넌트 PascalCase 파일 · default export · props 는 `type <Name>Props` (`src/shared/components/map/StoreMap.tsx:20`).
 - 타입은 `type` 별칭 + `Type` 접미사 (`src/shared/types/pagination.ts:11`), Context 는 `<Name>Context` (`src/shared/providers/RootLayoutProvider.tsx:17-18`), 상수는 UPPER_SNAKE (`src/shared/api/request.ts:5`).
 - 백엔드와 주고받는 키는 snake_case 그대로 (`src/contracts/user/dto/user-token-refresh.dto.ts:6`).
 - 스타일은 css 폴더에 모은다 — 전역 토큰 `src/app/css/globals.css`, 화면 `src/app/css/<영역>/<화면>Content.module.css`, 공통 부품 `src/shared/css/<components 아래와 같은 경로>/<Name>.module.css`(예 `shared/components/ui/form/Input.tsx` ↔ `shared/css/ui/form/Input.module.css`). 색 · 크기는 토큰 `var(--…)` 만 — 색은 한 벌, 크기는 영역별(기본 이용자, `data-area="console"` 콘솔) (선택: 사용자).
-- 공통 부품은 `src/shared/components/ui/<종류>/` 를 먼저 쓴다 — `button/`(`Button` · `CopyButton`) · `form/`(`Input` · `Textarea` · `Field` · `Switch` · `Chip` · `Segmented`) · `display/`(`Badge` · `Band` · `Card` · `Table` · `EmptyState`) · `nav/`(`Tabs` · `Pagination`) · `modal/`(`Modal` · `ConfirmModal` · `ReasonModal` · `RouteModal` · `ErrorPopup` — 루트에 하나). 입력 칸은 `<Field name="<DTO 필드>">` — 오류 span 을 `Field` 가 그린다. 미리보기 `/dev/ui`(개발 전용).
+- 공통 부품은 `src/shared/components/ui/<종류>/` 를 먼저 쓴다 — `button/`(`Button` · `CopyButton`) · `form/`(`Input` · `Textarea` · `Field` · `Switch` · `Chip` · `Segmented`) · `display/`(`Badge` · `Band` · `Card` · `Table` · `EmptyState`) · `nav/`(`Tabs` · `Pagination`) · `modal/`(`Modal` · `ConfirmModal` · `ReasonModal` · `RouteModal` · `ErrorPopup` — 루트에 하나). 입력 칸은 `<Field name="<DTO 필드>">` — 오류 span 을 `Field` 가 그린다. 미리보기 `/dev/ui`(개발 전용). 지도 · 인증번호 · 사진 · 결제 부품은 "외부 연동"(`map/` · `sms/` · `upload/` · `payment/` — 미리보기 `/dev/infra`).
 - 표시 형식은 `src/shared/utils/format.ts` — `toKst`(ISO → 한국 시각, `Asia/Seoul` 고정) · `todayKst` · `formatPrice`(`12,000원`) · `formatDays`(요일 비트합 → `월 · 수 · 금`, 127 → `매일`). 상태 이름은 응답 `*_name` 먼저, 없으면 `lookupName(필드, 값)` (`src/contracts/common/lookup.ts`).
 - 컴포넌트 · 커스텀 훅 본문은 **변수 > 상태 > 계산 값 > 효과 > 함수 > JSX** — 영역 사이 빈 줄, 영역마다 한 줄 주석, 변수 · 상태 · 계산 값은 줄마다 오른쪽 역할 주석, JSX 는 덩어리마다 간략 주석. 새 코드와 고치는 파일부터 (선택: 사용자 2026-11-14) → [docs/conventions.md](docs/conventions.md) "컴포넌트 · 훅 안의 구조"
 
@@ -70,7 +70,7 @@ src/
 - 백엔드 호출은 fetch 하나 — 조회 · 로그인 같은 동기는 `request<T>({method, path, query, body, token})`, 상태를 바꾸는 쓰기는 큐 `callQueue<T>({method, path, body, token})` (`src/shared/api/request.ts` · `queue.ts`). 주소는 `${NEXT_PUBLIC_API_URL}/api/v1${path}` — 게이트웨이 하나만 부른다(로컬 `http://localhost:3000` · Swagger `/swagger`, 내부 3010 · 3020 은 직접 부르지 않음 — docs/architecture.md "로컬 포트").
 - 큐 결과는 `done` → data, `pending` · 결과 없이 끝남 → `null`(그 리소스를 다시 조회).
 - 로그인이 필요한 API 는 `withAuth(auth, (token) => request · callQueue(…))` (`src/shared/api/auth.ts:30`) — 401 이면 그 영역 재발급 한 번 · 재시도, 또 401 이면 그 영역 로그인 화면. 재발급이 일시 실패(네트워크 · 백엔드 5xx)면 로그아웃하지 않고 `NetworkError`. 응답이 없는 실패는 `NetworkError`.
-- 토큰은 영역마다 httpOnly 쿠키 `<area>_access_token` · `<area>_refresh_token` 으로 route handler(`src/app/api/cookie/[area]/` · `[area]/refresh/`)가 쓰고 읽는다 (`src/app/api/cookie/token-cookie.ts:96`). 저장(`POST`)은 같은 사이트 JSON 요청만 받는다(`isSameSiteJson` — 다른 사이트 form 이 토큰을 심는 것 막기). 클라이언트는 `src/shared/api/cookie.ts` 로만 접근한다.
+- 토큰은 영역마다 httpOnly 쿠키 `<area>_access_token` · `<area>_refresh_token` 으로 route handler(`src/app/api/cookie/[area]/` · `[area]/refresh/`)가 쓰고 읽는다 (`src/app/api/cookie/token-cookie.ts:88`). 저장(`POST`)은 같은 사이트 JSON 요청만 받는다(`isSameSiteJson` — 다른 사이트 form 이 토큰을 심는 것 막기). 클라이언트는 `src/shared/api/cookie.ts` 로만 접근한다.
 - 전역 상태는 Context 만 쓴다 (`RootLayoutProvider.tsx:17-18`) — 상태 관리 라이브러리 없음.
 - 목록 응답은 `{list, pagination}` — `pagination` 은 snake_case `PaginationType`(`src/shared/types/pagination.ts`)이고 `Pagination`(`src/shared/components/ui/nav/Pagination.tsx`)에 그대로 넘긴다. 공통 계약은 `src/contracts/common/`(지침서 사본).
 
@@ -82,7 +82,7 @@ src/
 - 지침서 DTO 사본은 `contracts/` 에 그대로 두고 화면 검증에도 그대로 쓴다 (지침서: frontend/api.md:62).
 
 ## Error & Response
-- route handler 는 항상 200 + `{success: boolean, data?}` JSON (`src/app/api/cookie/[area]/route.ts:13,19`). 클라이언트 쿠키 함수는 실패를 삼키고 `null` · `false` 를 돌려준다 (`src/shared/api/cookie.ts:37-54`).
+- route handler 는 항상 200 + `{success: boolean, data?}` JSON (`src/app/api/route-util.ts:15` · `src/app/api/cookie/[area]/route.ts:14,20`). 클라이언트 쿠키 함수는 실패를 삼키고 `null` · `false` 를 돌려준다 (`src/shared/api/cookie.ts:37-54`).
 - API 호출 실패는 catch 에서 `handleApiError(error)` (`src/shared/api/error.ts:21`) — `validation_errors` 는 칸 옆에(맞는 칸이 없으면 오류 팝업), 없으면 `message` 를 오류 팝업으로, `NetworkError` 는 네트워크 문구, 그 밖의 오류는 일반 문구(개발 때만 원문), 취소(`AbortError`) · 로그인 만료(`LoginRequiredError`)는 무시. axios 는 쓰지 않는다(사용자 2026-11-15).
 - 오류는 브라우저 alert 대신 오류 팝업 하나 — `showErrorPopup(message, detail?)` (`src/shared/utils/error-popup.ts:25`), 루트의 `ErrorPopup`(`src/shared/components/ui/modal/ErrorPopup.tsx`)이 띄운다(사용자 2026-11-15).
 
@@ -96,9 +96,15 @@ src/
 - 클라이언트 코드는 쿠키를 직접 읽지 않는다(`src/shared/api/cookie.ts` 로만). 토큰은 JWT 복호화하지 않는다(만료는 응답의 `*_expires_at`) — `NEXT_PUBLIC_JWT_CODE` 는 SNS 쿠키 route handler 에서만 (`src/app/api/cookie/sns/route.ts:15`).
 - SNS 로그인은 next-auth (`src/app/api/auth/[...nextauth]/route.ts`).
 
+## 외부 연동
+- 지도 · 주소 · 인증번호 · 파일 · 결제는 `shared` 의 연동 부품을 쓴다 — `map/StoreMap` · `useMyLocation` · `searchAddressWithCoords` · `sms/SmsVerification` · `uploadFile` + `upload/ImageUploader` · `payment/TossPaymentWidget` + `requestTossConfirm`. 부품은 도메인 API 를 모르고, 화면이 그 화면의 contracts 함수(검증 · 실패 안내 포함)를 감싸 넘긴다. 미리보기 `/dev/infra`(개발 전용).
+- 파일은 업로드 주소 발급 → S3 PUT → 등록(큐) 3단계를 `uploadFile(file, {issue, register})` 하나로. 결제는 토스 결제위젯(사용자 2026-11-16) → `/payments/success/` → route handler `POST /api/payments/confirm/`(시크릿 키 `TOSS_SECRET_KEY` — 여기서만) → 백엔드 payment-confirm(큐).
+
+→ 자세히: [docs/integrations.md](docs/integrations.md)
+
 ## Key Patterns
 - `window` 를 쓰는 라이브러리는 `next/dynamic` + `ssr: false` 로 감싼다 (`src/shared/components/Editor.tsx:6`, `chart/Chart.tsx:5`).
-- 외부 스크립트는 id 로 한 번만 붙이고 Promise 로 로드를 기다린다 (`KakaoMap.tsx:27`, `src/shared/utils/address.ts:20`).
+- 외부 스크립트는 id 로 한 번만 붙이고 Promise 로 로드를 기다린다 (`src/shared/utils/kakao-map.ts:15`, `src/shared/utils/address.ts:35`). npm 으로 들인 SDK(토스)는 효과 안에서 `import()` (`src/shared/components/payment/TossPaymentWidget.tsx`).
 - `NEXT_PUBLIC_*` · `basePath` 는 빌드할 때 박힌다. Docker 운영 이미지는 `output: "standalone"` (`next.config.ts:34`) + `.env.production` 하나로 빌드 · 실행.
 - 주소가 있어야 하는 팝업은 경로 모달 — 루트 슬롯 `src/app/@modal/(.)<주소>/page.tsx` 에서 `<RouteModal>` 로 감싸고, 같은 주소의 보통 페이지도 둔다. 화면 내용은 보통 페이지 폴더에 두고 가로채기 page 가 `@/app/<영역 경로>/<주소>/<화면>Content` 로 가져온다. 주소가 필요 없는 확인 · 사유 입력은 `ConfirmModal` · `ReasonModal`. → [docs/architecture.md](docs/architecture.md) "경로 모달"
 
@@ -119,6 +125,7 @@ Vitest 5 + Testing Library + jsdom (`vitest.config.mts`) (선택: 사용자). �
 - [ ] 로그인이 필요한 영역 layout 은 `<AuthGuard>` 로 감싸고, 로그인이 필요한 API 는 `withAuth(auth, …)` 로 부른다
 - [ ] `window` 를 쓰는 라이브러리는 `next/dynamic` + `ssr: false`
 - [ ] 시크릿은 서버 코드(route handler)에서만 — 클라이언트 코드에 `NEXT_PUBLIC_JWT_CODE` 금지
+- [ ] 지도 · 주소 · 인증번호 · 파일 · 결제는 `shared` 연동 부품에 화면의 contracts 함수만 넘긴다 — 토스 시크릿 키는 결제 승인 route handler 에서만 (docs/integrations.md)
 - [ ] 내부 링크는 `/` 로 끝난다 (`trailingSlash`)
 - [ ] 스타일은 `<Name>.module.css` 를 css 폴더에(화면 `src/app/css/<영역>/`, 공통 부품 `src/shared/css/…`), 색 · 크기는 `globals.css` 토큰 `var(--…)` 만 (값 직접 쓰지 않음 — 부품 고유 치수 · 간격 · 글자 크기 예외는 docs/conventions.md "스타일")
 - [ ] 공통 부품(`src/shared/components/ui/<종류>/`)이 있으면 새로 만들지 않고 쓴다 — 입력 칸은 `<Field name>`

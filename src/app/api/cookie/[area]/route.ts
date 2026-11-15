@@ -1,5 +1,6 @@
 import { cookies } from 'next/headers';
-import { accessCookieName, clearTokenCookies, isSameSiteJson, isTokenSet, json, refreshAndStore, refreshResponse, setTokenCookies, toArea, TokenSetType } from '../token-cookie';
+import { isSameSiteJson, json } from '../../route-util';
+import { accessCookieName, clearTokenCookies, isTokenSet, refreshAndStore, refreshResponse, setTokenCookies, toArea, TokenSetType } from '../token-cookie';
 
 /**
  * 그 영역 access 토큰 — 없거나 곧 만료면 refresh 쿠키로 재발급

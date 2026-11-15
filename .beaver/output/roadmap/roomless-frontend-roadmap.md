@@ -9,7 +9,7 @@ flowchart LR
   P1["Phase 1 · 디자인 기반 (2)"]:::done
   P2["Phase 2 · API 기반 (3)"]:::done
   P3["Phase 3 · 영역별 로그인 기반 (3)"]:::done
-  P4["Phase 4 · 이용자 공통 인프라 (5)"]:::todo
+  P4["Phase 4 · 이용자 공통 인프라 (5)"]:::inprog
   P5["Phase 5 · 이용자 틀·로그인·가입 (5)"]:::todo
   P6["Phase 6 · 업체 둘러보기 (2)"]:::todo
   P7["Phase 7 · 예약·결제 (2)"]:::todo
@@ -59,7 +59,7 @@ flowchart LR
 - Phase 1 — 디자인 기반 · 유닛 2개 · 의존: — · 푼다: Phase 4 · 파일 집합: src/app/css, src/shared/components/ui, src/shared/css · done
 - Phase 2 — API 기반 · 유닛 3개 · 의존: — · 푼다: Phase 3 · 파일 집합: src/shared/api, src/contracts/common, src/shared/utils · done
 - Phase 3 — 영역별 로그인 기반 · 유닛 3개 · 의존: Phase 2 · 푼다: Phase 4 · 파일 집합: src/app/api/cookie, src/shared/api(auth), src/shared/providers, src/app/RootLayoutContent.tsx · done
-- Phase 4 — 이용자 공통 인프라 · 유닛 5개 · 의존: Phase 1, Phase 3 · 푼다: Phase 5, Phase 6, Phase 10 · 파일 집합: src/shared/components(map·sms·upload), src/shared/payment, src/app/api/payments · todo
+- Phase 4 — 이용자 공통 인프라 · 유닛 5개 · 의존: Phase 1, Phase 3 · 푼다: Phase 5, Phase 6, Phase 10 · 파일 집합: src/shared/components(map·sms·upload), src/shared/payment, src/app/api/payments · in-progress
 - Phase 5 — 이용자 틀·로그인·가입 · 유닛 5개 · 의존: Phase 4 · 푼다: Phase 7, Phase 9 · 파일 집합: src/app/(user)/layout · login · signup · phone-verification · find-login-id, src/app/api/auth, src/contracts/user · todo
 - Phase 6 — 업체 둘러보기 · 유닛 2개 · 의존: Phase 4 · 푼다: Phase 7 · 파일 집합: src/app/(user)/page · stores/[store_id], src/contracts/discovery · todo
 - Phase 7 — 예약·결제 · 유닛 2개 · 의존: Phase 5, Phase 6 · 푼다: Phase 8 · 파일 집합: src/app/(user)/stores/[store_id]/booking · payments, src/contracts/reservation · todo
@@ -76,7 +76,7 @@ flowchart LR
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: 진행 중 없음 · Next up: Phase 4
+지금: Phase 4 진행 중 · Next up: Phase 4
 
 ## 지금 할 일
 Phase 4 이용자 공통 인프라 시작하기
@@ -157,11 +157,11 @@ Phase 4 이용자 공통 인프라 시작하기
 ### Phase 4 — 이용자 공통 인프라 (지도 · 주소 · 인증번호 · 파일 · 결제) · depends: Phase 1, Phase 3
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 9 | 지도 확장 | 여러 마커 · 지도를 멈추면 중심 좌표 알림 · 내 위치(거부면 기본 위치) — U1 · U2 가 씀. 재사용: `src/shared/components/KakaoMap.tsx` | — | 1 | todo |
-| 10 | 주소 → 좌표 | 우편번호 검색으로 주소를 고르고 카카오 지오코더로 `latitude` · `longitude` — U11 · A4 가 씀. 재사용: `src/shared/utils/address.ts` | — | 9 | todo |
-| 11 | 인증번호 입력 흐름 | 휴대폰 번호 → 발송(큐) → 코드 입력 + 남은 시간 → 확인 — U5 · M1 네 곳이 씀. 재사용: `src/shared/components/Timer.tsx` | 발송 · 확인 API 를 props 로 받는 한 컴포넌트로 | 2 | todo |
-| 12 | 파일 올리기 | 업로드 주소 발급 → S3 로 PUT → 등록(큐), JPG · PNG 만, 사진 목록(순서 끌기 · 삭제) — U11 · M5 · M7 이 씀 | 순서 끌기를 직접 구현할지 라이브러리를 쓸지 | 2 | todo |
-| 13 | 토스 결제 | 결제창 열기(`payment_id` · `order_name` · `amount`) · `/payments/success` 의 서버 승인(시크릿 키) · 결제 마감 남은 시간 — U3 · U4 · U7 · U9 가 씀 | 토스 SDK 버전 · 키 보관(.env) | 1 | todo |
+| 9 | 지도 확장 | 여러 마커 · 지도를 멈추면 중심 좌표 알림 · 내 위치(거부면 기본 위치) — U1 · U2 가 씀. 재사용: `src/shared/components/KakaoMap.tsx` | — | 1 | in-progress |
+| 10 | 주소 → 좌표 | 우편번호 검색으로 주소를 고르고 카카오 지오코더로 `latitude` · `longitude` — U11 · A4 가 씀. 재사용: `src/shared/utils/address.ts` | — | 9 | in-progress |
+| 11 | 인증번호 입력 흐름 | 휴대폰 번호 → 발송(큐) → 코드 입력 + 남은 시간 → 확인 — U5 · M1 네 곳이 씀. 재사용: `src/shared/components/Timer.tsx` | 발송 · 확인 API 를 props 로 받는 한 컴포넌트로 | 2 | in-progress |
+| 12 | 파일 올리기 | 업로드 주소 발급 → S3 로 PUT → 등록(큐), JPG · PNG 만, 사진 목록(순서 끌기 · 삭제) — U11 · M5 · M7 이 씀 | 순서 끌기를 직접 구현할지 라이브러리를 쓸지 | 2 | in-progress |
+| 13 | 토스 결제 | 결제창 열기(`payment_id` · `order_name` · `amount`) · `/payments/success` 의 서버 승인(시크릿 키) · 결제 마감 남은 시간 — U3 · U4 · U7 · U9 가 씀 | 토스 SDK 버전 · 키 보관(.env) | 1 | in-progress |
 
 **Expected modules**:
 
@@ -171,7 +171,9 @@ Phase 4 이용자 공통 인프라 시작하기
 | #10 | `src/shared/utils/address.ts` | `searchAddressWithCoords` | 주소 + 좌표 |
 | #11 | `src/shared/components/sms/` | `SmsVerification` | 인증번호 흐름 |
 | #12 | `src/shared/components/upload/`, `src/shared/api/upload.ts` | `ImageUploader` · `uploadFile` | 파일 3단계 |
-| #13 | `src/shared/payment/`, `src/app/api/payments/confirm/route.ts` | `openTossPayment` · `POST` | 결제창 · 승인 중계 |
+| #13 | `src/shared/components/payment/`, `src/shared/api/payment.ts`, `src/app/api/payments/confirm/` | `TossPaymentWidget` · `requestTossConfirm` · `POST` | 결제위젯 · 승인 중계 |
+
+> build 완료(2026-11-16) — report: `.beaver/output/report/infra/user-infra-report.md`. 결제위젯 · @dnd-kit 설치, 미리보기 `/dev/infra/`. 테스트는 `/beaver:test`, 화면은 `.env.local` 키를 넣고 `/dev/infra/`.
 
 ### Phase 5 — 이용자 틀·로그인·가입 (U5) · depends: Phase 4
 | # | Unit | Goal | Key decision | Depends | Status |

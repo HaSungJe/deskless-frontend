@@ -4,6 +4,7 @@ import { refreshManagerToken } from '@/contracts/manager/api';
 import { refreshUserToken } from '@/contracts/user/api';
 import { ApiError } from '@/shared/api/request';
 import { AREAS, AreaType } from '@/shared/utils/area';
+import { json } from '../route-util';
 
 /** 토큰 4개 — 로그인 결과 · 재발급 결과(영역마다 같은 모양) */
 export type TokenSetType = {
@@ -56,15 +57,6 @@ export function accessCookieName(area: AreaType): string {
  */
 export function refreshCookieName(area: AreaType): string {
     return `${area}_refresh_token`;
-}
-
-/**
- * route handler 응답 — 항상 200 + {success, data?}
- *
- * @param body 응답 본문
- */
-export function json(body: {success: boolean; data?: unknown; retry?: boolean}): Response {
-    return new Response(JSON.stringify(body), {headers: {'Content-Type': 'application/json'}});
 }
 
 /**
@@ -166,17 +158,6 @@ export function refreshResponse(result: StoredRefreshType): Response {
     }
 
     return result.state === 'retry' ? json({success: false, retry: true}) : json({success: false});
-}
-
-/**
- * 토큰 저장 요청이 같은 사이트의 JSON 요청인지 — 다른 사이트 form 이 토큰을 심는 것(login CSRF) 막기
- *
- * @param request route handler 요청
- */
-export function isSameSiteJson(request: Request): boolean {
-    const contentType = request.headers.get('content-type') ?? '';
-    const fetchSite = request.headers.get('sec-fetch-site');
-    return contentType.includes('application/json') && (fetchSite === null || fetchSite === 'same-origin');
 }
 
 /**
