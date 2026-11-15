@@ -8,7 +8,7 @@
 flowchart LR
   P1["Phase 1 · 디자인 기반 (2)"]:::done
   P2["Phase 2 · API 기반 (3)"]:::done
-  P3["Phase 3 · 영역별 로그인 기반 (3)"]:::inprog
+  P3["Phase 3 · 영역별 로그인 기반 (3)"]:::done
   P4["Phase 4 · 이용자 공통 인프라 (5)"]:::todo
   P5["Phase 5 · 이용자 틀·로그인·가입 (5)"]:::todo
   P6["Phase 6 · 업체 둘러보기 (2)"]:::todo
@@ -58,7 +58,7 @@ flowchart LR
 
 - Phase 1 — 디자인 기반 · 유닛 2개 · 의존: — · 푼다: Phase 4 · 파일 집합: src/app/css, src/shared/components/ui, src/shared/css · done
 - Phase 2 — API 기반 · 유닛 3개 · 의존: — · 푼다: Phase 3 · 파일 집합: src/shared/api, src/contracts/common, src/shared/utils · done
-- Phase 3 — 영역별 로그인 기반 · 유닛 3개 · 의존: Phase 2 · 푼다: Phase 4 · 파일 집합: src/app/api/cookie, src/shared/api(auth), src/shared/providers, src/app/RootLayoutContent.tsx · in-progress
+- Phase 3 — 영역별 로그인 기반 · 유닛 3개 · 의존: Phase 2 · 푼다: Phase 4 · 파일 집합: src/app/api/cookie, src/shared/api(auth), src/shared/providers, src/app/RootLayoutContent.tsx · done
 - Phase 4 — 이용자 공통 인프라 · 유닛 5개 · 의존: Phase 1, Phase 3 · 푼다: Phase 5, Phase 6, Phase 10 · 파일 집합: src/shared/components(map·sms·upload), src/shared/payment, src/app/api/payments · todo
 - Phase 5 — 이용자 틀·로그인·가입 · 유닛 5개 · 의존: Phase 4 · 푼다: Phase 7, Phase 9 · 파일 집합: src/app/(user)/layout · login · signup · phone-verification · find-login-id, src/app/api/auth, src/contracts/user · todo
 - Phase 6 — 업체 둘러보기 · 유닛 2개 · 의존: Phase 4 · 푼다: Phase 7 · 파일 집합: src/app/(user)/page · stores/[store_id], src/contracts/discovery · todo
@@ -76,16 +76,16 @@ flowchart LR
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: Phase 3 진행 중 · Next up: Phase 3
+지금: 진행 중 없음 · Next up: Phase 4
 
 ## 지금 할 일
-Phase 3 영역별 로그인 기반 시작하기
-- #6 영역별 토큰 저장 · 로그아웃
-- #7 401 재발급 · 로그인으로 보내기
-- #8 영역 판별 · 로그인 상태 · AuthGuard
-- 시작 전에 정하기
-  영역별 토큰 쿠키를 이름으로 나눌지 경로로 나눌지, 재발급을 브라우저 / Next 서버 중 어디서 할지 (Phase 3 · #6 · #7)
-- 넘겨받은 일: `request` · `callQueue` 를 감쌀 때 fetch 실패를 `NetworkError` 로 나눠, 요청 뒤 코드 오류가 "서버에 연결할 수 없습니다" 로 보이지 않게 (Phase 2 review #3)
+Phase 4 이용자 공통 인프라 시작하기
+- #9 지도 확장
+- #10 주소 → 좌표
+- #11 인증번호 입력 흐름
+- #12 파일 올리기
+- #13 토스 결제
+- 참고: 백엔드에 토큰 재발급 IP 검사 완화를 요청함(2026-11-16) — 반영 전에는 배포 환경에서 access 토큰이 끝날 때 로그인이 풀린다(로컬 영향 없음)
 - ok → 다음
 
 ## Scope & Actors
@@ -140,9 +140,9 @@ Phase 3 영역별 로그인 기반 시작하기
 ### Phase 3 — 영역별 로그인 기반 (이용자 · 매니저 · 관리자 토큰을 따로) · depends: Phase 2
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 6 | 영역별 토큰 저장 · 로그아웃 | 세 영역 토큰을 httpOnly 쿠키로 따로 저장 · 삭제(route handler) — 예전 단일 `accessToken` 쿠키 교체 | 쿠키를 이름으로 나눌지 경로(path)로 나눌지 | 3 | in-progress |
-| 7 | 401 재발급 · 로그인으로 보내기 | 401 → 그 영역 `token-refresh` 한 번 → 또 401 이면 그 영역 로그인 화면(돌아올 주소와 함께) | 재발급을 브라우저에서 할지 Next 서버(route handler)에서 할지 | 3, 6 | in-progress |
-| 8 | 영역 판별 · 로그인 상태 · AuthGuard | 주소로 영역을 알아 그 영역 로그인 상태를 Context 로, `AuthGuard` 를 영역별 로그인 주소로 — `RootLayoutContent` 정리 | — | 6, 7 | in-progress |
+| 6 | 영역별 토큰 저장 · 로그아웃 | 세 영역 토큰을 httpOnly 쿠키로 따로 저장 · 삭제(route handler) — 예전 단일 `accessToken` 쿠키 교체 | 쿠키를 이름으로 나눌지 경로(path)로 나눌지 | 3 | done(e80e459) |
+| 7 | 401 재발급 · 로그인으로 보내기 | 401 → 그 영역 `token-refresh` 한 번 → 또 401 이면 그 영역 로그인 화면(돌아올 주소와 함께) | 재발급을 브라우저에서 할지 Next 서버(route handler)에서 할지 | 3, 6 | done(e80e459) |
+| 8 | 영역 판별 · 로그인 상태 · AuthGuard | 주소로 영역을 알아 그 영역 로그인 상태를 Context 로, `AuthGuard` 를 영역별 로그인 주소로 — `RootLayoutContent` 정리 | — | 6, 7 | done(e80e459) |
 
 **Expected modules**:
 
@@ -386,8 +386,8 @@ Phase 3 영역별 로그인 기반 시작하기
 | #60 | `/admin/users` | A6 · `GET user` | 이용자 목록 |
 | #61 | `/admin/users/[user_id]` | A6 · `GET user/:id` · `/reservation` · `PATCH /state` | 이용 제한 |
 
-**Progress**: 5/61 units done (2/17 phases)
-**Next up**: Phase 3 영역별 로그인 기반 — 의존(Phase 2) 모두 완료
+**Progress**: 8/61 units done (3/17 phases)
+**Next up**: Phase 4 이용자 공통 인프라 — 의존(Phase 1, Phase 3) 모두 완료
 
 ## Cross-Cutting Rules
 - 주소 · 화면 키 · 쓰는 API 는 `frontend/screens.md` 그대로. ★ 주소(`/reservation/[reservation_id]` · `…/cancel-request`)는 SMS 링크라 바꾸지 않는다.
