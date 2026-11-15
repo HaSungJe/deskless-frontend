@@ -9,7 +9,7 @@ flowchart LR
   P1["Phase 1 · 디자인 기반 (2)"]:::done
   P2["Phase 2 · API 기반 (3)"]:::done
   P3["Phase 3 · 영역별 로그인 기반 (3)"]:::done
-  P4["Phase 4 · 이용자 공통 인프라 (5)"]:::inprog
+  P4["Phase 4 · 이용자 공통 인프라 (5)"]:::done
   P5["Phase 5 · 이용자 틀·로그인·가입 (5)"]:::todo
   P6["Phase 6 · 업체 둘러보기 (2)"]:::todo
   P7["Phase 7 · 예약·결제 (2)"]:::todo
@@ -59,7 +59,7 @@ flowchart LR
 - Phase 1 — 디자인 기반 · 유닛 2개 · 의존: — · 푼다: Phase 4 · 파일 집합: src/app/css, src/shared/components/ui, src/shared/css · done
 - Phase 2 — API 기반 · 유닛 3개 · 의존: — · 푼다: Phase 3 · 파일 집합: src/shared/api, src/contracts/common, src/shared/utils · done
 - Phase 3 — 영역별 로그인 기반 · 유닛 3개 · 의존: Phase 2 · 푼다: Phase 4 · 파일 집합: src/app/api/cookie, src/shared/api(auth), src/shared/providers, src/app/RootLayoutContent.tsx · done
-- Phase 4 — 이용자 공통 인프라 · 유닛 5개 · 의존: Phase 1, Phase 3 · 푼다: Phase 5, Phase 6, Phase 10 · 파일 집합: src/shared/components(map·sms·upload), src/shared/payment, src/app/api/payments · in-progress
+- Phase 4 — 이용자 공통 인프라 · 유닛 5개 · 의존: Phase 1, Phase 3 · 푼다: Phase 5, Phase 6, Phase 10 · 파일 집합: src/shared/components(map·sms·upload), src/shared/payment, src/app/api/payments · done
 - Phase 5 — 이용자 틀·로그인·가입 · 유닛 5개 · 의존: Phase 4 · 푼다: Phase 7, Phase 9 · 파일 집합: src/app/(user)/layout · login · signup · phone-verification · find-login-id, src/app/api/auth, src/contracts/user · todo
 - Phase 6 — 업체 둘러보기 · 유닛 2개 · 의존: Phase 4 · 푼다: Phase 7 · 파일 집합: src/app/(user)/page · stores/[store_id], src/contracts/discovery · todo
 - Phase 7 — 예약·결제 · 유닛 2개 · 의존: Phase 5, Phase 6 · 푼다: Phase 8 · 파일 집합: src/app/(user)/stores/[store_id]/booking · payments, src/contracts/reservation · todo
@@ -76,16 +76,19 @@ flowchart LR
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: Phase 4 진행 중 · Next up: Phase 4
+지금: 진행 중 없음 · Next up: Phase 5
 
 ## 지금 할 일
-Phase 4 이용자 공통 인프라 시작하기
-- #9 지도 확장
-- #10 주소 → 좌표
-- #11 인증번호 입력 흐름
-- #12 파일 올리기
-- #13 토스 결제
-- 참고: 백엔드에 토큰 재발급 IP 검사 완화를 요청함(2026-11-16) — 반영 전에는 배포 환경에서 access 토큰이 끝날 때 로그인이 풀린다(로컬 영향 없음)
+Phase 5 이용자 틀·로그인·가입 시작하기
+- #14 이용자 모바일 틀
+- #15 SNS 로그인
+- #16 가입
+- #17 휴대폰 인증
+- #18 아이디 찾기
+- 시작 전에 정하기
+  SNS 로그인을 next-auth 로 유지할지 카카오 · 네이버 SDK 를 직접 쓸지 (Phase 5 · #15)
+- 참고: 휴대폰 인증 · 아이디 찾기는 `SmsVerification`(Phase 4)에 contracts 함수만 넘긴다. Phase 6 업체 둘러보기도 지금 함께 시작할 수 있다(Phase 4 뒤 동시 가능)
+- 참고: 백엔드 토큰 재발급 IP 검사 완화 요청(2026-11-16) 대기 — 반영 전 배포 환경은 access 만료 때 로그아웃
 - ok → 다음
 
 ## Scope & Actors
@@ -157,11 +160,11 @@ Phase 4 이용자 공통 인프라 시작하기
 ### Phase 4 — 이용자 공통 인프라 (지도 · 주소 · 인증번호 · 파일 · 결제) · depends: Phase 1, Phase 3
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 9 | 지도 확장 | 여러 마커 · 지도를 멈추면 중심 좌표 알림 · 내 위치(거부면 기본 위치) — U1 · U2 가 씀. 재사용: `src/shared/components/KakaoMap.tsx` | — | 1 | in-progress |
-| 10 | 주소 → 좌표 | 우편번호 검색으로 주소를 고르고 카카오 지오코더로 `latitude` · `longitude` — U11 · A4 가 씀. 재사용: `src/shared/utils/address.ts` | — | 9 | in-progress |
-| 11 | 인증번호 입력 흐름 | 휴대폰 번호 → 발송(큐) → 코드 입력 + 남은 시간 → 확인 — U5 · M1 네 곳이 씀. 재사용: `src/shared/components/Timer.tsx` | 발송 · 확인 API 를 props 로 받는 한 컴포넌트로 | 2 | in-progress |
-| 12 | 파일 올리기 | 업로드 주소 발급 → S3 로 PUT → 등록(큐), JPG · PNG 만, 사진 목록(순서 끌기 · 삭제) — U11 · M5 · M7 이 씀 | 순서 끌기를 직접 구현할지 라이브러리를 쓸지 | 2 | in-progress |
-| 13 | 토스 결제 | 결제창 열기(`payment_id` · `order_name` · `amount`) · `/payments/success` 의 서버 승인(시크릿 키) · 결제 마감 남은 시간 — U3 · U4 · U7 · U9 가 씀 | 토스 SDK 버전 · 키 보관(.env) | 1 | in-progress |
+| 9 | 지도 확장 | 여러 마커 · 지도를 멈추면 중심 좌표 알림 · 내 위치(거부면 기본 위치) — U1 · U2 가 씀. 재사용: `src/shared/components/KakaoMap.tsx` | — | 1 | done(6121b5b) |
+| 10 | 주소 → 좌표 | 우편번호 검색으로 주소를 고르고 카카오 지오코더로 `latitude` · `longitude` — U11 · A4 가 씀. 재사용: `src/shared/utils/address.ts` | — | 9 | done(6121b5b) |
+| 11 | 인증번호 입력 흐름 | 휴대폰 번호 → 발송(큐) → 코드 입력 + 남은 시간 → 확인 — U5 · M1 네 곳이 씀. 재사용: `src/shared/components/Timer.tsx` | 발송 · 확인 API 를 props 로 받는 한 컴포넌트로 | 2 | done(6121b5b) |
+| 12 | 파일 올리기 | 업로드 주소 발급 → S3 로 PUT → 등록(큐), JPG · PNG 만, 사진 목록(순서 끌기 · 삭제) — U11 · M5 · M7 이 씀 | 순서 끌기를 직접 구현할지 라이브러리를 쓸지 | 2 | done(6121b5b) |
+| 13 | 토스 결제 | 결제창 열기(`payment_id` · `order_name` · `amount`) · `/payments/success` 의 서버 승인(시크릿 키) · 결제 마감 남은 시간 — U3 · U4 · U7 · U9 가 씀 | 토스 SDK 버전 · 키 보관(.env) | 1 | done(6121b5b) |
 
 **Expected modules**:
 
@@ -388,8 +391,8 @@ Phase 4 이용자 공통 인프라 시작하기
 | #60 | `/admin/users` | A6 · `GET user` | 이용자 목록 |
 | #61 | `/admin/users/[user_id]` | A6 · `GET user/:id` · `/reservation` · `PATCH /state` | 이용 제한 |
 
-**Progress**: 8/61 units done (3/17 phases)
-**Next up**: Phase 4 이용자 공통 인프라 — 의존(Phase 1, Phase 3) 모두 완료
+**Progress**: 13/61 units done (4/17 phases)
+**Next up**: Phase 5 이용자 틀·로그인·가입 — 의존(Phase 4) 모두 완료
 
 ## Cross-Cutting Rules
 - 주소 · 화면 키 · 쓰는 API 는 `frontend/screens.md` 그대로. ★ 주소(`/reservation/[reservation_id]` · `…/cancel-request`)는 SMS 링크라 바꾸지 않는다.
