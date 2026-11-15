@@ -4,53 +4,61 @@
 
 ## 백엔드 API 호출
 
-### 지금 코드 (예전 백엔드 기준)
-- axios 로 `${process.env.NEXT_PUBLIC_API_URL}/api/v1/...` 를 부른다 (`src/app/(user)/login/LoginContent.tsx:48`).
-- 로그인 토큰이 필요한 호출은 `src/shared/api/axios.ts` 의 래퍼 — 401 이면 `/api/cookie/access` 로 토큰을 다시 받아 최대 5번 재시도, 그래도 안 되면 토큰을 지우고 에러를 던진다 (`axios.ts:20-47`). **호출처 0 — 미적용.** 시그니처(정의 그대로):
-  ```ts
-  axiosGet<T>(access: AccessType, url: string, headers?: Record<string, string>): Promise<AxiosResponse<T>>
-  axiosPost<T>(access: AccessType, url: string, body?: unknown, headers?: Record<string, string>): Promise<AxiosResponse<T>>
-  // axiosPut · axiosPatch · axiosDelete 도 axiosPost 와 같은 (access, url, body?, headers?)
-  ```
-  `AccessType` = `AccessTokenContextType & { reload?: number }` (`axios.ts:6-8`) — 화면에서는 `AccessTokenContext` 값(`{accessToken, setAccessToken}`)을 넘긴다.
+부르는 곳은 백엔드 게이트웨이 하나 — `NEXT_PUBLIC_API_URL`(로컬 `http://localhost:3000`). 내부 서비스(이용자 3010 · 관리자 3020)는 직접 부르지 않는다. API 를 지침서와 맞춰 볼 때는 로컬 Swagger `http://localhost:3000/swagger` (→ [architecture.md](architecture.md) "로컬 포트").
 
-### 지침서 기준 (만들 것 — frontend/api.md "호출 방식")
+
+### 호출 클라이언트 — `src/shared/api/` (fetch 하나 — 선택: 사용자 2026-11-15)
+| 함수 | 쓰는 곳 | 결과 |
+|---|---|---|
+| `request<T>({method?, path, query?, body?, token?, signal?})` (`request.ts`) | 동기 — 조회 · 로그인 · 재발급 · 업로드 주소 발급 | JSON(빈 본문 · 204 는 `null`). 2xx 가 아니면 `ApiError(status, 실패 본문)`, 본문이 JSON 이 아니면 `ApiError(status, {message: "서버 응답을 읽을 수 없습니다.", validation_errors: null})` |
+| `callQueue<T>({method, path, body?, token?, signal?})` (`queue.ts`) | 큐 — 상태를 바꾸는 쓰기(`text/event-stream`) | `done` → data, `pending` · 결과 없이 끝남 → `null`, `failed` → `ApiError(status_code, data)`, 스트림 전 실패(400 · 401 · 403) → `ApiError(status, 본문)` |
+| `handleApiError(error)` (`error.ts`) | catch | 칸 옆 · alert — [error-handling.md](error-handling.md) |
+
+- 주소는 `buildUrl(path, query)` = `${NEXT_PUBLIC_API_URL}/api/v1${path}${createQueryString(query)}` — `path` 는 `/user-service/…` · `/admin-service/…`, 경로 값은 부르는 쪽이 `encodeURIComponent`. query 는 `null` · `undefined` · 빈 문자열을 뺀다(`src/shared/utils/util.ts`).
+- 헤더는 `Accept`(큐는 `text/event-stream`), 본문이 있으면 `Content-Type: application/json`, 토큰이 있으면 `Authorization: Bearer`.
+- 큐 이벤트는 `takeSseEvents(buffer)`(`sse.ts`)가 자른다 — 빈 줄 경계, CRLF 허용, 여러 줄 `data:` 는 `\n` 으로 잇고 `:` 주석 줄은 무시. 결과는 지침서 예시 그대로(선택: 사용자) — 응답 DTO 가 `null` 인 큐 API 는 `done` 과 `pending` 이 같은 `null` 이라 화면은 `null` 이면 그 리소스를 다시 조회한다.
+- 네트워크 실패 · 취소는 fetch 오류(`TypeError` · `AbortError`)를 그대로 던진다. 화면을 떠날 때 취소하려면 `AbortController` 의 `signal` 을 넘긴다.
+- 401 은 아직 `ApiError(401)` 로 던지기만 한다 — 영역별 토큰 · `token-refresh` 재발급 · 로그인 화면 이동은 Phase 3 이 감싼다.
+- 도메인별 엔드포인트 함수는 `src/contracts/<도메인>/api.ts` 에 두고 그 함수가 `request` · `callQueue` 를 부른다(아직 없음 — 첫 화면 때).
+- axios 는 쓰지 않는다(패키지 제거 — 사용자 2026-11-15). 예전 래퍼(`axios.ts` · `axios-error.ts`)는 지웠고, 토큰 쿠키 route handler 부르기(`src/shared/api/cookie.ts`) · 재발급(`src/app/api/cookie/access/route.ts`) · 예전 로그인(`LoginContent.tsx`)도 fetch 다.
+
+### 지침서의 나머지 호출 규칙 (frontend/api.md "호출 방식")
 | 항목 | 규칙 |
 |---|---|
-| 주소 | `<게이트웨이>/api/v1/<user-service \| admin-service>/<도메인>/…`, 경로 값은 `encodeURIComponent` |
-| 키 | 요청 · 응답 모두 snake_case |
-| 입력 | `GET` 은 query, 그 밖은 JSON 본문 |
-| 동기 | 조회 · 로그인 · 재발급 · 업로드 주소 발급 — 보통 JSON |
-| 큐 | 상태를 바꾸는 쓰기 — `text/event-stream`: `accepted` → `done`(응답 DTO) · `failed`(실패 본문) · `pending`(30초 초과 — 다시 조회). `fetch` 스트림으로 읽는다(`callQueue` 예시 코드가 지침서에 있다) |
-| 토큰 | 영역(이용자 · 매니저 · 관리자)마다 따로. 401 → 그 영역 `token-refresh` 로 한 번 재발급 후 재시도, 또 401 → 그 영역 로그인 화면(돌아올 주소와 함께) |
-| 목록 | query `page` · `size` · `page_size` · `all_search_yn`, 응답 `{list, pagination}` |
-| 파일 | 업로드 주소 발급(동기) → 브라우저가 S3 로 `PUT` → 등록 API(큐)에 `file_key` |
-| 결제 | 토스 — 성공 주소에서 Next.js 서버가 승인 API 호출(시크릿 키) → `payment-confirm` |
-
-`src/shared/api/` 에 동기 요청 · 큐(SSE) 호출 · 영역별 토큰 · 재발급을 만들고, 도메인별 엔드포인트 함수는 `src/contracts/<도메인>/api.ts` 에 둔다. <!-- TODO: shared/api 의 지침서 호출 클라이언트 -->
+| 토큰 | 영역(이용자 · 매니저 · 관리자)마다 따로. 401 → 그 영역 `token-refresh` 로 한 번 재발급 후 재시도, 또 401 → 그 영역 로그인 화면(돌아올 주소와 함께) — Phase 3 |
+| 파일 | 업로드 주소 발급(동기) → 브라우저가 S3 로 `PUT` → 등록 API(큐)에 `file_key` — Phase 4 |
+| 결제 | 토스 — 성공 주소에서 Next.js 서버가 승인 API 호출(시크릿 키) → `payment-confirm` — Phase 4 |
 
 ## 백엔드 계약 — `src/contracts/`
 
 - `frontend/dto/<도메인>.md` 의 `## <도메인>/dto/<파일>.dto.ts` 블록을 `src/contracts/<도메인>/dto/<파일>.dto.ts` 로 **그대로** 옮긴다. 공통은 `frontend/dto/common.md` → `src/contracts/common/<파일>` (지침서: frontend/dto/common.md:3).
-- 지침서 DTO 는 `class-validator` · `class-transformer` 데코레이터를 쓴다 (지침서: frontend/dto/user.md:3) — `class-transformer` 는 아직 설치돼 있지 않다. 첫 DTO 를 옮길 때 추가한다. <!-- TODO: class-transformer -->
+- 공통(`src/contracts/common/`): `pagination.dto.ts`(`PaginationDto` · `PAGINATION_DEFAULTS` · `PaginationResultDto`) · `fail-result.dto.ts`(`ApiFailResultDto` · `CommandFailedEventData`) · `roles.ts`(`AUTH_ID` · `LOGIN_SCOPE`) · `sse.ts`(`COMMAND_STREAM_EVENT`) · `reservation.constants.ts` — 지침서 사본 그대로. `lookup.ts`(`LOOKUP` · `lookupName`)는 지침서 "룩업 값" 표를 응답 필드 이름으로 묶은 것.
+- `shared` 는 `contracts` 를 가져올 수 없어, 실패 본문(`ApiFailBodyType` — `request.ts`) · 페이지(`PaginationType` — `src/shared/types/pagination.ts`) · 큐 이벤트 이름(`queue.ts`)은 `shared` 에 구조가 같은 타입 · 상수로 따로 둔다.
+- 지침서 DTO 는 `class-validator` · `class-transformer` 데코레이터를 쓴다 (지침서: frontend/dto/user.md:3) — `class-transformer` 는 쓰는 곳이 생기는 Phase 5(첫 입력 DTO — `validate(plainToInstance(XDto, 값))`)에서 넣는다.
+
+## 표시 형식 — `src/shared/utils/format.ts`
+
+- 시각: `toKst(iso, format = 'YYYY-MM-DD HH:mm')` — dayjs `utc` · `timezone` 플러그인으로 `Asia/Seoul` 고정(서버 렌더링 · Docker UTC 에서도 같은 결과, 선택: 사용자). 빈 값 · 읽을 수 없는 값은 `''`. Z · 오프셋이 붙은 시각만 넘긴다 — 날짜 `YYYY-MM-DD` · 달 `YYYY-MM` · `HH:mm` 은 이미 한국 기준이라 그대로 보여 준다(오프셋 없는 문자열은 실행 환경 시간대로 읽혀 서버 · 브라우저 결과가 달라진다). 오늘 날짜(한국)는 `todayKst()`.
+- 금액: `formatPrice(12000)` → `12,000원`. 요일: `daysToBits([1, 3, 5])` → `42`, `bitsToDays(42)` → `[1, 3, 5]`, `formatDays(42)` → `월 · 수 · 금`, `formatDays(127)` → `매일` (0 일 ~ 6 토).
+- 상태 · 종류 이름: 응답 `*_name` 먼저, 없으면 `lookupName('reservation_state_id', 'CONFIRMED')` → `예약 확정` (모르는 값은 그대로).
 - 백엔드 수정 요청(`frontend/changes/`)이 오면 해당 파일을 새 코드로 통째로 바꾼다.
 
 ## 토큰 쿠키 — route handler
 
 | 쿠키 | 쓰는 곳 | 옵션 |
 |---|---|---|
-| `accessToken` | `POST /api/cookie/access` (`src/app/api/cookie/access/route.ts:100-125`), 재발급 시 `GET` 안에서 (`:64-71`) | `httpOnly`, `path: "/"`, `domain: SERVER_DOMAIN`, `sameSite: SERVER_DOMAIN ? "lax" : "strict"`, `secure: 개발이면 false, 아니면 x-forwarded-proto 가 https`, 만료 1분 전 |
+| `accessToken` | `POST /api/cookie/access` (`src/app/api/cookie/access/route.ts:100-125`), 재발급 시 `GET` 안에서 (`:68-76`) | `httpOnly`, `path: "/"`, `domain: SERVER_DOMAIN`, `sameSite: SERVER_DOMAIN ? "lax" : "strict"`, `secure: 개발이면 false, 아니면 x-forwarded-proto 가 https`, 만료 1분 전 |
 | `refreshToken` | `POST /api/cookie/refresh` (`src/app/api/cookie/refresh/route.ts`) | 같은 옵션, 만료 기본 30일 |
 | `sns` | next-auth `signIn` 콜백 (`src/app/api/auth/[...nextauth]/route.ts`) | `httpOnly`, `sameSite: "lax"`, 1시간 |
 
 - 클라이언트는 쿠키를 직접 읽지 않고 `src/shared/api/cookie.ts` 의 함수로 route handler 를 부른다: `getAccessToken` · `getAccessTokenData` · `checkAuth` · `setAccessToken` · `setRefreshToken` · `deleteToken` · `getSNSAccessToken` · `deleteSNSAccessToken` (`cookie.ts`). 지금 호출되는 것은 `getAccessToken` · `deleteToken` · `setAccessToken` · `setRefreshToken` 뿐이다.
-- `GET /api/cookie/access` 는 access 토큰이 없거나 만료 60초 이내면 refresh 토큰으로 재발급한다 (`access/route.ts:24`, `:44-92`).
+- `GET /api/cookie/access` 는 access 토큰이 없거나 만료 60초 이내면 refresh 토큰으로 재발급한다 (`access/route.ts:22`, `:42-91`).
 
 ## 전역 상태
 
 - Context 3개만 쓴다 — `RootLayoutLoadingContext` · `AccessTokenContext` · `IsLoginContext` (`src/shared/providers/RootLayoutProvider.tsx:13-15`). 값은 `RootLayoutContent` 가 주소가 바뀔 때마다 채운다 (`src/app/RootLayoutContent.tsx:17-34`).
 - 상태 관리 라이브러리 · 데이터 캐시 라이브러리는 없다. 화면 상태는 화면 컴포넌트의 `useState`.
-- 브라우저 저장소: `sessionStorage.referer`(직전 주소 — `RootLayoutContent.tsx:20`), `localStorage.saveId`(아이디 저장 — `LoginContent.tsx:32,52`).
+- 브라우저 저장소: `sessionStorage.referer`(직전 주소 — `RootLayoutContent.tsx:20`), `localStorage.saveId`(아이디 저장 — `LoginContent.tsx:46,70`).
 
 ## 목록 페이지 패턴 (기존 규칙 — 아직 적용된 화면 없음)
 
@@ -80,13 +88,13 @@ function action() {
 <Pagination pagination={pagination} movePage={setPage} />
 ```
 - `useSearchParams` 를 쓰므로 page 에서 `<Suspense>` 로 감싼다.
-- `createQueryString(obj)` 는 키 · 값을 `encodeURIComponent` 해서 `?k=v&…` 를 만든다 (`src/shared/utils/util.ts:7-13`).
-- `Pagination` props: `pagination: PaginationType`, `movePage: (page: string) => void` (`src/shared/components/Pagination.tsx:4-7`).
+- `createQueryString(obj)` 는 `null` · `undefined` · 빈 문자열을 빼고 키 · 값을 `encodeURIComponent` 해서 `?k=v&…` 를 만든다 (`src/shared/utils/util.ts:7-14`).
+- `Pagination` props: `pagination: PaginationType | null`, `movePage: (page: string) => void`, `label?` (`src/shared/components/ui/nav/Pagination.tsx:5-9`).
 
 ## Pagination 응답 타입
 
-- 지금 `PaginationType` 은 camelCase(`totalCount` · `maxPage` · `pageRange`) (`src/shared/types/pagination.ts:6-14`).
-- 지침서 응답은 snake_case(`total_count` · `max_page` · `page_range`) `PaginationResultDto` (지침서: frontend/dto/common.md:56) — 목록 화면을 만들 때 `contracts/common/pagination.dto.ts` 로 바꾸고 `Pagination` 컴포넌트도 맞춘다. <!-- TODO -->
+- `PaginationType` 은 snake_case(`all_search_yn` · `total_count` · `page` · `max_page` · `page_range{start, end}` · `content_start_number` · `content_start_number_reverse`) — 지침서 `PaginationResultDto`(`src/contracts/common/pagination.dto.ts`)와 같은 구조 (`src/shared/types/pagination.ts`).
+- `Pagination` 은 시안(`frontend/design/manager.html` `.pager`)대로 `‹ 번호 ›` — 현재 페이지는 `aria-current="page"` 이고 눌러도 이동하지 않는다, 1쪽이면 이전 · 마지막 쪽이면 다음이 막힌다. 처음 · 마지막 버튼은 없다.
 
 ## Query DTO 생성자
 

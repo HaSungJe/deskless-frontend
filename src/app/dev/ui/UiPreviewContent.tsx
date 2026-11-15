@@ -15,8 +15,10 @@ import ReasonModal from '@/shared/components/ui/modal/ReasonModal';
 import Segmented, { SegmentedOptionType } from '@/shared/components/ui/form/Segmented';
 import Switch from '@/shared/components/ui/form/Switch';
 import Table from '@/shared/components/ui/display/Table';
+import Pagination from '@/shared/components/ui/nav/Pagination';
 import Tabs, { TabItemType } from '@/shared/components/ui/nav/Tabs';
 import Textarea from '@/shared/components/ui/form/Textarea';
+import { PaginationType } from '@/shared/types/pagination';
 import { resetValidationError, showValidationErrors } from '@/shared/utils/validation';
 import styles from '@/app/css/dev/UiPreviewContent.module.css';
 
@@ -107,6 +109,10 @@ function Gallery({area, title}: GalleryProps): React.ReactNode {
     const [confirmOpen, setConfirmOpen] = useState<boolean>(false);  // 확인 모달 열림
     const [reasonOpen, setReasonOpen] = useState<boolean>(false);    // 사유 입력 모달 열림
     const [lastReason, setLastReason] = useState<string>('');        // 사유 입력 모달에서 받은 사유
+    const [page, setPage] = useState<string>('2');                   // 페이지 탭 예시 — 현재 페이지
+
+    // 계산 값
+    const pagination = previewPagination(Number(page)); // 페이지 탭 예시 값
 
     // 함수
     function showError(): void {
@@ -212,6 +218,11 @@ function Gallery({area, title}: GalleryProps): React.ReactNode {
                 <Tabs label="내 업체 설정" items={STORE_TABS} value={tab} onChange={setTab} />
             </Section>
 
+            {/* 페이지 탭 */}
+            <Section title="페이지 탭">
+                <Pagination pagination={pagination} movePage={setPage} label={`${title} 페이지 예시`} />
+            </Section>
+
             {/* 카드 · 표 · 빈 상태 · 복사 */}
             <Section title="카드 · 표 · 빈 상태 · 복사">
                 <Card title="호실" actions={<CopyButton text="http://localhost:5000/manager/a1b2c3d4e5f6/login/" label="로그인 주소 복사" />}>
@@ -274,6 +285,23 @@ function Gallery({area, title}: GalleryProps): React.ReactNode {
             />
         </div>
     );
+}
+
+/**
+ * 미리보기용 페이지 정보 — 5쪽짜리 목록(100건, 20건씩)
+ *
+ * @param page 현재 페이지
+ */
+function previewPagination(page: number): PaginationType {
+    return {
+        all_search_yn: 'N',
+        total_count: 100,
+        page,
+        max_page: 5,
+        page_range: {start: 1, end: 5},
+        content_start_number: 100 - (page - 1) * 20,
+        content_start_number_reverse: (page - 1) * 20 + 1,
+    };
 }
 
 /**

@@ -5,7 +5,7 @@ Vitest 5 + Testing Library(`@testing-library/react`) + jsdom (선택: 사용자 
 ## Testing Approach
 
 - **단위 = 파일 하나**(DTO · 훅 · 유틸 · 컴포넌트 · 화면 Content). 경계 밖은 mock 한다:
-  - HTTP — `axios` · `fetch` (`vi.mock('axios')` 또는 `vi.spyOn(globalThis, 'fetch')`)
+  - HTTP — `fetch` (`vi.stubGlobal('fetch', fetchMock)` + `new Response(…)`, 테스트 뒤 `vi.unstubAllGlobals()` — `src/shared/api/request.test.ts`). 큐(SSE)는 조각마다 흘려보내는 `ReadableStream` 응답(`src/shared/api/queue.test.ts` 의 `sseResponse`)
   - 라우터 — `next/navigation` (`useRouter` · `usePathname` · `useSearchParams`)
   - 쿠키 · 토큰 — `@/shared/api/cookie`
   - `alert` · `localStorage` · `sessionStorage` — `vi.spyOn(window, 'alert')` 등
@@ -13,19 +13,21 @@ Vitest 5 + Testing Library(`@testing-library/react`) + jsdom (선택: 사용자 
 - Context 는 실제 Provider(`RootLayoutProvider`)로 감싸서 값을 넣는다 — Context 자체는 mock 하지 않는다.
 - class-validator DTO 는 mock 없이 실제 `validate()` 로 검증한다 (`src/app/(user)/login/dto.test.ts`).
 - `globals` 를 켜지 않으므로 `describe` · `it` · `expect` · `vi` 는 `vitest` 에서 import 한다. 렌더 정리는 `vitest.setup.ts` 의 `afterEach(cleanup)`.
+- DOM 이 필요 없는 테스트(API 호출 · SSE 파서)는 파일 첫 줄 `// @vitest-environment node` — Node 의 `fetch` · `Response` · `ReadableStream` · `TextDecoder` 를 그대로 쓴다 (`src/shared/api/sse.test.ts:1`).
+- jsdom 에는 `CSS.escape` · `innerText` 가 없다 — `vitest.setup.ts` 가 `CSS.escape` 를 간단히 채우고(오류 칸 선택자용), 칸 오류 확인은 `span.innerText` 를 읽는다(jsdom 에서는 그냥 속성이라 쓴 값이 그대로 읽힌다). 한 번도 쓰지 않은 칸은 `innerText` 가 `undefined` 라 "건드리지 않았다"는 `style.display` 로 확인한다 (`src/shared/api/error.test.ts`).
 
 ## Location · Structure
 
-- 대상 파일 옆 `<대상>.test.ts` · `<대상>.test.tsx` (`src/app/(user)/login/dto.test.ts`, `src/shared/components/Pagination.test.tsx`). 수집 범위 `src/**/*.test.{ts,tsx}` (`vitest.config.mts`).
+- 대상 파일 옆 `<대상>.test.ts` · `<대상>.test.tsx` (`src/app/(user)/login/dto.test.ts`, `src/shared/components/ui/nav/Pagination.test.tsx`). 수집 범위 `src/**/*.test.{ts,tsx}` (`vitest.config.mts`).
 - `describe('<대상 이름>')` 안에 케이스 이름을 `[SUCCESS] …` / `[FAIL:<이유>] …` 로 시작한다 (`Pagination.test.tsx`).
-- 분기마다 하나 이상: 성공 · 입력 검증 실패 · 서버 실패(validationErrors 있음 / 없음) · 401 · 빈 값.
+- 분기마다 하나 이상: 성공 · 입력 검증 실패 · 서버 실패(`validation_errors` 있음 / 없음) · 401 · 빈 값.
 
 | 대상 | 최소 케이스 |
 |---|---|
 | 화면 DTO | `[SUCCESS]` 정상 값 · `[FAIL:<규칙>]` 규칙마다 — `property` 와 한국어 `message` 까지 |
 | 훅 · 유틸 | 입력 종류마다 결과 값 |
 | 공통 컴포넌트 | 사용자 동작 → 콜백 호출 횟수 · 인자, 그리지 않는 조건 |
-| 화면 Content | 제출 성공(부른 주소 · 본문 · 이동), 화면 검증 실패(API 미호출), 서버 실패(`axiosErrorHandle` 경로) |
+| 화면 Content | 제출 성공(부른 주소 · 본문 · 이동), 화면 검증 실패(API 미호출), 서버 실패(`handleApiError` 경로), 큐 `pending`(`null` → 다시 조회) |
 | contracts api | 부른 메서드 · 주소 · 본문 키(snake_case) |
 
 ## Strength Rules
@@ -41,7 +43,7 @@ fireEvent.click(screen.getByRole('button', {name: '4'}));
 expect(movePage).toHaveBeenCalledTimes(1);
 expect(movePage).toHaveBeenCalledWith('4');
 ```
-근거: `src/shared/components/Pagination.test.tsx`. API 를 부르는 화면은 mock 이 받은 **주소 · 본문**까지 확인한다(`toHaveBeenCalledWith(url, {login_id: …})`).
+근거: `src/shared/components/ui/nav/Pagination.test.tsx`. API 를 부르는 화면은 mock 이 받은 **주소 · 본문**까지 확인한다(`toHaveBeenCalledWith(url, {login_id: …})`).
 
 ### [FAIL:*]
 ```tsx
@@ -52,7 +54,7 @@ expect(movePage).not.toHaveBeenCalled();
 
 ## Data-Access Smoke (mock 경계의 빈틈)
 
-- **빈틈**: 단위 테스트는 HTTP(axios · fetch)를 mock 하므로, 실제 백엔드와의 **주소 · 메서드 · snake_case 키 · 응답 모양 · SSE 이벤트 파싱**은 어떤 테스트에서도 실행되지 않는다. 여기서 생긴 버그는 모든 테스트를 통과한다.
+- **빈틈**: 단위 테스트는 HTTP(fetch)를 mock 하므로, 실제 백엔드와의 **주소 · 메서드 · snake_case 키 · 응답 모양 · SSE 이벤트 파싱**은 어떤 테스트에서도 실행되지 않는다. 여기서 생긴 버그는 모든 테스트를 통과한다.
 - 연결 없이 계약을 빌드해 볼 수단(ORM 메타데이터 같은 것)은 이 스택에 없다. 대신:
   1. `contracts/<도메인>/api.ts` 함수마다 mock 이 받은 **메서드 · 주소 · 본문 키**를 지침서(`frontend/api.md` 표)와 같은 값으로 단언한다.
   2. `shared/api` 의 큐(SSE) 호출은 가짜 `ReadableStream` 응답(`accepted` → `done` / `failed` / `pending`, 이벤트가 여러 조각으로 쪼개져 오는 경우 포함)으로 파싱을 검증한다 — 네트워크 없음.

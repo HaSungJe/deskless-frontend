@@ -4,7 +4,7 @@
 
 | 대상 | 규칙 | 예 (근거) |
 |---|---|---|
-| 화면 컴포넌트 | `<화면>Content`, 파일 이름 같음, default export | `LoginContent` (`src/app/(user)/login/LoginContent.tsx:13`) |
+| 화면 컴포넌트 | `<화면>Content`, 파일 이름 같음, default export | `LoginContent` (`src/app/(user)/login/LoginContent.tsx:26`) |
 | page 컴포넌트 | 화면을 나타내는 PascalCase 함수, default export | `Login` (`src/app/(user)/login/page.tsx:3`), `Home` (`src/app/(user)/page.tsx`) |
 | layout 컴포넌트 | `<영역>Layout` | `RootLayout` (`src/app/layout.tsx`) |
 | 공통 컴포넌트 | PascalCase 파일 · default export · props 는 `type <Name>Props` | `KakaoMap` / `KakaoMapProps` (`src/shared/components/KakaoMap.tsx:10,47`) |
@@ -12,17 +12,17 @@
 | 타입 | `type` 별칭 + `Type` 접미사 (`interface` 쓰지 않음) | `PaginationType` (`src/shared/types/pagination.ts:6`), `AccessTokenDecodeType` (`src/shared/types/access.ts:2`) |
 | Context | `<Name>Context` | `IsLoginContext` (`src/shared/providers/RootLayoutProvider.tsx:15`) |
 | 함수 | camelCase 동사 | `createQueryString` (`src/shared/utils/util.ts:7`), `loadAddressSearchScript` (`src/shared/utils/address.ts:19`) |
-| 상수 | UPPER_SNAKE | `MAX_RELOAD` (`src/shared/api/axios.ts:12`), `KAKAO_MAP_SCRIPT_ID` (`KakaoMap.tsx:21`) |
+| 상수 | UPPER_SNAKE | `API_BASE_URL` (`src/shared/api/request.ts:5`), `KAKAO_MAP_SCRIPT_ID` (`KakaoMap.tsx:21`) |
 | 화면 DTO | `<동작>Dto` class, 화면 폴더의 `dto.ts` | `LoginDto` (`src/app/(user)/login/dto.ts:4`) |
 | 백엔드 DTO | 지침서 이름 그대로 — `<도메인><기능>Dto` · 응답 `…ResultDto` · path `…ParamDto` | `UserFindLoginIdDto` / `UserFindLoginIdResultDto` (지침서: frontend/dto/user.md:128,138) |
-| 백엔드 키 | snake_case 그대로 (변환하지 않음) | `login_id`, `refresh_token_end_dt` (`dto.ts:6`, `LoginContent.tsx:58`) |
+| 백엔드 키 | snake_case 그대로 (변환하지 않음) | `login_id`, `refresh_token_end_dt` (`dto.ts:6`, `LoginContent.tsx:76`) |
 
 예외(기존): `Editor.tsx` 는 이름 있는 export `QuillEditor` 를 낸다 (`src/shared/components/Editor.tsx:59`).
 
 ## Files / Directories
 
 - 화면: 그 주소의 `page.tsx` 옆에 `<화면>Content.tsx` · `dto.ts` · `*.test.tsx` 를 같이 둔다(`src/app/(user)/login/`). 화면 css 는 `src/app/css/<영역>/<화면>Content.module.css` — 영역은 `user` · `manager` · `admin` · `dev` (선택: 사용자). 전용 부품이 여럿이면 `_components/` 로 묶는다 — 밑줄 폴더는 주소가 되지 않는다. 별도 `features/` 폴더는 두지 않는다 (선택: 사용자).
-- 여러 단어 유틸 파일은 kebab-case (`src/shared/api/axios-error.ts`), 한 단어는 소문자 (`util.ts`, `address.ts`, `cookie.ts`).
+- 여러 단어 파일은 kebab-case (`src/contracts/common/fail-result.dto.ts`), 한 단어는 소문자 (`util.ts`, `address.ts`, `cookie.ts`).
 - 백엔드 DTO 는 `src/contracts/<도메인>/dto/<지침서 파일 이름>` — 파일을 나누거나 합치지 않는다(changes/ 문서가 파일 단위로 온다 — frontend/changes/README.md).
 - 한 곳에서만 쓰는 것은 그 화면 폴더에, 두 곳 이상이면 `shared/`(도메인 무관) 또는 `contracts/`(백엔드 계약)로.
 
@@ -37,9 +37,9 @@
 ## 화면 · 컴포넌트 입력
 
 - 컴포넌트 props 는 `type <Name>Props` 로 정의하고 구조 분해로 받는다. 기본값은 구조 분해 기본값으로 (`src/shared/components/Loading.tsx:14`, `KakaoMap.tsx:47`).
-- 컴포넌트 함수는 반환 타입 `React.ReactNode` 를 적는다 (`LoginContent.tsx:13`, `AuthGuard.tsx:19`).
+- 컴포넌트 함수는 반환 타입 `React.ReactNode` 를 적는다 (`LoginContent.tsx:26`, `AuthGuard.tsx:19`).
 - 함수 콜백 props 는 `Function` 대신 시그니처로 (`closeFunc?: () => void` — `src/shared/components/Timer.tsx:7`).
-- catch 의 error 는 `any` 로 받는다 (`src/shared/api/axios.ts:28`, `src/shared/api/axios-error.ts:10`).
+- catch 의 error 는 `unknown` 으로 받아 좁힌다 (`src/shared/api/error.ts:15`). 예전 route handler 만 `any` (`src/app/api/cookie/access/route.ts:84`).
 
 ## 스타일
 
@@ -53,13 +53,13 @@
   - 공통 부품: `src/shared/css/` 아래에 `src/shared/components/` 와 같은 경로 — `shared/components/ui/form/Input.tsx` ↔ `shared/css/ui/form/Input.module.css`, `shared/components/Loading.tsx` ↔ `shared/css/Loading.module.css`. `shared` 의 css 를 `app/css` 에 두지 않는다(shared → app import 금지 — `eslint.config.mjs`).
   - import 는 별칭으로 — `import styles from '@/shared/css/ui/form/Input.module.css'`. 한 css 를 두 부품이 같이 쓸 수 있다(`Textarea` 가 `Input.module.css`).
 - 색 · 크기 · 모서리는 토큰 `var(--…)` 만 쓰고 값(#hex, 높이 px)을 직접 쓰지 않는다. 계산되는 값(높이 %, 좌표)만 인라인 `style`.
-  - 예외 — 영역(이용자 / 콘솔)에 따라 바뀌지 않는 **부품 고유 치수**는 시안 값을 그 부품 `module.css` 에 그대로 쓴다: 탭 높이 44px(`frontend/design/manager.html` `.tabs a`) · 스위치 40×24(손잡이 18) · 모달 닫기 32×32 · 모달 최대 너비 520px · 칩 최소 너비 40px · 선택 버튼 묶음 안쪽 모서리 6px · 알약 모양 모서리 999px (`Tabs` · `Switch` · `Modal` · `Chip` · `Segmented` · `Badge` `.module.css`). 영역 따라 바뀌는 높이(버튼 · 입력 · 배지)는 토큰.
+  - 예외 — 영역(이용자 / 콘솔)에 따라 바뀌지 않는 **부품 고유 치수**는 시안 값을 그 부품 `module.css` 에 그대로 쓴다: 탭 높이 44px(`frontend/design/manager.html` `.tabs a`) · 스위치 40×24(손잡이 18) · 모달 닫기 32×32 · 모달 최대 너비 520px · 칩 최소 너비 40px · 선택 버튼 묶음 안쪽 모서리 6px · 알약 모양 모서리 999px · 페이지 탭 32×32(시안 `.pager a`) (`Tabs` · `Switch` · `Modal` · `Chip` · `Segmented` · `Badge` · `Pagination` `.module.css`). 영역 따라 바뀌는 높이(버튼 · 입력 · 배지)는 토큰.
   - 간격(`gap` · `padding`)과 글자 크기는 토큰이 없어 시안 값을 그대로 쓴다.
 - 공통 부품은 `src/shared/components/ui/<종류>/` 를 먼저 쓴다. 모습은 개발 전용 `/dev/ui` 에서 본다.
   - `button/` — `Button`(`buttonClass()` 로 `<Link>` 를 버튼 모양으로) · `CopyButton`
   - `form/` — `Input` · `Textarea` · `Field`(라벨 + 오류 span + 도움말) · `Switch` · `Chip` · `Segmented`
   - `display/` — `Badge` · `Band`(상태 안내 띠) · `Card` · `Table` · `EmptyState`
-  - `nav/` — `Tabs`
+  - `nav/` — `Tabs` · `Pagination`(`‹ 번호 ›`, 목록 응답의 `pagination` 을 그대로)
   - `modal/` — `Modal` · `ConfirmModal` · `ReasonModal` · `RouteModal`
   - 새 부품은 맞는 종류 폴더에 넣는다. 같은 종류 폴더 안은 `./<Name>`, 다른 종류는 `@/shared/components/ui/<종류>/<Name>` 로 import.
 - 입력 칸은 `<Field name="<DTO 필드>">` 로 감싼다 — 오류 span(`data-type="validation-alert"`)은 `Field` 가 그린다.
@@ -116,5 +116,5 @@ function ReasonModalBody({maxLength = 200, required = true, busy = false, onConf
 ## 코드 스타일
 
 - `src/` 는 4칸 들여쓰기 · 세미콜론 (`src/shared/utils/validation.ts` 등). 설정 파일(`eslint.config.mjs`, `tsconfig.json`)은 2칸.
-- export 하는 함수 · 컴포넌트에는 한국어 JSDoc — 한 줄 설명 + `@param` (`src/shared/utils/validation.ts:9-16`, `src/shared/api/axios.ts:14-19`).
+- export 하는 함수 · 컴포넌트에는 한국어 JSDoc — 한 줄 설명 + `@param` (`src/shared/utils/validation.ts:9-16`, `src/shared/api/request.ts`).
 - 배열 타입은 `Array<T>` (`src/shared/utils/validation.ts:31`, `useInputDate.ts:24`).

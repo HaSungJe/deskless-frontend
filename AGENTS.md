@@ -26,10 +26,10 @@ roomless 이용자 · 업체 관리자 · 관리자 화면. 규칙의 근거는 
 - [frontend/changes/](frontend/changes/README.md) — 이후 백엔드 수정 요청. 위에서부터 차례로 반영하고 어디까지 반영했는지 이 저장소에 기록한다
 - [frontend/design/](frontend/design/) — 시안 원본 HTML(색 토큰 · 간격 값)
 
-⚠️ 지금 코드의 인증(토큰 1벌 · `/api/v1/user/refresh` — `src/app/api/cookie/access/route.ts:48`) · 실패 키(`validationErrors` — `src/shared/api/axios-error.ts:16`) · 페이지네이션(camelCase — `src/shared/types/pagination.ts:6`) 은 **예전 백엔드 기준**이다. 지침서는 영역마다 토큰이 따로고, 쓰기 API 는 SSE 큐, 키는 snake_case — 해당 화면을 만들 때 지침서에 맞춰 바꾼다.
+⚠️ 지금 코드의 인증(토큰 1벌 · `/api/v1/user/refresh` — `src/app/api/cookie/access/route.ts:46`)은 **예전 백엔드 기준**이다 — Phase 3 에서 영역별 토큰으로 바꾼다. 예전 아이디 로그인 화면(`src/app/(user)/login/`)은 Phase 5 에서 지침서 U5(카카오 · 네이버)로 바꾼다. 새 코드는 지침서대로 — 영역마다 토큰이 따로, 쓰기 API 는 SSE 큐, 키는 snake_case.
 
 ## Architecture
-Next.js 16.4 App Router (`package.json:17`) · React 19.3 + React Compiler (`next.config.ts:37`) · TypeScript 5 · axios · class-validator · next-auth 4 · Vitest 5 + Testing Library (선택: 사용자) · CSS Modules (선택: 사용자).
+Next.js 16.4 App Router (`package.json:17`) · React 19.3 + React Compiler (`next.config.ts:37`) · TypeScript 5 · fetch(HTTP 라이브러리 없음) · class-validator · next-auth 4 · Vitest 5 + Testing Library (선택: 사용자) · CSS Modules (선택: 사용자).
 
 ```
 src/
@@ -45,19 +45,20 @@ src/
 → 자세히: [docs/architecture.md](docs/architecture.md)
 
 ## Conventions
-- 화면: `src/app/<영역 경로>/<주소>/<화면>Content.tsx`(page.tsx 옆), default export `<화면>Content` (`src/app/(user)/login/LoginContent.tsx:13`). 영역 경로는 `(user)/` · `manager/(console)/` · `admin/(console)/`. 그 화면 전용 부품이 여럿이면 `_components/` 로 묶는다(밑줄 폴더는 주소가 되지 않는다).
+- 화면: `src/app/<영역 경로>/<주소>/<화면>Content.tsx`(page.tsx 옆), default export `<화면>Content` (`src/app/(user)/login/LoginContent.tsx:26`). 영역 경로는 `(user)/` · `manager/(console)/` · `admin/(console)/`. 그 화면 전용 부품이 여럿이면 `_components/` 로 묶는다(밑줄 폴더는 주소가 되지 않는다).
 - 주소: 정적 세그먼트 kebab-case, 동적 세그먼트 `[snake_case]` (지침서: frontend/screens.md — `/stores/[store_id]`). `trailingSlash: true` 라 링크는 `/` 로 끝난다 (`next.config.ts:36`).
 - 훅 `use<Name>.ts` default export + 반환 타입 `Use<Name>Type` export (`src/shared/hooks/useInput.ts:3,11`). 컴포넌트 PascalCase 파일 · default export · props 는 `type <Name>Props` (`src/shared/components/KakaoMap.tsx:10`).
-- 타입은 `type` 별칭 + `Type` 접미사 (`src/shared/types/pagination.ts:6`), Context 는 `<Name>Context` (`src/shared/providers/RootLayoutProvider.tsx:13-15`), 상수는 UPPER_SNAKE (`src/shared/api/axios.ts:12`).
+- 타입은 `type` 별칭 + `Type` 접미사 (`src/shared/types/pagination.ts:6`), Context 는 `<Name>Context` (`src/shared/providers/RootLayoutProvider.tsx:13-15`), 상수는 UPPER_SNAKE (`src/shared/api/request.ts:5`).
 - 백엔드와 주고받는 키는 snake_case 그대로 (`src/app/(user)/login/dto.ts:6,9`).
 - 스타일은 css 폴더에 모은다 — 전역 토큰 `src/app/css/globals.css`, 화면 `src/app/css/<영역>/<화면>Content.module.css`, 공통 부품 `src/shared/css/<components 아래와 같은 경로>/<Name>.module.css`(예 `shared/components/ui/form/Input.tsx` ↔ `shared/css/ui/form/Input.module.css`). 색 · 크기는 토큰 `var(--…)` 만 — 색은 한 벌, 크기는 영역별(기본 이용자, `data-area="console"` 콘솔) (선택: 사용자).
-- 공통 부품은 `src/shared/components/ui/<종류>/` 를 먼저 쓴다 — `button/`(`Button` · `CopyButton`) · `form/`(`Input` · `Textarea` · `Field` · `Switch` · `Chip` · `Segmented`) · `display/`(`Badge` · `Band` · `Card` · `Table` · `EmptyState`) · `nav/`(`Tabs`) · `modal/`(`Modal` · `ConfirmModal` · `ReasonModal` · `RouteModal`). 입력 칸은 `<Field name="<DTO 필드>">` — 오류 span 을 `Field` 가 그린다. 미리보기 `/dev/ui`(개발 전용).
+- 공통 부품은 `src/shared/components/ui/<종류>/` 를 먼저 쓴다 — `button/`(`Button` · `CopyButton`) · `form/`(`Input` · `Textarea` · `Field` · `Switch` · `Chip` · `Segmented`) · `display/`(`Badge` · `Band` · `Card` · `Table` · `EmptyState`) · `nav/`(`Tabs` · `Pagination`) · `modal/`(`Modal` · `ConfirmModal` · `ReasonModal` · `RouteModal`). 입력 칸은 `<Field name="<DTO 필드>">` — 오류 span 을 `Field` 가 그린다. 미리보기 `/dev/ui`(개발 전용).
+- 표시 형식은 `src/shared/utils/format.ts` — `toKst`(ISO → 한국 시각, `Asia/Seoul` 고정) · `todayKst` · `formatPrice`(`12,000원`) · `formatDays`(요일 비트합 → `월 · 수 · 금`, 127 → `매일`). 상태 이름은 응답 `*_name` 먼저, 없으면 `lookupName(필드, 값)` (`src/contracts/common/lookup.ts`).
 - 컴포넌트 · 커스텀 훅 본문은 **변수 > 상태 > 계산 값 > 효과 > 함수 > JSX** — 영역 사이 빈 줄, 영역마다 한 줄 주석, 변수 · 상태 · 계산 값은 줄마다 오른쪽 역할 주석, JSX 는 덩어리마다 간략 주석. 새 코드와 고치는 파일부터 (선택: 사용자 2026-11-14) → [docs/conventions.md](docs/conventions.md) "컴포넌트 · 훅 안의 구조"
 
 → 자세히: [docs/conventions.md](docs/conventions.md)
 
 ## 화면 로직
-별도 서비스 계층은 없다 — 이벤트 처리 · 제출 흐름은 `<화면>Content` 안의 함수로 둔다 (`src/app/(user)/login/LoginContent.tsx:43-65`). 백엔드 호출은 `contracts/<도메인>/api.ts` 의 함수로 모은다(구조 결정 · 아직 미적용 — 지금 로그인은 axios 를 직접 부른다 `LoginContent.tsx:48`). 판단 기준: "다른 화면에서도 부를 것인가?" → 예면 아래 계층(contracts · shared)으로.
+별도 서비스 계층은 없다 — 이벤트 처리 · 제출 흐름은 `<화면>Content` 안의 함수로 둔다 (`src/app/(user)/login/LoginContent.tsx:56-82`). 백엔드 호출은 `contracts/<도메인>/api.ts` 의 함수로 모으고, 그 함수가 `request` · `callQueue` 를 부른다(구조 결정 · 아직 미적용 — 지금 예전 로그인은 `request` 를 직접 부른다 `LoginContent.tsx:63`). 판단 기준: "다른 화면에서도 부를 것인가?" → 예면 아래 계층(contracts · shared)으로.
 
 ## Shared Logic Separation
 - `shared/utils` — 상태 없는 함수(DOM · 스크립트를 만져도 React 상태는 없음) (`src/shared/utils/util.ts`, `validation.ts`, `address.ts`).
@@ -66,28 +67,29 @@ src/
 - 한 화면에서만 쓰면 그 화면 폴더(`page.tsx` 옆)에 둔다. 두 곳 이상에서 쓰게 되면 그때 `contracts` · `shared` 로 옮긴다.
 
 ## Data Layer
-- 백엔드 호출은 axios 로 `${NEXT_PUBLIC_API_URL}/api/v1/...` (`LoginContent.tsx:48`). 로그인 토큰이 필요한 호출은 `axiosGet/Post/Put/Patch/Delete(access, url, body?, headers?)` (`src/shared/api/axios.ts:56-106` · 아직 호출처 0 — 미적용).
-- 토큰은 httpOnly 쿠키로 route handler(`src/app/api/cookie/*`)가 쓰고 읽는다 (`access/route.ts:52-71`). 클라이언트는 `src/shared/api/cookie.ts` 로만 접근한다.
+- 백엔드 호출은 fetch 하나 — 조회 · 로그인 같은 동기는 `request<T>({method, path, query, body, token})`, 상태를 바꾸는 쓰기는 큐 `callQueue<T>({method, path, body, token})` (`src/shared/api/request.ts` · `queue.ts`). 주소는 `${NEXT_PUBLIC_API_URL}/api/v1${path}` — 게이트웨이 하나만 부른다(로컬 `http://localhost:3000` · Swagger `/swagger`, 내부 3010 · 3020 은 직접 부르지 않음 — docs/architecture.md "로컬 포트").
+- 큐 결과는 `done` → data, `pending` · 결과 없이 끝남 → `null`(그 리소스를 다시 조회). 401 재발급 · 영역별 토큰은 Phase 3 이 `request` · `callQueue` 를 감싼다.
+- 토큰은 httpOnly 쿠키로 route handler(`src/app/api/cookie/*`)가 쓰고 읽는다 (`access/route.ts:57-76`). 클라이언트는 `src/shared/api/cookie.ts` 로만 접근한다.
 - 전역 상태는 Context 만 쓴다 (`RootLayoutProvider.tsx:13-15`) — 상태 관리 라이브러리 없음.
-- 지침서 호출 방식(동기 JSON / 큐 SSE `callQueue`, `{list, pagination}`)은 아직 코드에 없다 — `shared/api` 에 만든다.
+- 목록 응답은 `{list, pagination}` — `pagination` 은 snake_case `PaginationType`(`src/shared/types/pagination.ts`)이고 `Pagination`(`src/shared/components/ui/nav/Pagination.tsx`)에 그대로 넘긴다. 공통 계약은 `src/contracts/common/`(지침서 사본).
 
 → 자세히: [docs/data-layer.md](docs/data-layer.md)
 
 ## Validation
 - 입력 DTO 는 class-validator 데코레이터 + 한국어 `message` 필수 (`src/app/(user)/login/dto.ts:5,8`).
-- 제출 전에 `validateAction(dto)` (`LoginContent.tsx:44-45`) → 오류는 칸 옆 `<span data-type="validation-alert" data-id="<필드>" />` 에 표시 (`LoginContent.tsx:96`). 중첩 DTO 는 `validateActionChildren(dto, key)` + `data-key` (`src/shared/utils/validation.ts:111` · 미적용).
+- 제출 전에 `validateAction(dto)` (`LoginContent.tsx:57-58`) → 오류는 칸 옆 `<span data-type="validation-alert" data-id="<필드>" />` 에 표시 (`LoginContent.tsx:115`). 중첩 DTO 는 `validateActionChildren(dto, key)` + `data-key` (`src/shared/utils/validation.ts:111` · 미적용).
 - 지침서 DTO 사본은 `contracts/` 에 그대로 두고 화면 검증에도 그대로 쓴다 (지침서: frontend/api.md:62).
 
 ## Error & Response
-- route handler 는 항상 200 + `{success: boolean, data?}` JSON (`src/app/api/cookie/access/route.ts:36,39,87`). 클라이언트 쿠키 함수는 실패를 삼키고 `null` · `false` 를 돌려준다 (`src/shared/api/cookie.ts:45-56`).
-- API 호출 실패는 catch 에서 `axiosErrorHandle(error)` (`LoginContent.tsx:62`) — `validationErrors` 를 칸에 표시, 없으면 `alert(message)` (`src/shared/api/axios-error.ts:10-28`).
+- route handler 는 항상 200 + `{success: boolean, data?}` JSON (`src/app/api/cookie/access/route.ts:34,37,87`). 클라이언트 쿠키 함수는 실패를 삼키고 `null` · `false` 를 돌려준다 (`src/shared/api/cookie.ts:16-33`).
+- API 호출 실패는 catch 에서 `handleApiError(error)` (`src/shared/api/error.ts`) — `validation_errors` 는 칸 옆에(맞는 칸이 없으면 `alert(message)`), 없으면 `alert(message)`, 응답이 없으면 고정 문구, 취소(AbortError)는 무시. axios 는 쓰지 않는다(사용자 2026-11-15).
 
 → 자세히: [docs/error-handling.md](docs/error-handling.md)
 
 ## Auth
 - 주소가 바뀔 때마다 `RootLayoutContent` 가 `/api/cookie/access` 로 로그인 상태를 확인한다 (`src/app/RootLayoutContent.tsx:17-34`) → `RootLayoutLoadingContext` · `AccessTokenContext` · `IsLoginContext`.
 - 로그인이 필요한 영역은 layout 에서 `<AuthGuard loginPath="그 영역 로그인 주소">` 로 감싼다 (`src/shared/components/AuthGuard.tsx:19` · 지금 호출처 0 — 미적용).
-- 클라이언트 코드는 쿠키 · 토큰을 직접 읽지 않는다. JWT 키(`NEXT_PUBLIC_JWT_CODE`)는 route handler 에서만 (`access/route.ts:33`).
+- 클라이언트 코드는 쿠키 · 토큰을 직접 읽지 않는다. JWT 키(`NEXT_PUBLIC_JWT_CODE`)는 route handler 에서만 (`access/route.ts:31`).
 - SNS 로그인은 next-auth (`src/app/api/auth/[...nextauth]/route.ts`).
 
 ## Key Patterns
@@ -108,7 +110,7 @@ Vitest 5 + Testing Library + jsdom (`vitest.config.mts`) (선택: 사용자). �
 - [ ] 백엔드 DTO 는 `src/contracts/<도메인>/dto/<파일>.dto.ts` 에 지침서 사본 그대로(파일 이름 · 상대 import 유지)
 - [ ] 입력 DTO 필드마다 class-validator 데코레이터 + 한국어 `message`
 - [ ] 제출 전 `validateAction(dto)`, 입력 칸마다 `<span data-type="validation-alert" data-id="<필드>">`
-- [ ] API 호출 실패는 catch 에서 `axiosErrorHandle(error)`
+- [ ] API 호출 실패는 catch 에서 `handleApiError(error)`
 - [ ] 클라이언트에서 쿠키 · 토큰을 직접 읽지 않고 `shared/api/cookie.ts` 를 쓴다
 - [ ] 로그인이 필요한 영역 layout 은 `<AuthGuard loginPath="…">` 로 감싼다
 - [ ] `window` 를 쓰는 라이브러리는 `next/dynamic` + `ssr: false`

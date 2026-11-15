@@ -1,7 +1,5 @@
 import { AccessTokenDecodeType } from "@/shared/types/access";
 import { cookies, headers as nextHeaders } from "next/headers";
-import https from 'https';
-import axios from "axios";
 import dayjs from 'dayjs';
 import * as jwt from 'jsonwebtoken';
 
@@ -44,24 +42,31 @@ export async function GET(request: Request): Promise<Response> {
     const refreshToken = cookieStore.get("refreshToken");
     if (refreshToken) {
         try {
-            const refresh_token: string = refreshToken.value;            
+            const refresh_token: string = refreshToken.value;
             const apiUrl = `${process.env.NEXT_PUBLIC_API_URL}/api/v1/user/refresh`;
-            const httpsAgent = new https.Agent({ rejectUnauthorized: false });
-            const response = await axios.post(apiUrl, {refresh_token}, { httpsAgent });
-            if (response.data.refresh_token) {
-                cookieStore.set('refreshToken', response.data.refresh_token, {
+            const response = await fetch(apiUrl, {method: 'POST', headers, body: JSON.stringify({refresh_token})});
+            const data = await response.json().catch((): null => null);
+            if (!response.ok || !data) {
+                console.log(`-------------Refresh Error --- ${dayjs().format('YYYY-MM-DD HH:mm:ss')} --------------`);
+                console.log('status:', response.status);
+                console.log('data:', data);
+                return new Response(JSON.stringify({ success: false }), { headers });
+            }
+
+            if (data.refresh_token) {
+                cookieStore.set('refreshToken', data.refresh_token, {
                     path: "/",
                     domain: process.env.SERVER_DOMAIN ?? undefined,
                     httpOnly: true,
                     sameSite: process.env.SERVER_DOMAIN ? "lax" : "strict",
                     secure: process.env.NODE_ENV === 'development' ? false : isSecure,
-                    expires: response.data.refresh_token_end_dt ? new Date(response.data.refresh_token_end_dt) : new Date(new Date().getTime() + (60 * 60 * 24 * 30 * 1000))
+                    expires: data.refresh_token_end_dt ? new Date(data.refresh_token_end_dt) : new Date(new Date().getTime() + (60 * 60 * 24 * 30 * 1000))
                 });
             }
 
             // 유지시간보다 1분 빨리 끝나도록해서 가능한 재발급받도록
-            const setTime = new Date(new Date(response.data.access_token_end_dt).getTime() - (5 * 1000)); 
-            cookieStore.set('accessToken', response.data.access_token, {
+            const setTime = new Date(new Date(data.access_token_end_dt).getTime() - (5 * 1000));
+            cookieStore.set('accessToken', data.access_token, {
                 path: "/",
                 domain: process.env.SERVER_DOMAIN ?? undefined,
                 httpOnly: true,
@@ -71,19 +76,14 @@ export async function GET(request: Request): Promise<Response> {
             });
 
             if (option) {
-                const result = jwt.verify(response.data.access_token, process.env.NEXT_PUBLIC_JWT_CODE as string);
+                const result = jwt.verify(data.access_token, process.env.NEXT_PUBLIC_JWT_CODE as string);
                 return new Response(JSON.stringify({ success: true, data: result }), { headers });
             } else {
-                return new Response(JSON.stringify({ success: true, data: response.data.access_token }), { headers });
+                return new Response(JSON.stringify({ success: true, data: data.access_token }), { headers });
             }
         } catch (error: any) {
-            console.log(`-------------Refresh Error --- ${dayjs().format('YYYY-MM-DD HH:mm:ss')} --------------`)
-            if (error?.response) {
-                console.log('status:', error.response.status)
-                console.log('data:', error.response.data)
-            } else {
-                console.log(error?.message ?? error)
-            }
+            console.log(`-------------Refresh Error --- ${dayjs().format('YYYY-MM-DD HH:mm:ss')} --------------`);
+            console.log(error?.message ?? error); // 네트워크 실패 · 토큰 검증 실패
             return new Response(JSON.stringify({ success: false }), { headers });
         }
     } else { // RefreshToken 미존재시, 로그인 정보 없음.

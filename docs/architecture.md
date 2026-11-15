@@ -1,6 +1,6 @@
 # Architecture
 
-Next.js 16.4 App Router (`package.json:17`) · React 19.3 (`package.json:20`) + React Compiler (`next.config.ts:37`) · TypeScript 5 · axios 1 (`package.json:13`) · class-validator 0.14 (`package.json:14`) · next-auth 4 (`package.json:18`) · dayjs · nextjs-toploader · apexcharts / react-apexcharts · react-quill-new · react-spinners · Vitest 5 + Testing Library + jsdom (선택: 사용자) · CSS Modules (선택: 사용자 · 아직 CSS 없음).
+Next.js 16.4 App Router (`package.json:17`) · React 19.3 (`package.json:20`) + React Compiler (`next.config.ts:37`) · TypeScript 5 · fetch(HTTP 라이브러리 없음) · class-validator 0.14 (`package.json:14`) · next-auth 4 (`package.json:18`) · dayjs · nextjs-toploader · apexcharts / react-apexcharts · react-quill-new · react-spinners · Vitest 5 + Testing Library + jsdom (선택: 사용자) · CSS Modules (선택: 사용자 · 아직 CSS 없음).
 
 ## Directory Layout
 
@@ -24,19 +24,19 @@ src/
 │  │  └─ (console)/                  콘솔 layout + 관리자 AuthGuard — A2~A6
 │  └─ api/                           route handler — cookie/* (토큰 쿠키) · auth/[...nextauth] (SNS)
 ├─ contracts/                        백엔드 계약 — 지침서 frontend/dto/*.md 의 사본 (첫 API 를 만들 때 생김)
-│  ├─ common/                        pagination.dto.ts · 실패 DTO · 상태 상수
+│  ├─ common/                        pagination.dto.ts · fail-result.dto.ts · roles.ts · sse.ts · reservation.constants.ts (지침서 사본) · lookup.ts
 │  └─ <도메인>/                       user · discovery · reservation · store · manager · admin · room · stats
 │     ├─ dto/<파일>.dto.ts           지침서 파일 이름 그대로
 │     └─ api.ts                      그 도메인 엔드포인트 함수
 └─ shared/                           도메인을 모르는 공통
-   ├─ api/                           axios.ts(토큰 + 401 재시도) · axios-error.ts · cookie.ts
-   ├─ components/                    AuthGuard · Pagination · Editor · KakaoMap · Loading · Timer · Scripts · chart/
-   │  └─ ui/                         공통 UI 부품 — button/ · form/ · display/ · nav/ · modal/ (docs/conventions.md 스타일)
+   ├─ api/                           request.ts(동기 · ApiError) · queue.ts(큐 SSE) · sse.ts · error.ts(handleApiError) · cookie.ts(토큰 쿠키 route handler 부르기)
+   ├─ components/                    AuthGuard · Editor · KakaoMap · Loading · Timer · Scripts · chart/
+   │  └─ ui/                         공통 UI 부품 — button/ · form/ · display/ · nav/(Tabs · Pagination) · modal/ (docs/conventions.md 스타일)
    ├─ css/                           공통 부품 css — components/ 와 같은 경로 (ui/form/Input.module.css · Loading.module.css)
    ├─ hooks/                         useInput · useInputNumber · useInputFloat · useInputDate · useInputTime · useCheckboxGroup
    ├─ providers/                     RootLayoutProvider (전역 Context)
    ├─ types/                         access.ts · pagination.ts
-   └─ utils/                         validation.ts · address.ts · util.ts
+   └─ utils/                         validation.ts · address.ts · util.ts · format.ts(한국 시각 · 금액 · 요일)
 ```
 
 - `contracts/` 는 지침서(frontend/dto/user.md:3 — "프론트에는 `contracts/user/dto/<파일>` 로 둔다")와 같은 자리다. DTO 끼리의 상대 import(`'../../common/pagination.dto'` — frontend/dto/manager.md:75)가 그대로 맞으려면 `contracts/<도메인>/dto/` · `contracts/common/` 깊이를 지킨다.
@@ -79,7 +79,7 @@ src/contracts/<도메인>/api.ts                      (처음 쓰는 API 면) �
 
 ### Entry Points
 - **page / layout**: 서버 컴포넌트, `'use client'` 없음 (`src/app/(user)/login/page.tsx:1-8`, `src/app/(user)/page.tsx`). 화면 컴포넌트에서 `'use client'` 를 선언한다 (`LoginContent.tsx:1`).
-- **route handler**: `src/app/api/**/route.ts` 에서 `GET` · `POST` · `DELETE` 를 export, 응답은 `new Response(JSON.stringify({success, data?}), {headers})` (`src/app/api/cookie/access/route.ts:36`). `'use server'` 는 붙이지 않는다.
+- **route handler**: `src/app/api/**/route.ts` 에서 `GET` · `POST` · `DELETE` 를 export, 응답은 `new Response(JSON.stringify({success, data?}), {headers})` (`src/app/api/cookie/access/route.ts:34`). `'use server'` 는 붙이지 않는다.
 
 ### Data Layer
 → [data-layer.md](data-layer.md)
@@ -88,6 +88,12 @@ src/contracts/<도메인>/api.ts                      (처음 쓰는 API 면) �
 - **서버 전용**: `cookies()` · `headers()`(`next/headers`), `jsonwebtoken`, SNS 시크릿은 route handler 에서만 (`access/route.ts:1-4`, `src/app/api/auth/[...nextauth]/route.ts`). 클라이언트 코드는 `src/shared/api/cookie.ts` 로 route handler 를 거친다.
 - **`NEXT_PUBLIC_*`** 는 빌드할 때 서버 · 클라이언트 번들에 박힌다. 이름에 `NEXT_PUBLIC_` 이 붙은 시크릿(`NEXT_PUBLIC_JWT_CODE`)은 서버 코드에서만 참조한다 — 클라이언트 코드에서 쓰면 브라우저로 나간다.
 - **환경 파일**: 로컬 개발 `.env.local`(`npm run dev`, 5000 포트 — `package.json:6`), Docker 운영 `.env.production`. 목록 · 빌드/실행 시점 구분은 [.env.example](../.env.example).
+- **로컬 포트** (백엔드 안내 2026-11-15):
+  - 프론트 `http://localhost:5000` — 이용자 `/` · 업체 관리자 `/manager` · 관리자 `/admin` 이 한 서버.
+  - 백엔드 게이트웨이 `http://localhost:3000` — **프론트는 이 주소만 부른다**(`NEXT_PUBLIC_API_URL`). API `/api/v1/...`, 문서 Swagger `/swagger`, 사진 `/sample/...`(테스트 데이터) · `/files/...`(S3 없는 서버에 올린 사진).
+  - 이용자 서비스 3010 · 관리자 서비스 3020 은 백엔드 내부용 — 프론트가 직접 부르지 않는다.
+  - 백엔드 CORS 는 `http://localhost:5000` 을 허용하도록 맞춰져 있다 — 프론트를 다른 포트로 띄우면 브라우저 호출이 막힐 수 있다.
+  - `next/image` 는 `localhost:3000` 사진을 허용해 둔다(`next.config.ts:11-16`, 포트는 `NEXT_IMAGE_PORT`).
 - **Docker = 운영**: `output: "standalone"` (`next.config.ts:34`). 빌드 때 BuildKit secret 으로 `.env.production` 을 붙이고(`Dockerfile:22`), 실행 때 `env_file` (`docker-compose.yml:9`). 이미지 안에 `.env` 는 남지 않는다.
 - **basePath**: `NEXT_PUBLIC_LOCAL_SERVER_PREFIX` (`next.config.ts:41`) — Nginx 하위 경로 배포용.
 

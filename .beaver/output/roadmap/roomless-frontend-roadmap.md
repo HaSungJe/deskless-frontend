@@ -7,7 +7,7 @@
 ```mermaid
 flowchart LR
   P1["Phase 1 · 디자인 기반 (2)"]:::done
-  P2["Phase 2 · API 기반 (3)"]:::todo
+  P2["Phase 2 · API 기반 (3)"]:::inprog
   P3["Phase 3 · 영역별 로그인 기반 (3)"]:::todo
   P4["Phase 4 · 이용자 공통 인프라 (5)"]:::todo
   P5["Phase 5 · 이용자 틀·로그인·가입 (5)"]:::todo
@@ -57,7 +57,7 @@ flowchart LR
 ```
 
 - Phase 1 — 디자인 기반 · 유닛 2개 · 의존: — · 푼다: Phase 4 · 파일 집합: src/app/css, src/shared/components/ui, src/shared/css · done
-- Phase 2 — API 기반 · 유닛 3개 · 의존: — · 푼다: Phase 3 · 파일 집합: src/shared/api, src/contracts/common, src/shared/utils · todo
+- Phase 2 — API 기반 · 유닛 3개 · 의존: — · 푼다: Phase 3 · 파일 집합: src/shared/api, src/contracts/common, src/shared/utils · in-progress
 - Phase 3 — 영역별 로그인 기반 · 유닛 3개 · 의존: Phase 2 · 푼다: Phase 4 · 파일 집합: src/app/api/cookie, src/shared/api(auth), src/shared/providers, src/app/RootLayoutContent.tsx · todo
 - Phase 4 — 이용자 공통 인프라 · 유닛 5개 · 의존: Phase 1, Phase 3 · 푼다: Phase 5, Phase 6, Phase 10 · 파일 집합: src/shared/components(map·sms·upload), src/shared/payment, src/app/api/payments · todo
 - Phase 5 — 이용자 틀·로그인·가입 · 유닛 5개 · 의존: Phase 4 · 푼다: Phase 7, Phase 9 · 파일 집합: src/app/(user)/layout · login · signup · phone-verification · find-login-id, src/app/api/auth, src/contracts/user · todo
@@ -76,16 +76,13 @@ flowchart LR
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: 진행 중 없음 · Next up: Phase 2
+지금: Phase 2 진행 중 · Next up: Phase 2
 
 ## 지금 할 일
-Phase 2 API 기반 시작하기
-- #3 백엔드 호출 클라이언트
-- #4 공통 계약
-- #5 표시 형식 유틸
-- 시작 전에 정하기
-  API 호출을 axios 유지 + 큐만 fetch 로 갈지, fetch 하나로 통일할지 — 모든 화면의 호출 코드 모양이 정해진다 (Phase 2 · #3)
-- ok → 다음
+Phase 2 API 기반 마무리하기
+- build 완료 — `npm run dev` 후 `/dev/ui/` 에서 페이지 탭 모양 확인
+- `/beaver:ship` → `/beaver:test`
+- 다음은 Phase 3 영역별 로그인 기반 — 시작 전에 정하기: 영역별 토큰 쿠키를 이름으로 나눌지 경로로 나눌지, 재발급을 브라우저 / Next 서버 중 어디서 할지
 
 ## Scope & Actors
 - **이용자** (모바일 웹 `/`, 카카오 · 네이버 로그인) — 주변 업체 찾기 → 예약 · 토스 결제 → QR 입실 · 취소 · 연장, 마이페이지 · 탈퇴, 입점 신청.
@@ -122,17 +119,19 @@ Phase 2 API 기반 시작하기
 ### Phase 2 — API 기반 (지침서 호출 방식 · 공통 계약 · 표시 형식) · depends: —
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 3 | 백엔드 호출 클라이언트 | 동기 JSON · 큐(SSE: accepted → done / failed / pending) 호출, 실패 본문(`validation_errors` snake_case)을 칸 · alert 로 — 예전 axios 래퍼 · `axios-error` 교체 | axios 유지 + 큐만 fetch vs fetch 하나로 통일 | — | todo |
-| 4 | 공통 계약 | `contracts/common`(페이지 · 실패 DTO · 상태 상수 · 룩업 · 큐 이벤트 이름) 사본 + `class-transformer`, `PaginationType`/`Pagination` 을 snake_case 로 | — | 3 | todo |
-| 5 | 표시 형식 유틸 | ISO 시각 → 한국 시각, 날짜 · 달 · `HH:mm`, 금액(원), 요일 비트합 ↔ 요일 목록, 상태 이름(`*_name` → 룩업) | dayjs timezone 플러그인을 쓸지 | — | todo |
+| 3 | 백엔드 호출 클라이언트 | 동기 JSON · 큐(SSE: accepted → done / failed / pending) 호출, 실패 본문(`validation_errors` snake_case)을 칸 · alert 로 — 예전 axios 래퍼 · `axios-error` 교체 | axios 유지 + 큐만 fetch vs fetch 하나로 통일 | — | in-progress |
+| 4 | 공통 계약 | `contracts/common`(페이지 · 실패 DTO · 상태 상수 · 룩업 · 큐 이벤트 이름) 사본 + `class-transformer`, `PaginationType`/`Pagination` 을 snake_case 로 | — | 3 | in-progress |
+| 5 | 표시 형식 유틸 | ISO 시각 → 한국 시각, 날짜 · 달 · `HH:mm`, 금액(원), 요일 비트합 ↔ 요일 목록, 상태 이름(`*_name` → 룩업) | dayjs timezone 플러그인을 쓸지 | — | in-progress |
 
 **Expected modules**:
 
 | Unit | Module | Export | Purpose |
 |------|--------|--------|---------|
-| #3 | `src/shared/api/` | `request` · `callQueue` · `handleApiError` | 동기 · 큐 호출과 실패 처리 |
-| #4 | `src/contracts/common/` | `pagination.dto` · `api-fail.dto` · 상수 · 룩업 | 지침서 `frontend/dto/common.md` 사본 |
-| #5 | `src/shared/utils/format.ts` | `toKst` · `formatPrice` · `daysOfWeek` | 화면 표시 |
+| #3 | `src/shared/api/` | `request` · `callQueue` · `takeSseEvents` · `handleApiError` · `ApiError` | 동기 · 큐 호출과 실패 처리 (fetch 하나) |
+| #4 | `src/contracts/common/` · `src/shared/components/ui/nav/Pagination.tsx` | `pagination.dto` · `fail-result.dto` · `roles` · `sse` · `reservation.constants` · `lookup` · `Pagination` | 지침서 `frontend/dto/common.md` 사본 · 페이지 탭 |
+| #5 | `src/shared/utils/format.ts` | `toKst` · `todayKst` · `formatPrice` · `daysToBits` · `bitsToDays` · `formatDays` | 화면 표시 |
+
+> build 완료(2026-11-15) — report: `.beaver/output/report/api/api-foundation-report.md`. fetch 하나로 통일, `class-transformer` 는 쓰는 곳이 생기는 Phase 5 로 미룸. 테스트는 `/beaver:test`, 페이지 탭은 `/dev/ui/`.
 
 ### Phase 3 — 영역별 로그인 기반 (이용자 · 매니저 · 관리자 토큰을 따로) · depends: Phase 2
 | # | Unit | Goal | Key decision | Depends | Status |
@@ -396,7 +395,7 @@ Phase 2 API 기반 시작하기
 - `frontend/changes/` 가 오면 위에서부터 반영하고, 어디까지 반영했는지 이 저장소에 기록한다.
 
 ## Open Decisions (roadmap-level)
-- [ ] API 호출을 axios 유지 + 큐만 fetch 로 갈지, fetch 하나로 통일할지 — 모든 화면의 호출 코드 모양이 정해진다 (Phase 2 · #3)
+- [x] API 호출을 axios 유지 + 큐만 fetch 로 갈지, fetch 하나로 통일할지 — 모든 화면의 호출 코드 모양이 정해진다 (Phase 2 · #3) → fetch 하나로 통일 (사용자 2026-11-15)
 - [ ] 영역별 토큰 쿠키를 이름으로 나눌지 경로로 나눌지, 재발급을 브라우저 / Next 서버 중 어디서 할지 (Phase 3 · #6 · #7)
 - [ ] SNS 로그인을 next-auth 로 유지할지 카카오 · 네이버 SDK 를 직접 쓸지 (Phase 5 · #15)
 - [x] 디자인 토큰을 전역 하나로 둘지 이용자 · 콘솔로 나눌지 (Phase 1 · #1) — 색은 전역 한 벌, 크기만 영역별(`data-area="console"`) (선택: 사용자 2026-11-14)
@@ -405,4 +404,4 @@ Phase 2 API 기반 시작하기
 - 이용자 화면을 먼저 만들기 때문에, 확인하려면 백엔드에 업체 · 객실 · 상품 데이터가 미리 있어야 한다(콘솔 화면은 나중) — 개발 백엔드의 시드 데이터를 확인할 것.
 - 백엔드는 SNS 토큰을 다시 확인하지 않고 넘긴 `sns_user_id` 를 믿는다(frontend/screens.md U5) — 아무나 남의 SNS 사용자 ID 로 로그인할 수 있어 백엔드에 알릴 보안 위험.
 - 외부 키가 필요하다 — 카카오 지도 · 카카오 / 네이버 로그인 · 토스 결제(테스트 · 운영). 키가 없으면 Phase 4 · 5 확인이 막힌다.
-- 지금 코드의 예전 백엔드 기준 부분(아이디 · 비밀번호 `/login`, 단일 토큰, camelCase 페이지네이션, axios 래퍼)은 Phase 2 · 3 · 5 에서 교체된다.
+- 지금 코드의 예전 백엔드 기준 부분(아이디 · 비밀번호 `/login`, 단일 토큰)은 Phase 3 · 5 에서 교체된다. camelCase 페이지네이션 · axios 는 Phase 2 에서 걷어냈다.

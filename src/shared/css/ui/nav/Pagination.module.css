@@ -1,0 +1,41 @@
+/* 페이지 탭 — 시안 frontend/design/manager.html .pager */
+.pager {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+}
+
+.item {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 32px;
+    height: 32px;
+    padding: 0 8px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--fg);
+    font: inherit;
+    font-size: 13px;
+    cursor: pointer;
+}
+
+.item:hover:not(:disabled):not(.current) {
+    background: var(--surface-2);
+}
+
+.item:disabled {
+    color: var(--faint);
+    cursor: default;
+}
+
+.current {
+    border-color: var(--primary);
+    background: var(--primary);
+    color: var(--on-primary);
+    font-weight: 700;
+    cursor: default;
+}
