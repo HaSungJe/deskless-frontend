@@ -7,7 +7,7 @@
 ```mermaid
 flowchart LR
   P1["Phase 1 · 디자인 기반 (2)"]:::done
-  P2["Phase 2 · API 기반 (3)"]:::inprog
+  P2["Phase 2 · API 기반 (3)"]:::done
   P3["Phase 3 · 영역별 로그인 기반 (3)"]:::todo
   P4["Phase 4 · 이용자 공통 인프라 (5)"]:::todo
   P5["Phase 5 · 이용자 틀·로그인·가입 (5)"]:::todo
@@ -57,7 +57,7 @@ flowchart LR
 ```
 
 - Phase 1 — 디자인 기반 · 유닛 2개 · 의존: — · 푼다: Phase 4 · 파일 집합: src/app/css, src/shared/components/ui, src/shared/css · done
-- Phase 2 — API 기반 · 유닛 3개 · 의존: — · 푼다: Phase 3 · 파일 집합: src/shared/api, src/contracts/common, src/shared/utils · in-progress
+- Phase 2 — API 기반 · 유닛 3개 · 의존: — · 푼다: Phase 3 · 파일 집합: src/shared/api, src/contracts/common, src/shared/utils · done
 - Phase 3 — 영역별 로그인 기반 · 유닛 3개 · 의존: Phase 2 · 푼다: Phase 4 · 파일 집합: src/app/api/cookie, src/shared/api(auth), src/shared/providers, src/app/RootLayoutContent.tsx · todo
 - Phase 4 — 이용자 공통 인프라 · 유닛 5개 · 의존: Phase 1, Phase 3 · 푼다: Phase 5, Phase 6, Phase 10 · 파일 집합: src/shared/components(map·sms·upload), src/shared/payment, src/app/api/payments · todo
 - Phase 5 — 이용자 틀·로그인·가입 · 유닛 5개 · 의존: Phase 4 · 푼다: Phase 7, Phase 9 · 파일 집합: src/app/(user)/layout · login · signup · phone-verification · find-login-id, src/app/api/auth, src/contracts/user · todo
@@ -76,13 +76,17 @@ flowchart LR
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: Phase 2 진행 중 · Next up: Phase 2
+지금: 진행 중 없음 · Next up: Phase 3
 
 ## 지금 할 일
-Phase 2 API 기반 마무리하기
-- build 완료 — `npm run dev` 후 `/dev/ui/` 에서 페이지 탭 모양 확인
-- `/beaver:ship` → `/beaver:test`
-- 다음은 Phase 3 영역별 로그인 기반 — 시작 전에 정하기: 영역별 토큰 쿠키를 이름으로 나눌지 경로로 나눌지, 재발급을 브라우저 / Next 서버 중 어디서 할지
+Phase 3 영역별 로그인 기반 시작하기
+- #6 영역별 토큰 저장 · 로그아웃
+- #7 401 재발급 · 로그인으로 보내기
+- #8 영역 판별 · 로그인 상태 · AuthGuard
+- 시작 전에 정하기
+  영역별 토큰 쿠키를 이름으로 나눌지 경로로 나눌지, 재발급을 브라우저 / Next 서버 중 어디서 할지 (Phase 3 · #6 · #7)
+- 넘겨받은 일: `request` · `callQueue` 를 감쌀 때 fetch 실패를 `NetworkError` 로 나눠, 요청 뒤 코드 오류가 "서버에 연결할 수 없습니다" 로 보이지 않게 (Phase 2 review #3)
+- ok → 다음
 
 ## Scope & Actors
 - **이용자** (모바일 웹 `/`, 카카오 · 네이버 로그인) — 주변 업체 찾기 → 예약 · 토스 결제 → QR 입실 · 취소 · 연장, 마이페이지 · 탈퇴, 입점 신청.
@@ -119,9 +123,9 @@ Phase 2 API 기반 마무리하기
 ### Phase 2 — API 기반 (지침서 호출 방식 · 공통 계약 · 표시 형식) · depends: —
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 3 | 백엔드 호출 클라이언트 | 동기 JSON · 큐(SSE: accepted → done / failed / pending) 호출, 실패 본문(`validation_errors` snake_case)을 칸 · alert 로 — 예전 axios 래퍼 · `axios-error` 교체 | axios 유지 + 큐만 fetch vs fetch 하나로 통일 | — | in-progress |
-| 4 | 공통 계약 | `contracts/common`(페이지 · 실패 DTO · 상태 상수 · 룩업 · 큐 이벤트 이름) 사본 + `class-transformer`, `PaginationType`/`Pagination` 을 snake_case 로 | — | 3 | in-progress |
-| 5 | 표시 형식 유틸 | ISO 시각 → 한국 시각, 날짜 · 달 · `HH:mm`, 금액(원), 요일 비트합 ↔ 요일 목록, 상태 이름(`*_name` → 룩업) | dayjs timezone 플러그인을 쓸지 | — | in-progress |
+| 3 | 백엔드 호출 클라이언트 | 동기 JSON · 큐(SSE: accepted → done / failed / pending) 호출, 실패 본문(`validation_errors` snake_case)을 칸 · alert 로 — 예전 axios 래퍼 · `axios-error` 교체 | axios 유지 + 큐만 fetch vs fetch 하나로 통일 | — | done(3e1555f) |
+| 4 | 공통 계약 | `contracts/common`(페이지 · 실패 DTO · 상태 상수 · 룩업 · 큐 이벤트 이름) 사본 + `class-transformer`, `PaginationType`/`Pagination` 을 snake_case 로 | — | 3 | done(3e1555f) |
+| 5 | 표시 형식 유틸 | ISO 시각 → 한국 시각, 날짜 · 달 · `HH:mm`, 금액(원), 요일 비트합 ↔ 요일 목록, 상태 이름(`*_name` → 룩업) | dayjs timezone 플러그인을 쓸지 | — | done(3e1555f) |
 
 **Expected modules**:
 
@@ -380,8 +384,8 @@ Phase 2 API 기반 마무리하기
 | #60 | `/admin/users` | A6 · `GET user` | 이용자 목록 |
 | #61 | `/admin/users/[user_id]` | A6 · `GET user/:id` · `/reservation` · `PATCH /state` | 이용 제한 |
 
-**Progress**: 2/61 units done (1/17 phases)
-**Next up**: Phase 2 API 기반 — 의존 없음
+**Progress**: 5/61 units done (2/17 phases)
+**Next up**: Phase 3 영역별 로그인 기반 — 의존(Phase 2) 모두 완료
 
 ## Cross-Cutting Rules
 - 주소 · 화면 키 · 쓰는 API 는 `frontend/screens.md` 그대로. ★ 주소(`/reservation/[reservation_id]` · `…/cancel-request`)는 SMS 링크라 바꾸지 않는다.
