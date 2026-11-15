@@ -58,7 +58,7 @@ const handler = NextAuth({
             // console.log(profile)
 
             if (account.provider === 'naver') {
-                const naverProfile = profile as any;
+                const naverProfile = profile as {response?: {id?: string; name?: string}};
                 data = { 
                     sns_code: 'NAVER',
                     sns_id: naverProfile?.response?.id ?? account.providerAccountId,
@@ -66,7 +66,7 @@ const handler = NextAuth({
                     name: naverProfile?.response?.name ?? `NAVER${new Date().getTime()}`, 
                 }
             } else if (account.provider === 'kakao') {
-                const kakaoProfile = profile as any;
+                const kakaoProfile = profile as {name?: string; kakao_account?: {profile?: {nickname?: string}}};
                 data = { 
                     sns_code: 'KAKAO',
                     sns_id: account.providerAccountId,
@@ -107,7 +107,7 @@ const handler = NextAuth({
                 });
 
                 return '/sign/sns';
-            } catch (error) {
+            } catch {
                 // console.log(`-----------sns 로그인 에러-----------`);
                 // console.log(error);
                 return false; // 에러 시 명시적 반환 추가

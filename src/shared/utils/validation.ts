@@ -1,4 +1,5 @@
 import { validateOrReject, ValidationError } from "class-validator";
+import { showErrorPopup } from "@/shared/utils/error-popup";
 
 export type ValidationErrorType = {
     type?: string;
@@ -23,7 +24,7 @@ function findValidationAlert(property: string, key?: string): HTMLElement | null
 }
 
 /**
- * 입력 칸 오류 표시 — 찾은 칸 수를 돌려준다(0 이면 호출한 쪽이 alert 로 대신 보여 준다)
+ * 입력 칸 오류 표시 — 찾은 칸 수를 돌려준다(0 이면 호출한 쪽이 오류 팝업으로 대신 보여 준다)
  *
  * @param errors 오류 목록
  * @param key 중첩 DTO 키
@@ -93,7 +94,7 @@ export async function validateAction(dto: object, reset: boolean = true): Promis
     } catch (err) {
         const validationErrors = toValidationErrors(err as Array<ValidationError>);
         if (validationErrors.length > 0 && showValidationErrors(validationErrors) === 0) {
-            alert(validationErrors[0].message);
+            showErrorPopup(validationErrors[0].message);
         }
 
         return false;
@@ -115,7 +116,7 @@ export async function validateActionChildren(dto: object, key: string): Promise<
     } catch (err) {
         const validationErrors = toValidationErrors(err as Array<ValidationError>);
         if (validationErrors.length > 0 && showValidationErrors(validationErrors, key) === 0) {
-            alert(validationErrors[0].message);
+            showErrorPopup(validationErrors[0].message);
         }
 
         return false;

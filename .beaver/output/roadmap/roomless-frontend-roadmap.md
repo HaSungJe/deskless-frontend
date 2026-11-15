@@ -8,7 +8,7 @@
 flowchart LR
   P1["Phase 1 · 디자인 기반 (2)"]:::done
   P2["Phase 2 · API 기반 (3)"]:::done
-  P3["Phase 3 · 영역별 로그인 기반 (3)"]:::todo
+  P3["Phase 3 · 영역별 로그인 기반 (3)"]:::inprog
   P4["Phase 4 · 이용자 공통 인프라 (5)"]:::todo
   P5["Phase 5 · 이용자 틀·로그인·가입 (5)"]:::todo
   P6["Phase 6 · 업체 둘러보기 (2)"]:::todo
@@ -58,7 +58,7 @@ flowchart LR
 
 - Phase 1 — 디자인 기반 · 유닛 2개 · 의존: — · 푼다: Phase 4 · 파일 집합: src/app/css, src/shared/components/ui, src/shared/css · done
 - Phase 2 — API 기반 · 유닛 3개 · 의존: — · 푼다: Phase 3 · 파일 집합: src/shared/api, src/contracts/common, src/shared/utils · done
-- Phase 3 — 영역별 로그인 기반 · 유닛 3개 · 의존: Phase 2 · 푼다: Phase 4 · 파일 집합: src/app/api/cookie, src/shared/api(auth), src/shared/providers, src/app/RootLayoutContent.tsx · todo
+- Phase 3 — 영역별 로그인 기반 · 유닛 3개 · 의존: Phase 2 · 푼다: Phase 4 · 파일 집합: src/app/api/cookie, src/shared/api(auth), src/shared/providers, src/app/RootLayoutContent.tsx · in-progress
 - Phase 4 — 이용자 공통 인프라 · 유닛 5개 · 의존: Phase 1, Phase 3 · 푼다: Phase 5, Phase 6, Phase 10 · 파일 집합: src/shared/components(map·sms·upload), src/shared/payment, src/app/api/payments · todo
 - Phase 5 — 이용자 틀·로그인·가입 · 유닛 5개 · 의존: Phase 4 · 푼다: Phase 7, Phase 9 · 파일 집합: src/app/(user)/layout · login · signup · phone-verification · find-login-id, src/app/api/auth, src/contracts/user · todo
 - Phase 6 — 업체 둘러보기 · 유닛 2개 · 의존: Phase 4 · 푼다: Phase 7 · 파일 집합: src/app/(user)/page · stores/[store_id], src/contracts/discovery · todo
@@ -76,7 +76,7 @@ flowchart LR
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: 진행 중 없음 · Next up: Phase 3
+지금: Phase 3 진행 중 · Next up: Phase 3
 
 ## 지금 할 일
 Phase 3 영역별 로그인 기반 시작하기
@@ -140,17 +140,19 @@ Phase 3 영역별 로그인 기반 시작하기
 ### Phase 3 — 영역별 로그인 기반 (이용자 · 매니저 · 관리자 토큰을 따로) · depends: Phase 2
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 6 | 영역별 토큰 저장 · 로그아웃 | 세 영역 토큰을 httpOnly 쿠키로 따로 저장 · 삭제(route handler) — 예전 단일 `accessToken` 쿠키 교체 | 쿠키를 이름으로 나눌지 경로(path)로 나눌지 | 3 | todo |
-| 7 | 401 재발급 · 로그인으로 보내기 | 401 → 그 영역 `token-refresh` 한 번 → 또 401 이면 그 영역 로그인 화면(돌아올 주소와 함께) | 재발급을 브라우저에서 할지 Next 서버(route handler)에서 할지 | 3, 6 | todo |
-| 8 | 영역 판별 · 로그인 상태 · AuthGuard | 주소로 영역을 알아 그 영역 로그인 상태를 Context 로, `AuthGuard` 를 영역별 로그인 주소로 — `RootLayoutContent` 정리 | — | 6, 7 | todo |
+| 6 | 영역별 토큰 저장 · 로그아웃 | 세 영역 토큰을 httpOnly 쿠키로 따로 저장 · 삭제(route handler) — 예전 단일 `accessToken` 쿠키 교체 | 쿠키를 이름으로 나눌지 경로(path)로 나눌지 | 3 | in-progress |
+| 7 | 401 재발급 · 로그인으로 보내기 | 401 → 그 영역 `token-refresh` 한 번 → 또 401 이면 그 영역 로그인 화면(돌아올 주소와 함께) | 재발급을 브라우저에서 할지 Next 서버(route handler)에서 할지 | 3, 6 | in-progress |
+| 8 | 영역 판별 · 로그인 상태 · AuthGuard | 주소로 영역을 알아 그 영역 로그인 상태를 Context 로, `AuthGuard` 를 영역별 로그인 주소로 — `RootLayoutContent` 정리 | — | 6, 7 | in-progress |
 
 **Expected modules**:
 
 | Unit | Module | Export | Purpose |
 |------|--------|--------|---------|
-| #6 | `src/app/api/cookie/[area]/…` | `GET` · `POST` · `DELETE` | 영역 토큰 읽기 · 쓰기 · 지우기 |
-| #7 | `src/shared/api/auth.ts` | `refreshToken(area)` | 401 재발급 |
-| #8 | `src/shared/providers/`, `src/shared/components/AuthGuard.tsx` | `AreaAuthContext` · `AuthGuard` | 영역별 로그인 상태 · 보호 |
+| #6 | `src/app/api/cookie/[area]/…` · `token-cookie.ts` · `src/shared/api/cookie.ts` | `GET` · `POST` · `DELETE` · `saveAreaTokens` · `deleteAreaTokens` | 영역 토큰 읽기 · 쓰기 · 지우기 |
+| #7 | `src/shared/api/auth.ts` · `src/app/api/cookie/[area]/refresh/` · `src/contracts/{user,manager,admin}/api.ts` | `withAuth` · `refreshAreaToken` · `LoginRequiredError` | 401 재발급 |
+| #8 | `src/shared/utils/area.ts` · `src/shared/providers/` · `src/shared/components/AuthGuard.tsx` | `areaOf` · `loginUrl` · `AuthContext` · `AuthGuard` | 영역별 로그인 상태 · 보호 |
+
+> build 완료(2026-11-16) — report: `.beaver/output/report/auth/area-auth-report.md`. 함께: 오류 alert → 오류 팝업, 테스트 `src/test/`, lint 정리. 테스트는 `/beaver:test`, lint 는 `npm run lint`.
 
 ### Phase 4 — 이용자 공통 인프라 (지도 · 주소 · 인증번호 · 파일 · 결제) · depends: Phase 1, Phase 3
 | # | Unit | Goal | Key decision | Depends | Status |

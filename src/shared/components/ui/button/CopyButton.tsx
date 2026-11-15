@@ -1,6 +1,7 @@
 'use client';
 import { useEffect, useRef, useState } from 'react';
 import Button from './Button';
+import { showErrorPopup } from '@/shared/utils/error-popup';
 
 type CopyButtonProps = {
     text: string;          // 복사할 글자 (예: 업체 로그인 주소)
@@ -44,7 +45,7 @@ export default function CopyButton({text, label = '복사', size = 'sm'}: CopyBu
             timerRef.current = setTimeout(() => setCopied(false), COPIED_MS);
         } catch {
             // http 같은 비보안 주소에서는 navigator.clipboard 가 없다
-            alert('복사하지 못했습니다. 직접 선택해 복사해 주세요.');
+            showErrorPopup('복사하지 못했습니다. 직접 선택해 복사해 주세요.');
         }
     }
 

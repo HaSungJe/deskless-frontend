@@ -1,0 +1,27 @@
+import {IsNotEmpty} from 'class-validator';
+
+/**
+ * 매니저 토큰 재발급 입력
+ */
+export class ManagerTokenRefreshDto {
+    /** 리프레시 토큰 */
+    @IsNotEmpty({message: '리프레시 토큰을 입력해주세요.'})
+    refresh_token: string;
+}
+
+/**
+ * 매니저 토큰 재발급 결과
+ */
+export class ManagerTokenRefreshResultDto {
+    /** Access Token (유효 20분) */
+    access_token: string;
+
+    /** Refresh Token (유효 365일) */
+    refresh_token: string;
+
+    /** Access Token 만료일시 (ISO 8601) */
+    access_token_expires_at: string;
+
+    /** Refresh Token 만료일시 (ISO 8601) */
+    refresh_token_expires_at: string;
+}

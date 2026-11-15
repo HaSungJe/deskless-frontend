@@ -1,6 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
-import RouteModal from './RouteModal';
+import RouteModal from '@/shared/components/ui/modal/RouteModal';
 
 const {back} = vi.hoisted(() => ({back: vi.fn()}));
 

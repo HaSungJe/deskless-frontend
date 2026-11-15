@@ -3,7 +3,8 @@ import { useEffect, useRef } from "react";
 
 declare global {
     interface Window {
-        kakao: any
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 카카오 지도 SDK 전역(타입 패키지 없음)
+        kakao: any;
     }
 }
 
@@ -44,10 +45,19 @@ function loadKakaoMapScript(): Promise<void> {
     });
 }
 
+/**
+ * 카카오 지도 — 한 지점에 마커와 링크 인포윈도우
+ *
+ * @param param0
+ * @returns
+ */
 export default function KakaoMap({width = 'auto', height = 'auto', lat, lon, text, textLink, zoomLevel = 3, markerWidth = 'auto'}: KakaoMapProps): React.ReactNode {
-    const mapRef = useRef<HTMLDivElement>(null);
+    // 변수
+    const mapRef = useRef<HTMLDivElement>(null); // 지도를 그릴 요소
 
+    // 효과
     useEffect(() => {
+        // SDK 를 불러온 뒤 지도 · 마커 · 인포윈도우를 그린다(사라지면 그리지 않는다)
         let cancelled = false;
 
         loadKakaoMapScript().then(() => {
@@ -90,9 +100,10 @@ export default function KakaoMap({width = 'auto', height = 'auto', lat, lon, tex
     }, [lat, lon, text, textLink, zoomLevel, markerWidth]);
 
     return (
+        // 지도 자리
         <div
             ref={mapRef}
             style={{width: width, height: height}}
         />
-    )
+    );
 }

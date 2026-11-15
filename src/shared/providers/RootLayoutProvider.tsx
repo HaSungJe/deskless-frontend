@@ -1,33 +1,35 @@
 'use client';
-import { AccessTokenContextType } from "@/shared/types/access";
-import { createContext } from "react";
+import { createContext } from 'react';
+import { AuthType } from '@/shared/api/auth';
 
-type ProviderProps = {
+/** 로그인 상태 — withAuth 에 넘기는 값 + 로그인 여부 · 로그아웃 */
+export type AuthContextType = AuthType & {
+    isLogin: boolean;            // 지금 영역에 로그인했는지
+    logout: () => Promise<void>; // 지금 영역 토큰을 지운다
+};
+
+type RootLayoutProviderProps = {
     rootLayoutLoading: boolean;
-    accessTokenData: AccessTokenContextType;
-    isLogin: boolean;
+    auth: AuthContextType;
     children: React.ReactNode;
-}
+};
 
-// Context
-export const RootLayoutLoadingContext = createContext<boolean>(false); // 로딩여부
-export const AccessTokenContext = createContext<AccessTokenContextType>(null); // AccessToken
-export const IsLoginContext = createContext<boolean>(false); // 로그인 여부
+export const RootLayoutLoadingContext = createContext<boolean>(false); // 로그인 상태 확인 중
+export const AuthContext = createContext<AuthContextType>(null);       // 지금 영역의 로그인 상태
 
 /**
- * RootLayoutProvider
+ * 로그인 상태 Context — RootLayoutContent 가 채운다
  *
  * @param param0
  * @returns
  */
-export default function RootLayoutProvider({rootLayoutLoading, accessTokenData, isLogin, children}: ProviderProps) {
+export default function RootLayoutProvider({rootLayoutLoading, auth, children}: RootLayoutProviderProps): React.ReactNode {
     return (
+        // 확인 중 · 로그인 상태
         <RootLayoutLoadingContext.Provider value={rootLayoutLoading}>
-            <AccessTokenContext.Provider value={accessTokenData}>
-                <IsLoginContext.Provider value={isLogin}>
-                    {children}
-                </IsLoginContext.Provider>
-            </AccessTokenContext.Provider>
+            <AuthContext.Provider value={auth}>
+                {children}
+            </AuthContext.Provider>
         </RootLayoutLoadingContext.Provider>
-    )
+    );
 }

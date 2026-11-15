@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
-import Pagination from './Pagination';
+import Pagination from '@/shared/components/ui/nav/Pagination';
 import { PaginationType } from '@/shared/types/pagination';
 
 /**

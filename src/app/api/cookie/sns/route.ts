@@ -17,7 +17,7 @@ export async function GET() {
         } else {
             return new Response(JSON.stringify({ success: false }), {headers});
         }
-    } catch (error) {
+    } catch {
         return new Response(JSON.stringify({ success: false }), {headers});
     }
 }
@@ -39,7 +39,7 @@ export async function DELETE(): Promise<Response> {
         }
 
         return new Response(JSON.stringify({ success: true }), {headers});
-    } catch (error) {
+    } catch {
         return new Response(JSON.stringify({ success: false }), {headers});
     }
 }

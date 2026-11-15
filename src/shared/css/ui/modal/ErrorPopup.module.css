@@ -1,0 +1,16 @@
+.message {
+    margin: 0;
+    white-space: pre-line;
+}
+
+.detail {
+    margin: 0;
+    padding: 8px 12px;
+    border-radius: var(--radius);
+    background: var(--surface-2);
+    color: var(--muted);
+    font-family: var(--mono);
+    font-size: 12px;
+    white-space: pre-wrap;
+    word-break: break-all;
+}

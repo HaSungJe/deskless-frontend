@@ -1,6 +1,11 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { handleApiError, NETWORK_ERROR_MESSAGE } from './error';
-import { ApiError } from './request';
+import { LoginRequiredError } from '@/shared/api/auth';
+import { handleApiError, NETWORK_ERROR_MESSAGE, UNKNOWN_ERROR_MESSAGE } from '@/shared/api/error';
+import { ApiError, NetworkError } from '@/shared/api/request';
+
+const {showErrorPopup} = vi.hoisted(() => ({showErrorPopup: vi.fn()}));
+
+vi.mock('@/shared/utils/error-popup', () => ({showErrorPopup}));
 
 /**
  * 오류 칸 두 개 — store_name(비어 있음) · phone(이전 오류가 떠 있음)
@@ -15,10 +20,8 @@ function renderAlertSpans(): {storeName: HTMLElement; phone: HTMLElement} {
     return {storeName, phone};
 }
 
-let alertSpy: ReturnType<typeof vi.spyOn>;
-
 beforeEach(() => {
-    alertSpy = vi.spyOn(window, 'alert').mockImplementation(() => undefined);
+    showErrorPopup.mockClear();
 });
 
 afterEach(() => {
@@ -27,7 +30,7 @@ afterEach(() => {
 });
 
 describe('handleApiError', () => {
-    it('[FAIL:validation] 맞는 칸이 있으면 칸 옆에 보여 주고 alert 는 띄우지 않으며 이전 칸 오류는 지운다', () => {
+    it('[FAIL:validation] 맞는 칸이 있으면 칸 옆에 보여 주고 팝업은 띄우지 않으며 이전 칸 오류는 지운다', () => {
         const {storeName, phone} = renderAlertSpans();
         const error = new ApiError(400, {message: '입력값을 확인해 주세요.', validation_errors: [{property: 'store_name', message: '업체명을 입력해 주세요.'}]});
 
@@ -37,43 +40,51 @@ describe('handleApiError', () => {
         expect(storeName.style.display).toBe('block');
         expect(phone.innerText).toBe('');
         expect(phone.style.display).toBe('none');
-        expect(alertSpy).not.toHaveBeenCalled();
+        expect(showErrorPopup).not.toHaveBeenCalled();
     });
 
-    it('[FAIL:validation] validation_errors 는 있는데 맞는 칸이 없으면 message 를 alert 로 한 번', () => {
+    it('[FAIL:validation] validation_errors 는 있는데 맞는 칸이 없으면 message 를 팝업으로 한 번', () => {
         renderAlertSpans();
         const error = new ApiError(400, {message: '입력값을 확인해 주세요.', validation_errors: [{property: 'hours.0.open_time', message: '여는 시각을 입력해 주세요.'}]});
 
         handleApiError(error);
 
-        expect(alertSpy).toHaveBeenCalledTimes(1);
-        expect(alertSpy).toHaveBeenCalledWith('입력값을 확인해 주세요.');
+        expect(showErrorPopup).toHaveBeenCalledTimes(1);
+        expect(showErrorPopup).toHaveBeenCalledWith('입력값을 확인해 주세요.');
     });
 
-    it('[FAIL:validation] validation_errors 가 null 이면 message 를 alert 로 한 번', () => {
+    it('[FAIL:validation] validation_errors 가 null 이면 message 를 팝업으로 한 번', () => {
         const {storeName} = renderAlertSpans();
         const error = new ApiError(403, {message: '이용이 제한된 계정입니다.', validation_errors: null, block_comment: '운영 정책 위반'});
 
         handleApiError(error);
 
-        expect(alertSpy).toHaveBeenCalledTimes(1);
-        expect(alertSpy).toHaveBeenCalledWith('이용이 제한된 계정입니다.');
+        expect(showErrorPopup).toHaveBeenCalledTimes(1);
+        expect(showErrorPopup).toHaveBeenCalledWith('이용이 제한된 계정입니다.');
         expect(storeName.style.display).toBe(''); // 칸은 건드리지 않는다(jsdom 은 손대지 않은 span 의 innerText 가 undefined)
     });
 
-    it('[FAIL:network] ApiError 가 아닌 오류(fetch TypeError)는 고정 문구를 alert 로 한 번', () => {
+    it('[FAIL:network] NetworkError 는 네트워크 문구를 팝업으로 한 번', () => {
+        handleApiError(new NetworkError(new TypeError('Failed to fetch')));
+
+        expect(showErrorPopup).toHaveBeenCalledTimes(1);
+        expect(showErrorPopup).toHaveBeenCalledWith(NETWORK_ERROR_MESSAGE);
+    });
+
+    it('[FAIL:unknown] 그 밖의 오류는 일반 문구 + 개발 원문을 팝업으로 한 번 · console.error', () => {
         const consoleSpy = vi.spyOn(console, 'error').mockImplementation(() => undefined);
 
-        handleApiError(new TypeError('Failed to fetch'));
+        handleApiError(new TypeError("Cannot read properties of undefined (reading 'store_id')"));
 
-        expect(alertSpy).toHaveBeenCalledTimes(1);
-        expect(alertSpy).toHaveBeenCalledWith(NETWORK_ERROR_MESSAGE);
+        expect(showErrorPopup).toHaveBeenCalledTimes(1);
+        expect(showErrorPopup).toHaveBeenCalledWith(UNKNOWN_ERROR_MESSAGE, "Cannot read properties of undefined (reading 'store_id')");
         expect(consoleSpy).toHaveBeenCalledTimes(1);
     });
 
-    it('[FAIL:abort] 화면이 취소한 요청(AbortError)은 아무것도 띄우지 않는다', () => {
+    it('[FAIL:abort] 화면이 취소한 요청 · 로그인 만료는 아무것도 띄우지 않는다', () => {
         handleApiError(new DOMException('The operation was aborted.', 'AbortError'));
+        handleApiError(new LoginRequiredError());
 
-        expect(alertSpy).not.toHaveBeenCalled();
+        expect(showErrorPopup).not.toHaveBeenCalled();
     });
 });

@@ -12,15 +12,15 @@
 |---|---|---|
 | `request<T>({method?, path, query?, body?, token?, signal?})` (`request.ts`) | 동기 — 조회 · 로그인 · 재발급 · 업로드 주소 발급 | JSON(빈 본문 · 204 는 `null`). 2xx 가 아니면 `ApiError(status, 실패 본문)`, 본문이 JSON 이 아니면 `ApiError(status, {message: "서버 응답을 읽을 수 없습니다.", validation_errors: null})` |
 | `callQueue<T>({method, path, body?, token?, signal?})` (`queue.ts`) | 큐 — 상태를 바꾸는 쓰기(`text/event-stream`) | `done` → data, `pending` · 결과 없이 끝남 → `null`, `failed` → `ApiError(status_code, data)`, 스트림 전 실패(400 · 401 · 403) → `ApiError(status, 본문)` |
-| `handleApiError(error)` (`error.ts`) | catch | 칸 옆 · alert — [error-handling.md](error-handling.md) |
+| `handleApiError(error)` (`error.ts`) | catch | 칸 옆 · 오류 팝업 — [error-handling.md](error-handling.md) |
 
 - 주소는 `buildUrl(path, query)` = `${NEXT_PUBLIC_API_URL}/api/v1${path}${createQueryString(query)}` — `path` 는 `/user-service/…` · `/admin-service/…`, 경로 값은 부르는 쪽이 `encodeURIComponent`. query 는 `null` · `undefined` · 빈 문자열을 뺀다(`src/shared/utils/util.ts`).
 - 헤더는 `Accept`(큐는 `text/event-stream`), 본문이 있으면 `Content-Type: application/json`, 토큰이 있으면 `Authorization: Bearer`.
 - 큐 이벤트는 `takeSseEvents(buffer)`(`sse.ts`)가 자른다 — 빈 줄 경계, CRLF 허용, 여러 줄 `data:` 는 `\n` 으로 잇고 `:` 주석 줄은 무시. 결과는 지침서 예시 그대로(선택: 사용자) — 응답 DTO 가 `null` 인 큐 API 는 `done` 과 `pending` 이 같은 `null` 이라 화면은 `null` 이면 그 리소스를 다시 조회한다.
-- 네트워크 실패 · 취소는 fetch 오류(`TypeError` · `AbortError`)를 그대로 던진다. 화면을 떠날 때 취소하려면 `AbortController` 의 `signal` 을 넘긴다.
-- 401 은 아직 `ApiError(401)` 로 던지기만 한다 — 영역별 토큰 · `token-refresh` 재발급 · 로그인 화면 이동은 Phase 3 이 감싼다.
+- 응답이 없는 실패(fetch `TypeError` · 본문 · 스트림 읽기 실패)는 `NetworkError`(원래 오류는 `cause`), 취소(`AbortError`)는 그대로 던진다. 화면을 떠날 때 취소하려면 `AbortController` 의 `signal` 을 넘긴다.
+- 로그인이 필요한 API 는 `withAuth(auth, (token) => request · callQueue(…))` (`src/shared/api/auth.ts:30`) — 401 이면 `refreshAreaToken(area)`(같은 영역 동시 재발급은 하나로) → 한 번 재시도, 재발급 결과 로그인이 끝났거나(refresh 4xx) 또 401 이면 그 영역 토큰 삭제 · `onExpired()`(로그인 화면) · `LoginRequiredError`. 재발급이 일시 실패(네트워크 · 백엔드 5xx — route handler 가 `retry: true`)면 쿠키 · 로그인을 그대로 두고 `NetworkError` 를 던진다(화면은 네트워크 문구 팝업). 응답이 없는 실패(fetch 실패 · 큐 스트림 끊김)는 `NetworkError`(`request.ts` `sendRequest`), 취소는 `AbortError` 그대로.
 - 도메인별 엔드포인트 함수는 `src/contracts/<도메인>/api.ts` 에 두고 그 함수가 `request` · `callQueue` 를 부른다(아직 없음 — 첫 화면 때).
-- axios 는 쓰지 않는다(패키지 제거 — 사용자 2026-11-15). 예전 래퍼(`axios.ts` · `axios-error.ts`)는 지웠고, 토큰 쿠키 route handler 부르기(`src/shared/api/cookie.ts`) · 재발급(`src/app/api/cookie/access/route.ts`) · 예전 로그인(`LoginContent.tsx`)도 fetch 다.
+- axios 는 쓰지 않는다(패키지 제거 — 사용자 2026-11-15). 예전 래퍼(`axios.ts` · `axios-error.ts`)는 지웠고, 토큰 쿠키 route handler 부르기(`src/shared/api/cookie.ts`) · 재발급(`src/app/api/cookie/token-cookie.ts` → `request`)도 fetch 다.
 
 ### 지침서의 나머지 호출 규칙 (frontend/api.md "호출 방식")
 | 항목 | 규칙 |
@@ -45,20 +45,30 @@
 
 ## 토큰 쿠키 — route handler
 
+영역(`user` · `manager` · `admin`)마다 쿠키 두 개(쿠키 이름으로 나눔 — 사용자 2026-11-15). 공용 코드 `src/app/api/cookie/token-cookie.ts`.
+
 | 쿠키 | 쓰는 곳 | 옵션 |
 |---|---|---|
-| `accessToken` | `POST /api/cookie/access` (`src/app/api/cookie/access/route.ts:100-125`), 재발급 시 `GET` 안에서 (`:68-76`) | `httpOnly`, `path: "/"`, `domain: SERVER_DOMAIN`, `sameSite: SERVER_DOMAIN ? "lax" : "strict"`, `secure: 개발이면 false, 아니면 x-forwarded-proto 가 https`, 만료 1분 전 |
-| `refreshToken` | `POST /api/cookie/refresh` (`src/app/api/cookie/refresh/route.ts`) | 같은 옵션, 만료 기본 30일 |
+| `<area>_access_token` | `POST /api/cookie/<area>/`(로그인 결과 저장), `GET` · `POST …/refresh/` 안의 재발급 (`token-cookie.ts:96`) | `httpOnly`, `path: "/"`, `domain: SERVER_DOMAIN`(빈 값이면 없음), `sameSite: SERVER_DOMAIN ? "lax" : "strict"`, `secure: 개발이면 false, 아니면 x-forwarded-proto 가 https`, 만료 = `access_token_expires_at` − 60초 |
+| `<area>_refresh_token` | 같은 곳 | 같은 옵션, 만료 = `refresh_token_expires_at` |
 | `sns` | next-auth `signIn` 콜백 (`src/app/api/auth/[...nextauth]/route.ts`) | `httpOnly`, `sameSite: "lax"`, 1시간 |
 
-- 클라이언트는 쿠키를 직접 읽지 않고 `src/shared/api/cookie.ts` 의 함수로 route handler 를 부른다: `getAccessToken` · `getAccessTokenData` · `checkAuth` · `setAccessToken` · `setRefreshToken` · `deleteToken` · `getSNSAccessToken` · `deleteSNSAccessToken` (`cookie.ts`). 지금 호출되는 것은 `getAccessToken` · `deleteToken` · `setAccessToken` · `setRefreshToken` 뿐이다.
-- `GET /api/cookie/access` 는 access 토큰이 없거나 만료 60초 이내면 refresh 토큰으로 재발급한다 (`access/route.ts:22`, `:42-91`).
+| route handler | 하는 일 | 결과 |
+|---|---|---|
+| `GET /api/cookie/<area>/` | access 쿠키 값, 없으면(곧 만료 포함) refresh 쿠키로 그 영역 token-refresh → 두 쿠키 새로 | `{success, data: access}` / 로그인이 끝났으면(refresh 없음 · 4xx) 두 쿠키 삭제 · `{success: false}` / 일시 실패(네트워크 · 5xx)면 쿠키를 두고 `{success: false, retry: true}` |
+| `POST /api/cookie/<area>/` | 로그인 결과 토큰 4개 저장 — 같은 사이트 JSON 요청만(`Content-Type: application/json`, `Sec-Fetch-Site` 가 있으면 `same-origin`), 토큰 4개가 다 있고 만료 시각을 읽을 수 있을 때만 | `{success}` |
+| `DELETE /api/cookie/<area>/` | 로그아웃 — 그 영역 두 쿠키만 삭제(로그아웃 API 없음) | `{success}` |
+| `POST /api/cookie/<area>/refresh/` | 401 뒤 강제 재발급 | `GET` 의 재발급과 같음 — 로그인이 끝났으면 두 쿠키 삭제, 일시 실패면 `retry: true` |
+
+- ⚠️ 백엔드 재발급은 지금 로그인 때 IP 와 재발급 요청 IP 가 다르면 401 이다 — 재발급은 Next 서버가 부르므로 배포 환경에서는 access 토큰이 끝날 때 로그인이 풀린다(로컬은 IP 가 같아 영향 없음). 백엔드에 IP 검사 완화를 요청했다(2026-11-16).
+- 영역별 재발급 API: 이용자 `/user-service/user/token-refresh` · 매니저 `/admin-service/manager/token-refresh` · 관리자 `/admin-service/admin/token-refresh` (`src/contracts/{user,manager,admin}/api.ts`, 본문 `{refresh_token}`).
+- 클라이언트는 쿠키를 직접 읽지 않고 `src/shared/api/cookie.ts` 로 route handler 를 부른다 — `getAreaToken` · `saveAreaTokens` · `deleteAreaTokens` · `refreshAreaToken`(같은 영역 동시 재발급은 진행 중인 하나를 나눈다 — refresh 토큰이 재발급마다 바뀌어서. 로그인이 끝났으면 `null`, `retry` · 응답 없음이면 `NetworkError`) · `getSNSAccessToken` · `deleteSNSAccessToken`. 주소는 `trailingSlash` 에 맞춰 `/` 로 끝낸다.
 
 ## 전역 상태
 
-- Context 3개만 쓴다 — `RootLayoutLoadingContext` · `AccessTokenContext` · `IsLoginContext` (`src/shared/providers/RootLayoutProvider.tsx:13-15`). 값은 `RootLayoutContent` 가 주소가 바뀔 때마다 채운다 (`src/app/RootLayoutContent.tsx:17-34`).
+- Context 2개 — `RootLayoutLoadingContext`(그 영역 토큰 확인 중) · `AuthContext`(`{area, token, isLogin, setToken, onExpired, logout}`) (`src/shared/providers/RootLayoutProvider.tsx:17-18`). 값은 `RootLayoutContent` 가 주소가 바뀔 때마다 그 영역 토큰을 확인해 채운다 — 영역이 바뀐 직후(새 영역 토큰을 확인하기 전)는 확인 중 · 로그인 안 됨, 로그인 안 된 상태는 주소마다 확인이 끝날 때까지 확인 중 (`src/app/RootLayoutContent.tsx:54-66`). 늦게 끝난 재발급 · 만료 처리는 그 사이 영역이 바뀌었으면 무시한다(`changeToken` · `expire`).
 - 상태 관리 라이브러리 · 데이터 캐시 라이브러리는 없다. 화면 상태는 화면 컴포넌트의 `useState`.
-- 브라우저 저장소: `sessionStorage.referer`(직전 주소 — `RootLayoutContent.tsx:20`), `localStorage.saveId`(아이디 저장 — `LoginContent.tsx:46,70`).
+- 브라우저 저장소는 쓰지 않는다 — 로그인 뒤 돌아올 주소는 `?return_url=`(`src/shared/utils/area.ts`). 오류 팝업은 모듈 상태 저장소(`src/shared/utils/error-popup.ts`)를 `useSyncExternalStore` 로 읽는다.
 
 ## 목록 페이지 패턴 (기존 규칙 — 아직 적용된 화면 없음)
 
@@ -98,4 +108,4 @@ function action() {
 
 ## Query DTO 생성자
 
-지침서 목록 query DTO 는 `PaginationDto` 를 extends 하고, 생성자에서 빠진 값을 `PAGINATION_DEFAULTS`(`page 1` · `size 20` · `page_size 10` · `all_search_yn 'N'`)로 채운다 (지침서: frontend/dto/common.md:13,38-43). 화면 DTO 도 생성자에서 입력 객체를 필드로 옮긴다 — 빈 값은 `null` (`src/app/(user)/login/dto.ts:11-15`).
+지침서 목록 query DTO 는 `PaginationDto` 를 extends 하고, 생성자에서 빠진 값을 `PAGINATION_DEFAULTS`(`page 1` · `size 20` · `page_size 10` · `all_search_yn 'N'`)로 채운다 (지침서: frontend/dto/common.md:13,38-43).

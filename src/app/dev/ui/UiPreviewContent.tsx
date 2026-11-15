@@ -19,6 +19,7 @@ import Pagination from '@/shared/components/ui/nav/Pagination';
 import Tabs, { TabItemType } from '@/shared/components/ui/nav/Tabs';
 import Textarea from '@/shared/components/ui/form/Textarea';
 import { PaginationType } from '@/shared/types/pagination';
+import { showErrorPopup } from '@/shared/utils/error-popup';
 import { resetValidationError, showValidationErrors } from '@/shared/utils/validation';
 import styles from '@/app/css/dev/UiPreviewContent.module.css';
 
@@ -145,6 +146,10 @@ function Gallery({area, title}: GalleryProps): React.ReactNode {
         setReasonOpen(false);
     }
 
+    function openErrorPopup(): void {
+        showErrorPopup('업체명을 입력해 주세요.', area === 'console' ? 'TypeError: 개발 때만 보이는 오류 원문 예시' : undefined);
+    }
+
     return (
         // 한 영역 크기의 부품 모음 — data-area 로 크기가 바뀐다
         <div data-area={area} className={styles.column}>
@@ -257,6 +262,7 @@ function Gallery({area, title}: GalleryProps): React.ReactNode {
                     <Button onClick={openConfirm}>확인 모달</Button>
                     <Button onClick={openReason}>사유 입력 모달</Button>
                     <Link href="/dev/ui/modal-demo/" className={buttonClass()}>경로 모달 열기</Link>
+                    <Button onClick={openErrorPopup}>오류 팝업</Button>
                 </div>
                 {lastReason ? <p className={styles.note}>마지막으로 받은 사유: {lastReason}</p> : null}
             </Section>

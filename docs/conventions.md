@@ -4,20 +4,20 @@
 
 | 대상 | 규칙 | 예 (근거) |
 |---|---|---|
-| 화면 컴포넌트 | `<화면>Content`, 파일 이름 같음, default export | `LoginContent` (`src/app/(user)/login/LoginContent.tsx:26`) |
-| page 컴포넌트 | 화면을 나타내는 PascalCase 함수, default export | `Login` (`src/app/(user)/login/page.tsx:3`), `Home` (`src/app/(user)/page.tsx`) |
+| 화면 컴포넌트 | `<화면>Content`, 파일 이름 같음, default export | `UiPreviewContent` (`src/app/dev/ui/UiPreviewContent.tsx:63`) |
+| page 컴포넌트 | 화면을 나타내는 PascalCase 함수, default export | `Login` (`src/app/(user)/login/page.tsx:4`), `Home` (`src/app/(user)/page.tsx`) |
 | layout 컴포넌트 | `<영역>Layout` | `RootLayout` (`src/app/layout.tsx`) |
-| 공통 컴포넌트 | PascalCase 파일 · default export · props 는 `type <Name>Props` | `KakaoMap` / `KakaoMapProps` (`src/shared/components/KakaoMap.tsx:10,47`) |
+| 공통 컴포넌트 | PascalCase 파일 · default export · props 는 `type <Name>Props` | `KakaoMap` / `KakaoMapProps` (`src/shared/components/KakaoMap.tsx:11,54`) |
 | 훅 | `use<Name>.ts` default export, 반환 타입 `Use<Name>Type` export | `useInput` / `UseInputType` (`src/shared/hooks/useInput.ts:3,11`) |
-| 타입 | `type` 별칭 + `Type` 접미사 (`interface` 쓰지 않음) | `PaginationType` (`src/shared/types/pagination.ts:6`), `AccessTokenDecodeType` (`src/shared/types/access.ts:2`) |
-| Context | `<Name>Context` | `IsLoginContext` (`src/shared/providers/RootLayoutProvider.tsx:15`) |
-| 함수 | camelCase 동사 | `createQueryString` (`src/shared/utils/util.ts:7`), `loadAddressSearchScript` (`src/shared/utils/address.ts:19`) |
-| 상수 | UPPER_SNAKE | `API_BASE_URL` (`src/shared/api/request.ts:5`), `KAKAO_MAP_SCRIPT_ID` (`KakaoMap.tsx:21`) |
-| 화면 DTO | `<동작>Dto` class, 화면 폴더의 `dto.ts` | `LoginDto` (`src/app/(user)/login/dto.ts:4`) |
+| 타입 | `type` 별칭 + `Type` 접미사 (`interface` 쓰지 않음) | `PaginationType` (`src/shared/types/pagination.ts:11`), `AuthContextType` (`src/shared/providers/RootLayoutProvider.tsx:6`) |
+| Context | `<Name>Context` | `AuthContext` (`src/shared/providers/RootLayoutProvider.tsx:18`) |
+| 함수 | camelCase 동사 | `createQueryString` (`src/shared/utils/util.ts:7`), `loadAddressSearchScript` (`src/shared/utils/address.ts:20`) |
+| 상수 | UPPER_SNAKE | `API_BASE_URL` (`src/shared/api/request.ts:5`), `KAKAO_MAP_SCRIPT_ID` (`KakaoMap.tsx:22`) |
+| 화면 DTO | `<동작>Dto` class, 화면 폴더의 `dto.ts` | (지금 없음 — 첫 입력 화면 Phase 5) |
 | 백엔드 DTO | 지침서 이름 그대로 — `<도메인><기능>Dto` · 응답 `…ResultDto` · path `…ParamDto` | `UserFindLoginIdDto` / `UserFindLoginIdResultDto` (지침서: frontend/dto/user.md:128,138) |
-| 백엔드 키 | snake_case 그대로 (변환하지 않음) | `login_id`, `refresh_token_end_dt` (`dto.ts:6`, `LoginContent.tsx:76`) |
+| 백엔드 키 | snake_case 그대로 (변환하지 않음) | `refresh_token`, `access_token_expires_at` (`src/contracts/user/dto/user-token-refresh.dto.ts:6,17`) |
 
-예외(기존): `Editor.tsx` 는 이름 있는 export `QuillEditor` 를 낸다 (`src/shared/components/Editor.tsx:59`).
+예외(기존): `Editor.tsx` 는 이름 있는 export `QuillEditor` 를 낸다 (`src/shared/components/Editor.tsx:57`).
 
 ## Files / Directories
 
@@ -36,10 +36,10 @@
 
 ## 화면 · 컴포넌트 입력
 
-- 컴포넌트 props 는 `type <Name>Props` 로 정의하고 구조 분해로 받는다. 기본값은 구조 분해 기본값으로 (`src/shared/components/Loading.tsx:14`, `KakaoMap.tsx:47`).
-- 컴포넌트 함수는 반환 타입 `React.ReactNode` 를 적는다 (`LoginContent.tsx:26`, `AuthGuard.tsx:19`).
+- 컴포넌트 props 는 `type <Name>Props` 로 정의하고 구조 분해로 받는다. 기본값은 구조 분해 기본값으로 (`src/shared/components/Loading.tsx:15`, `KakaoMap.tsx:54`).
+- 컴포넌트 함수는 반환 타입 `React.ReactNode` 를 적는다 (`UiPreviewContent.tsx:63`, `AuthGuard.tsx:19`).
 - 함수 콜백 props 는 `Function` 대신 시그니처로 (`closeFunc?: () => void` — `src/shared/components/Timer.tsx:7`).
-- catch 의 error 는 `unknown` 으로 받아 좁힌다 (`src/shared/api/error.ts:15`). 예전 route handler 만 `any` (`src/app/api/cookie/access/route.ts:84`).
+- catch 의 error 는 `unknown` 으로 받아 좁힌다 (`src/shared/api/error.ts:21`).
 
 ## 스타일
 
@@ -60,11 +60,11 @@
   - `form/` — `Input` · `Textarea` · `Field`(라벨 + 오류 span + 도움말) · `Switch` · `Chip` · `Segmented`
   - `display/` — `Badge` · `Band`(상태 안내 띠) · `Card` · `Table` · `EmptyState`
   - `nav/` — `Tabs` · `Pagination`(`‹ 번호 ›`, 목록 응답의 `pagination` 을 그대로)
-  - `modal/` — `Modal` · `ConfirmModal` · `ReasonModal` · `RouteModal`
+  - `modal/` — `Modal` · `ConfirmModal` · `ReasonModal` · `RouteModal` · `ErrorPopup`(루트에 하나 — `showErrorPopup` 으로 연다)
   - 새 부품은 맞는 종류 폴더에 넣는다. 같은 종류 폴더 안은 `./<Name>`, 다른 종류는 `@/shared/components/ui/<종류>/<Name>` 로 import.
 - 입력 칸은 `<Field name="<DTO 필드>">` 로 감싼다 — 오류 span(`data-type="validation-alert"`)은 `Field` 가 그린다.
 - 모달은 `<dialog>` 기반 `Modal` — 열려 있을 때만 내용을 그려, 다시 열면 입력이 비워진다. 사유 입력은 `ReasonModal`(필수면 빈 사유 막기 · 앞뒤 공백 제거 · `maxLength`).
-- 기존 코드의 인라인 `style`(`Timer.tsx:53`)은 그대로 두고, 새 코드는 CSS Modules 로 쓴다.
+- 기존 코드의 인라인 `style`(`Timer.tsx:45`)은 그대로 두고, 새 코드는 CSS Modules 로 쓴다.
 
 ## 컴포넌트 · 훅 안의 구조
 
@@ -116,5 +116,6 @@ function ReasonModalBody({maxLength = 200, required = true, busy = false, onConf
 ## 코드 스타일
 
 - `src/` 는 4칸 들여쓰기 · 세미콜론 (`src/shared/utils/validation.ts` 등). 설정 파일(`eslint.config.mjs`, `tsconfig.json`)은 2칸.
-- export 하는 함수 · 컴포넌트에는 한국어 JSDoc — 한 줄 설명 + `@param` (`src/shared/utils/validation.ts:9-16`, `src/shared/api/request.ts`).
-- 배열 타입은 `Array<T>` (`src/shared/utils/validation.ts:31`, `useInputDate.ts:24`).
+- export 하는 함수 · 컴포넌트에는 한국어 JSDoc — 한 줄 설명 + `@param` (`src/shared/utils/validation.ts:10-17`, `src/shared/api/request.ts`).
+- 배열 타입은 `Array<T>` (`src/shared/utils/validation.ts:32`, `useInputDate.ts:31`).
+- `any` 는 쓰지 않는다 — 외부 SDK 전역(`window.kakao` · `window.daum`)만 이유를 단 `eslint-disable-next-line` 주석으로 (`src/shared/components/KakaoMap.tsx:6`). catch 에서 쓰지 않는 오류는 `catch {`.

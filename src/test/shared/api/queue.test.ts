@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { callQueue } from './queue';
-import { API_BASE_URL, ApiError, ApiFailBodyType } from './request';
+import { callQueue } from '@/shared/api/queue';
+import { API_BASE_URL, ApiError, ApiFailBodyType, NetworkError } from '@/shared/api/request';
 
 const fetchMock = vi.fn();
 
@@ -136,5 +136,21 @@ describe('callQueue', () => {
         const {init} = fetchCall();
         expect(init.headers).not.toHaveProperty('Authorization');
         expect(init.headers).toEqual({Accept: 'text/event-stream', 'Content-Type': 'application/json'});
+    });
+
+    it('[FAIL:network] 스트림을 읽다 끊기면 NetworkError', async () => {
+        const encoder = new TextEncoder();
+        const broken = new ReadableStream<Uint8Array>({
+            start(controller) {
+                controller.enqueue(encoder.encode(ACCEPTED));
+                controller.error(new TypeError('network error'));
+            },
+        });
+        fetchMock.mockResolvedValue(new Response(broken, {status: 200, headers: {'Content-Type': 'text/event-stream'}}));
+
+        const error = await callQueue({method: 'POST', path: '/admin-service/room/rooms', body: {}, token: 't'}).catch((caught: unknown) => caught);
+
+        expect(error).toBeInstanceOf(NetworkError);
+        expect(fetchMock).toHaveBeenCalledTimes(1);
     });
 });

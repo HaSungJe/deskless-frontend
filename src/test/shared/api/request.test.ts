@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { API_BASE_URL, ApiError, request, UNREADABLE_FAIL_MESSAGE } from './request';
+import { API_BASE_URL, ApiError, NetworkError, request, UNREADABLE_FAIL_MESSAGE } from '@/shared/api/request';
 
 const fetchMock = vi.fn();
 
@@ -100,5 +100,19 @@ describe('request', () => {
         expect(error).toBeInstanceOf(ApiError);
         expect((error as ApiError).status).toBe(502);
         expect((error as ApiError).body).toEqual({message: UNREADABLE_FAIL_MESSAGE, validation_errors: null});
+    });
+
+    it('[FAIL:network] 응답 없이 fetch 가 실패하면 NetworkError, 취소는 AbortError 그대로', async () => {
+        const fetchFailure = new TypeError('Failed to fetch');
+        const abort = new DOMException('The operation was aborted.', 'AbortError');
+        fetchMock.mockRejectedValueOnce(fetchFailure).mockRejectedValueOnce(abort);
+
+        const network = await request({path: '/user-service/discovery/stores'}).catch((caught: unknown) => caught);
+        const aborted = await request({path: '/user-service/discovery/stores'}).catch((caught: unknown) => caught);
+
+        expect(network).toBeInstanceOf(NetworkError);
+        expect((network as NetworkError).cause).toBe(fetchFailure);
+        expect(aborted).toBe(abort);
+        expect(fetchMock).toHaveBeenCalledTimes(2);
     });
 });

@@ -5,20 +5,22 @@ Vitest 5 + Testing Library(`@testing-library/react`) + jsdom (선택: 사용자 
 ## Testing Approach
 
 - **단위 = 파일 하나**(DTO · 훅 · 유틸 · 컴포넌트 · 화면 Content). 경계 밖은 mock 한다:
-  - HTTP — `fetch` (`vi.stubGlobal('fetch', fetchMock)` + `new Response(…)`, 테스트 뒤 `vi.unstubAllGlobals()` — `src/shared/api/request.test.ts`). 큐(SSE)는 조각마다 흘려보내는 `ReadableStream` 응답(`src/shared/api/queue.test.ts` 의 `sseResponse`)
+  - HTTP — `fetch` (`vi.stubGlobal('fetch', fetchMock)` + `new Response(…)`, 테스트 뒤 `vi.unstubAllGlobals()` — `src/test/shared/api/request.test.ts`). 큐(SSE)는 조각마다 흘려보내는 `ReadableStream` 응답(`src/test/shared/api/queue.test.ts` 의 `sseResponse`)
   - 라우터 — `next/navigation` (`useRouter` · `usePathname` · `useSearchParams`)
   - 쿠키 · 토큰 — `@/shared/api/cookie`
-  - `alert` · `localStorage` · `sessionStorage` — `vi.spyOn(window, 'alert')` 등
+  - 오류 팝업 — `vi.mock('@/shared/utils/error-popup')` 로 `showErrorPopup` 호출을 확인 (`src/test/shared/api/error.test.ts`). 팝업 자체는 `act(() => showErrorPopup(…))` 뒤 화면을 본다 (`src/test/shared/components/ui/modal/ErrorPopup.test.tsx`)
+  - route handler — `vi.mock('next/headers')` 로 `cookies()` 에 가짜 cookieStore(`get` · `set`), `headers()` 는 `{get: () => null}` (`src/test/app/api/cookie/token-cookie.test.ts`)
+  - `localStorage` · `sessionStorage` — `vi.spyOn`
 - 실제 네트워크(백엔드 · 카카오 · 토스 · 다음 우편번호)는 단위 테스트에서 부르지 않는다.
 - Context 는 실제 Provider(`RootLayoutProvider`)로 감싸서 값을 넣는다 — Context 자체는 mock 하지 않는다.
-- class-validator DTO 는 mock 없이 실제 `validate()` 로 검증한다 (`src/app/(user)/login/dto.test.ts`).
+- class-validator DTO 는 mock 없이 실제 `validate()` 로 검증한다(지금 DTO 테스트 없음 — 첫 입력 DTO 때).
 - `globals` 를 켜지 않으므로 `describe` · `it` · `expect` · `vi` 는 `vitest` 에서 import 한다. 렌더 정리는 `vitest.setup.ts` 의 `afterEach(cleanup)`.
-- DOM 이 필요 없는 테스트(API 호출 · SSE 파서)는 파일 첫 줄 `// @vitest-environment node` — Node 의 `fetch` · `Response` · `ReadableStream` · `TextDecoder` 를 그대로 쓴다 (`src/shared/api/sse.test.ts:1`).
-- jsdom 에는 `CSS.escape` · `innerText` 가 없다 — `vitest.setup.ts` 가 `CSS.escape` 를 간단히 채우고(오류 칸 선택자용), 칸 오류 확인은 `span.innerText` 를 읽는다(jsdom 에서는 그냥 속성이라 쓴 값이 그대로 읽힌다). 한 번도 쓰지 않은 칸은 `innerText` 가 `undefined` 라 "건드리지 않았다"는 `style.display` 로 확인한다 (`src/shared/api/error.test.ts`).
+- DOM 이 필요 없는 테스트(API 호출 · SSE 파서)는 파일 첫 줄 `// @vitest-environment node` — Node 의 `fetch` · `Response` · `ReadableStream` · `TextDecoder` 를 그대로 쓴다 (`src/test/shared/api/sse.test.ts:1`).
+- jsdom 에는 `CSS.escape` · `innerText` 가 없다 — `vitest.setup.ts` 가 `CSS.escape` 를 간단히 채우고(오류 칸 선택자용), 칸 오류 확인은 `span.innerText` 를 읽는다(jsdom 에서는 그냥 속성이라 쓴 값이 그대로 읽힌다). 한 번도 쓰지 않은 칸은 `innerText` 가 `undefined` 라 "건드리지 않았다"는 `style.display` 로 확인한다 (`src/test/shared/api/error.test.ts`).
 
 ## Location · Structure
 
-- 대상 파일 옆 `<대상>.test.ts` · `<대상>.test.tsx` (`src/app/(user)/login/dto.test.ts`, `src/shared/components/ui/nav/Pagination.test.tsx`). 수집 범위 `src/**/*.test.{ts,tsx}` (`vitest.config.mts`).
+- 테스트는 `src/test/` 아래 src 와 같은 경로에 둔다 — `src/shared/api/request.ts` ↔ `src/test/shared/api/request.test.ts` (사용자 2026-11-15). 대상은 별칭 `@/…` 로 import 한다. `src/test` 는 import 방향 규칙 밖이라 `app` · `contracts` · `shared` 어느 것이든 시험한다. 수집 범위 `src/**/*.test.{ts,tsx}` (`vitest.config.mts`).
 - `describe('<대상 이름>')` 안에 케이스 이름을 `[SUCCESS] …` / `[FAIL:<이유>] …` 로 시작한다 (`Pagination.test.tsx`).
 - 분기마다 하나 이상: 성공 · 입력 검증 실패 · 서버 실패(`validation_errors` 있음 / 없음) · 401 · 빈 값.
 
@@ -43,14 +45,14 @@ fireEvent.click(screen.getByRole('button', {name: '4'}));
 expect(movePage).toHaveBeenCalledTimes(1);
 expect(movePage).toHaveBeenCalledWith('4');
 ```
-근거: `src/shared/components/ui/nav/Pagination.test.tsx`. API 를 부르는 화면은 mock 이 받은 **주소 · 본문**까지 확인한다(`toHaveBeenCalledWith(url, {login_id: …})`).
+근거: `src/test/shared/components/ui/nav/Pagination.test.tsx`. API 를 부르는 화면은 mock 이 받은 **주소 · 본문**까지 확인한다(`toHaveBeenCalledWith(url, {login_id: …})`).
 
 ### [FAIL:*]
 ```tsx
 fireEvent.click(screen.getByRole('button', {name: '2'}));   // 현재 페이지
 expect(movePage).not.toHaveBeenCalled();
 ```
-검증 실패 케이스는 API mock 이 **불리지 않았는지**(`not.toHaveBeenCalled()`), 서버 실패 케이스는 오류 처리 경로(칸 표시 · `alert`)가 실행됐는지 확인한다.
+검증 실패 케이스는 API mock 이 **불리지 않았는지**(`not.toHaveBeenCalled()`), 서버 실패 케이스는 오류 처리 경로(칸 표시 · 오류 팝업)가 실행됐는지 확인한다.
 
 ## Data-Access Smoke (mock 경계의 빈틈)
 

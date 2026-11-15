@@ -1,6 +1,6 @@
 import { describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
-import ReasonModal from './ReasonModal';
+import ReasonModal from '@/shared/components/ui/modal/ReasonModal';
 
 type ReasonModalProps = React.ComponentProps<typeof ReasonModal>;
 

@@ -11,32 +11,33 @@ src/
 │  ├─ css/                           css 모음 (주소가 되지 않음 — page.tsx 없음)
 │  │  ├─ globals.css                 디자인 토큰(색 한 벌 · 영역별 크기) · 기본 스타일
 │  │  └─ <영역>/                      화면 css — <화면>Content.module.css (user · manager · admin · dev)
-│  ├─ RootLayoutContent.tsx          ('use client') 로그인 상태 확인 + Provider + TopLoader
+│  ├─ RootLayoutContent.tsx          ('use client') 영역 판별 · 그 영역 토큰 확인 + Provider + TopLoader + ErrorPopup
 │  ├─ @modal/                        경로 모달 슬롯(루트 하나) — default · [...catchAll] · (.)<주소>/page.tsx
 │  ├─ dev/ui/                        개발 전용 — /dev/ui 공통 UI 미리보기 · UiPreviewContent.tsx (운영 404)
 │  ├─ (user)/                        이용자 `/` · 모바일 (괄호 폴더는 주소에 안 나옴)
 │  │  ├─ page.tsx · HomeContent.tsx  U1 `/`
-│  │  └─ login/                      U5 `/login` — page.tsx · LoginContent.tsx · dto.ts · dto.test.ts
+│  │  └─ login/                      U5 `/login` — page.tsx(Phase 5 까지 자리 표시)
 │  ├─ manager/                       업체 관리자 `/manager` · PC 콘솔 (첫 화면을 만들 때 생김)
 │  │  ├─ [store_code]/…              M1 업체별 로그인 · 아이디 찾기 · 비밀번호 초기화
 │  │  └─ (console)/                  콘솔 layout + 매니저 AuthGuard — M2~M8
 │  ├─ admin/                         관리자 `/admin` · PC 콘솔 (첫 화면을 만들 때 생김)
 │  │  └─ (console)/                  콘솔 layout + 관리자 AuthGuard — A2~A6
-│  └─ api/                           route handler — cookie/* (토큰 쿠키) · auth/[...nextauth] (SNS)
+│  └─ api/                           route handler — cookie/[area] · cookie/[area]/refresh (영역 토큰 쿠키) · cookie/token-cookie.ts · cookie/sns · auth/[...nextauth] (SNS)
 ├─ contracts/                        백엔드 계약 — 지침서 frontend/dto/*.md 의 사본 (첫 API 를 만들 때 생김)
 │  ├─ common/                        pagination.dto.ts · fail-result.dto.ts · roles.ts · sse.ts · reservation.constants.ts (지침서 사본) · lookup.ts
-│  └─ <도메인>/                       user · discovery · reservation · store · manager · admin · room · stats
+│  └─ <도메인>/                       user · manager · admin(재발급 — Phase 3) · discovery · reservation · store · room · stats
 │     ├─ dto/<파일>.dto.ts           지침서 파일 이름 그대로
 │     └─ api.ts                      그 도메인 엔드포인트 함수
-└─ shared/                           도메인을 모르는 공통
-   ├─ api/                           request.ts(동기 · ApiError) · queue.ts(큐 SSE) · sse.ts · error.ts(handleApiError) · cookie.ts(토큰 쿠키 route handler 부르기)
+├─ shared/                           도메인을 모르는 공통
+   ├─ api/                           request.ts(동기 · ApiError · NetworkError) · queue.ts(큐 SSE) · sse.ts · auth.ts(withAuth) · error.ts(handleApiError) · cookie.ts(영역 토큰 쿠키 route handler 부르기)
    ├─ components/                    AuthGuard · Editor · KakaoMap · Loading · Timer · Scripts · chart/
-   │  └─ ui/                         공통 UI 부품 — button/ · form/ · display/ · nav/(Tabs · Pagination) · modal/ (docs/conventions.md 스타일)
+   │  └─ ui/                         공통 UI 부품 — button/ · form/ · display/ · nav/(Tabs · Pagination) · modal/(… · ErrorPopup) (docs/conventions.md 스타일)
    ├─ css/                           공통 부품 css — components/ 와 같은 경로 (ui/form/Input.module.css · Loading.module.css)
    ├─ hooks/                         useInput · useInputNumber · useInputFloat · useInputDate · useInputTime · useCheckboxGroup
-   ├─ providers/                     RootLayoutProvider (전역 Context)
-   ├─ types/                         access.ts · pagination.ts
-   └─ utils/                         validation.ts · address.ts · util.ts · format.ts(한국 시각 · 금액 · 요일)
+   ├─ providers/                     RootLayoutProvider (RootLayoutLoadingContext · AuthContext)
+   ├─ types/                         pagination.ts
+   └─ utils/                         validation.ts · address.ts · util.ts · format.ts(한국 시각 · 금액 · 요일) · area.ts(영역 · 로그인 주소) · error-popup.ts(오류 팝업 저장소)
+└─ test/                             테스트 — src 와 같은 경로 (shared/api/request.test.ts …)
 ```
 
 - `contracts/` 는 지침서(frontend/dto/user.md:3 — "프론트에는 `contracts/user/dto/<파일>` 로 둔다")와 같은 자리다. DTO 끼리의 상대 import(`'../../common/pagination.dto'` — frontend/dto/manager.md:75)가 그대로 맞으려면 `contracts/<도메인>/dto/` · `contracts/common/` 깊이를 지킨다.
@@ -64,7 +65,7 @@ src/app/<영역 경로>/<주소>/_components/            (전용 부품이 여�
 src/contracts/<도메인>/dto/<파일>.dto.ts           (처음 쓰는 API 면) 지침서 사본
 src/contracts/<도메인>/api.ts                      (처음 쓰는 API 면) 엔드포인트 함수
 ```
-측정 근거: `src/app/(user)/login/page.tsx` + `src/app/(user)/login/LoginContent.tsx` (page 는 Content 만 그림). CSS · contracts 는 선택 · 구조 결정이라 아직 실제 파일이 없다.
+측정 근거: `src/app/dev/ui/page.tsx` + `src/app/dev/ui/UiPreviewContent.tsx` (page 는 Content 만 그림). CSS · contracts 는 선택 · 구조 결정이라 아직 실제 파일이 없다.
 
 ## Procedure for Adding a New Screen
 
@@ -72,20 +73,20 @@ src/contracts/<도메인>/api.ts                      (처음 쓰는 API 면) �
 2. 주소대로 `src/app/` 아래 page 를 만든다 — 이용자는 `(user)/`, 매니저 · 관리자 콘솔은 `manager/(console)/` · `admin/(console)/`. `useSearchParams` 를 쓰면 page 에서 `<Suspense>` 로 감싼다.
 3. 쓰는 API 의 DTO 를 `frontend/dto/<도메인>.md` 에서 `src/contracts/<도메인>/dto/` 로 옮기고, 엔드포인트 함수를 `contracts/<도메인>/api.ts` 에 만든다.
 4. 그 `page.tsx` 옆에 `<화면>Content.tsx` 로 화면을 만든다.
-5. 로그인이 필요한 영역이면 그 영역 layout 이 `<AuthGuard loginPath="…">` 로 감싸는지 확인한다.
+5. 로그인이 필요한 영역이면 그 영역 layout 이 `<AuthGuard>` 로 감싸는지 확인한다(영역 로그인 주소는 주소로 안다).
 6. 옆에 `*.test.tsx` 를 쓰고 `npx vitest run <이름>` 으로 확인한다.
 
 ## Key Patterns
 
 ### Entry Points
-- **page / layout**: 서버 컴포넌트, `'use client'` 없음 (`src/app/(user)/login/page.tsx:1-8`, `src/app/(user)/page.tsx`). 화면 컴포넌트에서 `'use client'` 를 선언한다 (`LoginContent.tsx:1`).
-- **route handler**: `src/app/api/**/route.ts` 에서 `GET` · `POST` · `DELETE` 를 export, 응답은 `new Response(JSON.stringify({success, data?}), {headers})` (`src/app/api/cookie/access/route.ts:34`). `'use server'` 는 붙이지 않는다.
+- **page / layout**: 서버 컴포넌트, `'use client'` 없음 (`src/app/(user)/login/page.tsx:1-9`, `src/app/(user)/page.tsx`). 화면 컴포넌트에서 `'use client'` 를 선언한다 (`src/app/dev/ui/UiPreviewContent.tsx:1`).
+- **route handler**: `src/app/api/**/route.ts` 에서 `GET` · `POST` · `DELETE` 를 export, 응답은 `new Response(JSON.stringify({success, data?}), {headers})` — 토큰 쿠키 route handler 는 `json({success, data?, retry?})` (`src/app/api/cookie/token-cookie.ts:66`). 동적 세그먼트 인자는 `RouteContext<'/api/cookie/[area]'>` (`src/app/api/cookie/[area]/route.ts:10`). `'use server'` 는 붙이지 않는다.
 
 ### Data Layer
 → [data-layer.md](data-layer.md)
 
 ### Boundary / Environment
-- **서버 전용**: `cookies()` · `headers()`(`next/headers`), `jsonwebtoken`, SNS 시크릿은 route handler 에서만 (`access/route.ts:1-4`, `src/app/api/auth/[...nextauth]/route.ts`). 클라이언트 코드는 `src/shared/api/cookie.ts` 로 route handler 를 거친다.
+- **서버 전용**: `cookies()` · `headers()`(`next/headers`), `jsonwebtoken`, SNS 시크릿은 route handler 에서만 (`src/app/api/cookie/token-cookie.ts:1`, `src/app/api/auth/[...nextauth]/route.ts`). 클라이언트 코드는 `src/shared/api/cookie.ts` 로 route handler 를 거친다.
 - **`NEXT_PUBLIC_*`** 는 빌드할 때 서버 · 클라이언트 번들에 박힌다. 이름에 `NEXT_PUBLIC_` 이 붙은 시크릿(`NEXT_PUBLIC_JWT_CODE`)은 서버 코드에서만 참조한다 — 클라이언트 코드에서 쓰면 브라우저로 나간다.
 - **환경 파일**: 로컬 개발 `.env.local`(`npm run dev`, 5000 포트 — `package.json:6`), Docker 운영 `.env.production`. 목록 · 빌드/실행 시점 구분은 [.env.example](../.env.example).
 - **로컬 포트** (백엔드 안내 2026-11-15):
@@ -109,10 +110,10 @@ src/contracts/<도메인>/api.ts                      (처음 쓰는 API 면) �
 - 예시: `/dev/ui` → "경로 모달 열기"(`src/app/@modal/(.)dev/ui/modal-demo/page.tsx` 가 `src/app/dev/ui/modal-demo/ModalDemoContent.tsx` 를 가져온다 · 보통 페이지 `src/app/dev/ui/modal-demo/page.tsx`).
 
 ### SSR 에서 뺄 라이브러리
-`window` 를 쓰는 라이브러리는 `next/dynamic(() => import(...), { ssr: false })` 로 감싼 래퍼를 통해서만 쓴다 (`src/shared/components/Editor.tsx:7`, `src/shared/components/chart/Chart.tsx:5`).
+`window` 를 쓰는 라이브러리는 `next/dynamic(() => import(...), { ssr: false })` 로 감싼 래퍼를 통해서만 쓴다 (`src/shared/components/Editor.tsx:6`, `src/shared/components/chart/Chart.tsx:5`).
 
 ### 외부 스크립트
-`document.getElementById(<ID>)` 로 이미 붙었는지 보고, 없으면 한 번만 붙인 뒤 `load` 를 Promise 로 기다린다 (`src/shared/components/KakaoMap.tsx:26-45`, `src/shared/utils/address.ts:19-38`).
+`document.getElementById(<ID>)` 로 이미 붙었는지 보고, 없으면 한 번만 붙인 뒤 `load` 를 Promise 로 기다린다 (`src/shared/components/KakaoMap.tsx:27-46`, `src/shared/utils/address.ts:20-39`).
 
 ### Import Alias
 `@/*` → `./src/*` 하나만 (`tsconfig.json:30`). 테스트도 같은 별칭 (`vitest.config.mts` 의 `resolve.tsconfigPaths`).

@@ -1,4 +1,4 @@
-import { ApiError, buildHeaders, buildUrl, HttpMethodType, parseJson, toFailBody } from '@/shared/api/request';
+import { ApiError, asNetworkError, buildHeaders, buildUrl, HttpMethodType, parseJson, sendRequest, toFailBody } from '@/shared/api/request';
 import { takeSseEvents } from '@/shared/api/sse';
 
 /** 큐 응답 이벤트 이름 — contracts/common/sse.ts COMMAND_STREAM_EVENT 와 같은 값 (shared 는 contracts 를 가져오지 않는다) */
@@ -23,7 +23,7 @@ export type QueueOptionsType = {
  */
 export async function callQueue<T>({method, path, body, token, signal}: QueueOptionsType): Promise<T | null> {
     const hasBody = body !== undefined;
-    const response = await fetch(buildUrl(path), {
+    const response = await sendRequest(buildUrl(path), {
         method,
         headers: buildHeaders(token, hasBody, 'text/event-stream'),
         body: hasBody ? JSON.stringify(body) : undefined,
@@ -31,7 +31,10 @@ export async function callQueue<T>({method, path, body, token, signal}: QueueOpt
     });
 
     if (!response.ok) {
-        throw new ApiError(response.status, toFailBody(parseJson(await response.text())));
+        const text = await response.text().catch((error: unknown) => {
+            throw asNetworkError(error);
+        });
+        throw new ApiError(response.status, toFailBody(parseJson(text)));
     }
 
     if (!response.body) {
@@ -44,7 +47,9 @@ export async function callQueue<T>({method, path, body, token, signal}: QueueOpt
 
     try {
         for (;;) {
-            const {value, done} = await reader.read();
+            const {value, done} = await reader.read().catch((error: unknown) => {
+                throw asNetworkError(error); // 스트림을 읽다 끊겼다
+            });
             if (done) {
                 return null; // done · failed · pending 없이 끝났다 — 다시 조회
             }

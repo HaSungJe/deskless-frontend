@@ -1,5 +1,6 @@
 declare global {
     interface Window {
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 다음 우편번호 SDK 전역(타입 패키지 없음)
         daum: any;
     }
 }

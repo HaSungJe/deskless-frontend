@@ -1,5 +1,4 @@
 'use client';
-import { useEffect, useState } from 'react';
 import dynamic from 'next/dynamic';
 import 'react-quill-new/dist/quill.snow.css';
 
@@ -50,30 +49,21 @@ const formats = [
 ];
 
 /**
- * Editor
+ * 편집기 — 값은 부모가 들고, 바뀌면 setFunction(html)
  *
  * @param param0
  * @returns
  */
 export function QuillEditor({value, maxHeight = 500, marginBottom = 50, setFunction}: QuillEditorProps): React.ReactNode {
-    const [editorHtml, setEditorHtml] = useState<string>(value);
-
-    useEffect(() => {
-        setEditorHtml(value);
-    }, [value]);
-
-    useEffect(() => {
-        setFunction(editorHtml);
-    }, [editorHtml]);
-
     return (
+        // 편집기
         <ReactQuill
             theme="snow"
-            value={editorHtml}
-            onChange={setEditorHtml}
+            value={value}
+            onChange={setFunction}
             modules={modules}
             formats={formats}
             style={{height: `${maxHeight}px`, marginBottom: `${marginBottom}px`}}
         />
-    )
+    );
 }

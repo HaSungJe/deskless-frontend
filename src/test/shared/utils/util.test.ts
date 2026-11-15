@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createQueryString } from './util';
+import { createQueryString } from '@/shared/utils/util';
 
 describe('createQueryString', () => {
     it('[SUCCESS] 키 · 값을 encodeURIComponent 로 바꿔 ? 뒤에 잇는다', () => {

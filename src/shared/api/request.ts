@@ -50,6 +50,51 @@ export class ApiError extends Error {
 }
 
 /**
+ * 응답 없는 실패 — 네트워크 끊김 · 서버 꺼짐 · 큐 스트림 끊김. 원래 오류는 cause
+ */
+export class NetworkError extends Error {
+    /**
+     * @param cause fetch · 스트림이 던진 오류
+     */
+    constructor(cause: unknown) {
+        super('network error', {cause});
+        this.name = 'NetworkError';
+    }
+}
+
+/**
+ * 화면이 스스로 취소한 요청인지 — fetch 는 AbortError(DOMException)를 던진다
+ *
+ * @param error catch 로 받은 값
+ */
+export function isAbortError(error: unknown): boolean {
+    return typeof error === 'object' && error !== null && (error as {name?: unknown}).name === 'AbortError';
+}
+
+/**
+ * fetch · 스트림 오류 맞추기 — 취소는 그대로, 그 밖은 NetworkError
+ *
+ * @param error fetch · reader.read 가 던진 오류
+ */
+export function asNetworkError(error: unknown): unknown {
+    return isAbortError(error) ? error : new NetworkError(error);
+}
+
+/**
+ * fetch — 응답 없는 실패는 NetworkError, 취소는 그대로 던진다
+ *
+ * @param url 주소
+ * @param init fetch 옵션
+ */
+export async function sendRequest(url: string, init: RequestInit): Promise<Response> {
+    try {
+        return await fetch(url, init);
+    } catch (error) {
+        throw asNetworkError(error);
+    }
+}
+
+/**
  * 요청 주소 — API_BASE_URL + path + query
  *
  * @param path /api/v1 뒤 경로 ('/' 로 시작). 경로 값은 부르는 쪽이 encodeURIComponent 한다
@@ -113,20 +158,22 @@ export function toFailBody(data: unknown): ApiFailBodyType {
 /**
  * 동기 API 호출 — 조회 · 로그인 · 재발급 · 업로드 주소 발급
  * - 2xx 는 JSON 본문(빈 본문 · 204 는 null), 그 밖은 ApiError(status, 실패 본문)
- * - 네트워크 실패 · 취소는 fetch 의 오류(TypeError · AbortError)를 그대로 던진다
+ * - 응답 없는 실패는 NetworkError, 취소는 AbortError 그대로
  *
  * @param options 메서드 · 경로 · query · 본문 · 토큰 · 취소 신호
  */
 export async function request<T>({method = 'GET', path, query, body, token, signal}: RequestOptionsType): Promise<T | null> {
     const hasBody = body !== undefined && method !== 'GET';
-    const response = await fetch(buildUrl(path, query), {
+    const response = await sendRequest(buildUrl(path, query), {
         method,
         headers: buildHeaders(token, hasBody),
         body: hasBody ? JSON.stringify(body) : undefined,
         signal,
     });
 
-    const text = await response.text();
+    const text = await response.text().catch((error: unknown) => {
+        throw asNetworkError(error);
+    });
     if (!response.ok) {
         throw new ApiError(response.status, toFailBody(parseJson(text)));
     }

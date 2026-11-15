@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
-import { takeSseEvents } from './sse';
+import { takeSseEvents } from '@/shared/api/sse';
 
 describe('takeSseEvents', () => {
     it('[SUCCESS] 이벤트 하나를 꺼내고 꼬리는 비운다', () => {

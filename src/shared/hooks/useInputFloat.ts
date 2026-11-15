@@ -1,18 +1,24 @@
-import { ChangeEvent, ChangeEventHandler, Dispatch, SetStateAction, useCallback, useState } from "react";
+import { ChangeEvent, ChangeEventHandler, Dispatch, SetStateAction, useState } from 'react';
 
 export type UseInputFloatType = {
     value: string | number;
     onChange: ChangeEventHandler<HTMLInputElement>;
     setValue: Dispatch<SetStateAction<string | number>>;
     resetValue: () => void;
-}
+};
 
-// 실수 입력 (숫자 · 소수점 하나만 허용)
+/**
+ * 실수 입력 (숫자 · 소수점 하나만 허용)
+ *
+ * @param isNumberString 문자열로 들고 있을지
+ * @param initValue 처음 값 · 초기화 값
+ */
 export default function useInputFloat(isNumberString: boolean, initValue: string | number = 0): UseInputFloatType {
-    const [value, setValue] = useState<string | number>(initValue);
+    // 상태
+    const [value, setValue] = useState<string | number>(initValue); // 입력 값
 
-    // 값 생성
-    const onCreate = useCallback((changeValue: string | number) => {
+    // 함수
+    function onCreate(changeValue: string | number): void {
         const text = changeValue.toString().replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1');
         if (text === '' || text === '.') {
             setValue(0);
@@ -22,17 +28,15 @@ export default function useInputFloat(isNumberString: boolean, initValue: string
         } else {
             setValue(parseFloat(text));
         }
-    }, []);
+    }
 
-    // 값 변경
-    const onChange = useCallback((event: ChangeEvent<HTMLInputElement>) => {
+    function onChange(event: ChangeEvent<HTMLInputElement>): void {
         onCreate(event.target.value);
-    }, []);
+    }
 
-    // 값 초기화
-    const resetValue = useCallback(() => {
+    function resetValue(): void {
         onCreate(initValue);
-    }, []);
+    }
 
     return {value, onChange, setValue, resetValue};
 }
