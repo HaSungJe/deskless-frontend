@@ -12,3 +12,13 @@ export function createQueryString(obj: Record<string, unknown>): string {
 
     return query ? `?${query}` : '';
 }
+
+/**
+ * query 값 하나 — 같은 이름이 여럿이면 첫 값, 없거나 빈 값이면 null (page 의 searchParams)
+ *
+ * @param value searchParams 의 값
+ */
+export function firstQueryValue(value: string | Array<string> | undefined): string | null {
+    const first = Array.isArray(value) ? value[0] : value;
+    return first ? first : null;
+}

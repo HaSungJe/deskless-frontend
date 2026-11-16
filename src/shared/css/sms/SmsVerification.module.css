@@ -1,8 +1,8 @@
-/* 시안 frontend/design/user.html:935-954 */
+/* 시안 frontend/design/user.html:935-954 · 아이디 찾기의 칸 옆 확인 980-993 */
 .sms {
     display: flex;
     flex-direction: column;
-    gap: 16px;
+    gap: 24px;
 }
 
 .row {
@@ -10,7 +10,8 @@
     gap: 8px;
 }
 
-.row > input {
+.row > input,
+.row > .codeBox {
     flex: 1;
     min-width: 0;
     font-variant-numeric: tabular-nums;

@@ -15,14 +15,16 @@ src/
 │  ├─ @modal/                        경로 모달 슬롯(루트 하나) — default · [...catchAll] · (.)<주소>/page.tsx
 │  ├─ dev/ui/                        개발 전용 — /dev/ui 공통 UI 미리보기 · UiPreviewContent.tsx (운영 404)
 │  ├─ (user)/                        이용자 `/` · 모바일 (괄호 폴더는 주소에 안 나옴)
+│  │  ├─ layout.tsx · UserLayoutContent.tsx  이용자 틀(모바일 폭 · 하단 탭 · 내 정보 Context)
+│  │  ├─ _components/                UserMeProvider · UserTopBar · UserTabBar · MemberStateBand
 │  │  ├─ page.tsx · HomeContent.tsx  U1 `/`
-│  │  └─ login/                      U5 `/login` — page.tsx(Phase 5 까지 자리 표시)
+│  │  └─ login/ · signup/ · phone-verification/ · find-login-id/  U5
 │  ├─ manager/                       업체 관리자 `/manager` · PC 콘솔 (첫 화면을 만들 때 생김)
 │  │  ├─ [store_code]/…              M1 업체별 로그인 · 아이디 찾기 · 비밀번호 초기화
 │  │  └─ (console)/                  콘솔 layout + 매니저 AuthGuard — M2~M8
 │  ├─ admin/                         관리자 `/admin` · PC 콘솔 (첫 화면을 만들 때 생김)
 │  │  └─ (console)/                  콘솔 layout + 관리자 AuthGuard — A2~A6
-│  └─ api/                           route handler — cookie/[area] · cookie/[area]/refresh (영역 토큰 쿠키) · cookie/token-cookie.ts · cookie/sns · auth/[...nextauth] (SNS) · payments/confirm (토스 결제 승인) · route-util.ts(json · isSameSiteJson)
+│  └─ api/                           route handler — cookie/[area] · cookie/[area]/refresh (영역 토큰 쿠키) · cookie/token-cookie.ts · auth/[...nextauth] (SNS OAuth) · user/sns-login · user/sign (이용자 로그인 · 가입 — 백엔드까지) · payments/confirm (토스 결제 승인) · route-util.ts(json · isSameSiteJson)
 ├─ contracts/                        백엔드 계약 — 지침서 frontend/dto/*.md 의 사본 (첫 API 를 만들 때 생김)
 │  ├─ common/                        pagination.dto.ts · fail-result.dto.ts · roles.ts · sse.ts · reservation.constants.ts (지침서 사본) · lookup.ts
 │  └─ <도메인>/                       user · manager · admin(재발급 — Phase 3) · discovery · reservation · store · room · stats
@@ -79,15 +81,15 @@ src/contracts/<도메인>/api.ts                      (처음 쓰는 API 면) �
 ## Key Patterns
 
 ### Entry Points
-- **page / layout**: 서버 컴포넌트, `'use client'` 없음 (`src/app/(user)/login/page.tsx:1-9`, `src/app/(user)/page.tsx`). 화면 컴포넌트에서 `'use client'` 를 선언한다 (`src/app/dev/ui/UiPreviewContent.tsx:1`).
-- **route handler**: `src/app/api/**/route.ts` 에서 `GET` · `POST` · `DELETE` 를 export, 응답은 `new Response(JSON.stringify({success, data?}), {headers})` — 토큰 쿠키 · 결제 승인 route handler 는 `json({success, data?, retry?, message?, code?})` (`src/app/api/route-util.ts:15`). 동적 세그먼트 인자는 `RouteContext<'/api/cookie/[area]'>` (`src/app/api/cookie/[area]/route.ts:11`). route 파일은 Next.js 가 허용한 이름(`GET` · `POST` …)만 export 하므로 상수 · 함수는 옆 파일에 둔다(`src/app/api/payments/confirm/toss-confirm.ts`). `'use server'` 는 붙이지 않는다.
+- **page / layout**: 서버 컴포넌트, `'use client'` 없음 (`src/app/(user)/page.tsx`, `src/app/(user)/login/page.tsx:5` — query 가 필요하면 async page 가 `searchParams` 를 읽어 넘긴다). 화면 컴포넌트에서 `'use client'` 를 선언한다 (`src/app/dev/ui/UiPreviewContent.tsx:1`).
+- **route handler**: `src/app/api/**/route.ts` 에서 `GET` · `POST` · `DELETE` 를 export, 응답은 `new Response(JSON.stringify({success, data?}), {headers})` — 토큰 쿠키 · 결제 승인 route handler 는 `json({success, data?, retry?, message?, code?})` (`src/app/api/route-util.ts:18`). 동적 세그먼트 인자는 `RouteContext<'/api/cookie/[area]'>` (`src/app/api/cookie/[area]/route.ts:11`). route 파일은 Next.js 가 허용한 이름(`GET` · `POST` …)만 export 하므로 상수 · 함수는 옆 파일에 둔다(`src/app/api/payments/confirm/toss-confirm.ts`). `'use server'` 는 붙이지 않는다.
 
 ### Data Layer
 → [data-layer.md](data-layer.md)
 
 ### Boundary / Environment
-- **서버 전용**: `cookies()` · `headers()`(`next/headers`), `jsonwebtoken`, SNS 시크릿은 route handler 에서만 (`src/app/api/cookie/token-cookie.ts:1`, `src/app/api/auth/[...nextauth]/route.ts`). 클라이언트 코드는 `src/shared/api/cookie.ts` 로 route handler 를 거친다.
-- **`NEXT_PUBLIC_*`** 는 빌드할 때 서버 · 클라이언트 번들에 박힌다. 이름에 `NEXT_PUBLIC_` 이 붙은 시크릿(`NEXT_PUBLIC_JWT_CODE`)은 서버 코드에서만 참조한다 — 클라이언트 코드에서 쓰면 브라우저로 나간다.
+- **서버 전용**: `cookies()` · `headers()`(`next/headers`), `getToken`(`next-auth/jwt` — SNS 세션), SNS · 결제 시크릿은 route handler 에서만 (`src/app/api/cookie/token-cookie.ts:1`, `src/app/api/auth/[...nextauth]/route.ts`). 클라이언트 코드는 `src/shared/api/cookie.ts` 로 route handler 를 거친다.
+- **`NEXT_PUBLIC_*`** 는 빌드할 때 서버 · 클라이언트 번들에 박힌다. 시크릿(`NEXTAUTH_SECRET` · `TOSS_SECRET_KEY`)에는 `NEXT_PUBLIC_` 을 붙이지 않는다 — 붙이면 브라우저 번들에 들어간다.
 - **환경 파일**: 로컬 개발 `.env.local`(`npm run dev`, 5000 포트 — `package.json:6`), Docker 운영 `.env.production`. 목록 · 빌드/실행 시점 구분은 [.env.example](../.env.example).
 - **로컬 포트** (백엔드 안내 2026-11-15):
   - 프론트 `http://localhost:5000` — 이용자 `/` · 업체 관리자 `/manager` · 관리자 `/admin` 이 한 서버.

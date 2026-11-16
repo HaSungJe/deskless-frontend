@@ -52,6 +52,15 @@ describe('safeReturnPath', () => {
         expect(safeReturnPath('/\n/evil.com/path', 'manager')).toBe('/manager/');
         expect(loginUrl('user', '/\t/evil.com')).toBe('/login/');
     });
+
+    it('[FAIL:dot-segment] 점 경로를 풀면 // 로 시작하는 주소도 막는다 — 다시 쓰면 다른 사이트', () => {
+        expect(safeReturnPath('/..//evil.com', 'user')).toBe('/');
+        expect(safeReturnPath('/.//evil.com', 'manager')).toBe('/manager/');
+        expect(safeReturnPath('/%2e%2e//evil.com', 'user')).toBe('/');
+        expect(safeReturnPath('/a/..//evil.com/path', 'admin')).toBe('/admin/');
+        expect(loginUrl('user', '/..//evil.com')).toBe('/login/');
+        expect(safeReturnPath('/stores/../me/', 'user')).toBe('/me/');
+    });
 });
 
 describe('isLoginPath', () => {

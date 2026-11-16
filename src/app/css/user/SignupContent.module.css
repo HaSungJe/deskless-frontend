@@ -1,0 +1,91 @@
+/* 시안 user.html:872-918 */
+.page {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 24px;
+    padding: 24px 16px;
+}
+
+.intro {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+/* SNS 배지 + "계정으로 가입해요" */
+.sns {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.heading {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+/* 성별 카드 두 칸 */
+.genders {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.gender {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: var(--control-h);
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    font-size: var(--control-font);
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.gender input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: var(--primary);
+}
+
+.selected {
+    border-color: var(--primary);
+    background: var(--primary-soft);
+    color: var(--primary-strong);
+    font-weight: 700;
+}
+
+/* 닉네임 도움말 — 왼쪽 안내 · 오른쪽 글자 수 */
+.meta {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.count {
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.footer {
+    position: sticky;
+    bottom: 0;
+    padding: 12px 16px 16px;
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+}

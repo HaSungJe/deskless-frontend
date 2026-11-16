@@ -5,7 +5,7 @@
 | 대상 | 규칙 | 예 (근거) |
 |---|---|---|
 | 화면 컴포넌트 | `<화면>Content`, 파일 이름 같음, default export | `UiPreviewContent` (`src/app/dev/ui/UiPreviewContent.tsx:63`) |
-| page 컴포넌트 | 화면을 나타내는 PascalCase 함수, default export | `Login` (`src/app/(user)/login/page.tsx:4`), `Home` (`src/app/(user)/page.tsx`) |
+| page 컴포넌트 | 화면을 나타내는 PascalCase 함수, default export | `Login` (`src/app/(user)/login/page.tsx:5`), `Home` (`src/app/(user)/page.tsx`) |
 | layout 컴포넌트 | `<영역>Layout` | `RootLayout` (`src/app/layout.tsx`) |
 | 공통 컴포넌트 | PascalCase 파일 · default export · props 는 `type <Name>Props` | `StoreMap` / `StoreMapProps` (`src/shared/components/map/StoreMap.tsx:20,40`) |
 | 훅 | `use<Name>.ts` default export, 반환 타입 `Use<Name>Type` export | `useInput` / `UseInputType` (`src/shared/hooks/useInput.ts:3,11`) |
@@ -62,7 +62,7 @@
   - `nav/` — `Tabs` · `Pagination`(`‹ 번호 ›`, 목록 응답의 `pagination` 을 그대로)
   - `modal/` — `Modal` · `ConfirmModal` · `ReasonModal` · `RouteModal` · `ErrorPopup`(루트에 하나 — `showErrorPopup` 으로 연다)
   - 새 부품은 맞는 종류 폴더에 넣는다. 같은 종류 폴더 안은 `./<Name>`, 다른 종류는 `@/shared/components/ui/<종류>/<Name>` 로 import.
-- 입력 칸은 `<Field name="<DTO 필드>">` 로 감싼다 — 오류 span(`data-type="validation-alert"`)은 `Field` 가 그린다.
+- 입력 칸은 `<Field name="<DTO 필드>">` 로 감싼다 — 오류 span(`data-type="validation-alert"`)은 `Field` 가 그린다. 라디오 묶음처럼 입력이 여럿이면 `<Field name group>`(fieldset · legend — `src/app/(user)/signup/SignupContent.tsx` 성별), 도움말 줄에 글자 수를 나눠 둘 때는 `hint` 에 span.
 - 모달은 `<dialog>` 기반 `Modal` — 열려 있을 때만 내용을 그려, 다시 열면 입력이 비워진다. 사유 입력은 `ReasonModal`(필수면 빈 사유 막기 · 앞뒤 공백 제거 · `maxLength`).
 - 기존 코드의 인라인 `style`(`Timer.tsx:45`)은 그대로 두고, 새 코드는 CSS Modules 로 쓴다.
 

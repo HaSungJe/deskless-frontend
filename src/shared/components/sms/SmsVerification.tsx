@@ -1,5 +1,6 @@
 'use client';
 import { ChangeEvent, useId, useState } from 'react';
+import { createPortal } from 'react-dom';
 import Timer from '@/shared/components/Timer';
 import Button from '@/shared/components/ui/button/Button';
 import Field from '@/shared/components/ui/form/Field';
@@ -12,10 +13,16 @@ export type SmsSentType = {
     expires_at: string;          // 인증번호 만료 시각(ISO 8601 — 발송 후 5분)
 };
 
+/** 확인 버튼 자리 — below: 안내 아래 · inline: 인증번호 칸 옆 · slot: confirmSlot 안(화면 아래 고정 영역) */
+export type SmsConfirmPlacementType = 'below' | 'inline' | 'slot';
+
 type SmsVerificationProps = {
     onSend: (phone: string) => Promise<SmsSentType | null>;                  // 발송 — 화면이 DTO 검증 · API · 실패 안내, 못 보냈으면 null
     onConfirm: (sms_verification_id: string, code: string) => Promise<void>; // 확인 — 결과 처리(다음 화면 · 오류)는 화면이
     confirmLabel?: string;                                                   // 확인 버튼 글자
+    confirmPlacement?: SmsConfirmPlacementType;                              // 확인 버튼 자리(기본 below)
+    confirmSlot?: HTMLElement | null;                                        // slot 일 때 버튼을 그릴 요소 — 아직 없으면(null) 그리지 않는다
+    notice?: boolean;                                                        // 아래 안내(5분 · 횟수)를 보일지(기본 보임)
     children?: React.ReactNode;                                              // 번호 위에 둘 칸(비밀번호 초기화의 아이디 등)
 };
 
@@ -31,11 +38,12 @@ const SMS_NOTICE = '인증번호는 받은 뒤 5분 동안 쓸 수 있어요. �
 /**
  * 인증번호 흐름 — 번호 → 받기 → 6자리 + 남은 시간 → 확인
  * - 입력 칸은 Field name="phone" · name="code" — 화면 DTO 검증 오류가 칸 옆에 나온다
+ * - 확인 버튼은 보낸 뒤에만, 자리는 confirmPlacement(slot 이면 createPortal 로 화면의 아래 영역에)
  *
  * @param param0
  * @returns
  */
-export default function SmsVerification({onSend, onConfirm, confirmLabel = '인증하기', children}: SmsVerificationProps): React.ReactNode {
+export default function SmsVerification({onSend, onConfirm, confirmLabel = '인증하기', confirmPlacement = 'below', confirmSlot = null, notice = true, children}: SmsVerificationProps): React.ReactNode {
     // 변수
     const phoneId = useId(); // 번호 칸 id — 라벨이 가리킨다
     const codeId = useId();  // 인증번호 칸 id
@@ -49,6 +57,7 @@ export default function SmsVerification({onSend, onConfirm, confirmLabel = '인�
 
     // 계산 값
     const canConfirm = sent !== null && !expired && !busy; // 확인 버튼을 누를 수 있는지
+    const inline = confirmPlacement === 'inline';          // 확인 버튼이 인증번호 칸 옆인지
 
     // 함수
     function changePhone(event: ChangeEvent<HTMLInputElement>): void {
@@ -98,6 +107,9 @@ export default function SmsVerification({onSend, onConfirm, confirmLabel = '인�
         setExpired(true);
     }
 
+    // 확인 버튼 — 자리(칸 옆 · 안내 아래 · slot)만 다르고 같은 버튼
+    const confirmButton = <Button variant="primary" size={inline ? 'md' : 'lg'} full={!inline} onClick={confirm} disabled={!canConfirm}>{confirmLabel}</Button>;
+
     return (
         // 인증번호 흐름
         <div className={styles.sms}>
@@ -116,19 +128,23 @@ export default function SmsVerification({onSend, onConfirm, confirmLabel = '인�
             {/* 인증번호 · 남은 시간 */}
             {sent ? (
                 <Field label="인증번호" name="code" htmlFor={codeId}>
-                    <div className={styles.codeBox}>
-                        <Input id={codeId} inputMode="numeric" autoComplete="one-time-code" maxLength={6} value={code} onChange={changeCode} />
-                        <span className={styles.timer}><Timer time={sent.expires_at} closeFunc={expire} /></span>
+                    <div className={inline ? styles.row : undefined}>
+                        <div className={styles.codeBox}>
+                            <Input id={codeId} inputMode="numeric" autoComplete="one-time-code" maxLength={6} value={code} onChange={changeCode} />
+                            <span className={styles.timer}><Timer time={sent.expires_at} closeFunc={expire} /></span>
+                        </div>
+                        {inline ? confirmButton : null}
                     </div>
                     {expired ? <p className={styles.expired} role="alert">{SMS_EXPIRED_MESSAGE}</p> : null}
                 </Field>
             ) : null}
 
             {/* 안내 */}
-            <p className={styles.notice}>{SMS_NOTICE}</p>
+            {notice ? <p className={styles.notice}>{SMS_NOTICE}</p> : null}
 
-            {/* 확인 */}
-            {sent ? <Button variant="primary" size="lg" full onClick={confirm} disabled={!canConfirm}>{confirmLabel}</Button> : null}
+            {/* 확인 — 안내 아래 · 화면 아래 영역(slot) */}
+            {sent && confirmPlacement === 'below' ? confirmButton : null}
+            {sent && confirmPlacement === 'slot' && confirmSlot ? createPortal(confirmButton, confirmSlot) : null}
         </div>
     );
 }

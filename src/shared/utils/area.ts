@@ -85,17 +85,19 @@ const SAME_ORIGIN_BASE = 'http://same-origin.invalid';
 /**
  * 같은 사이트 주소면 path + query + hash 로, 아니면 null — 다른 사이트로 보내는 주소 막기
  * - 브라우저와 같은 URL 해석으로 본다('/\t/evil.com' · '/\evil.com' · '//evil.com' 은 모두 다른 사이트)
+ * - 해석 뒤 path 가 '//' 로 시작해도 막는다('/..//evil.com' → '//evil.com' — 다시 쓰면 다른 사이트)
+ * - 돌아갈 주소를 다른 주소의 query 로 붙일 때도 쓴다(src/app/(user)/login/login-flow.ts)
  *
  * @param path 주소
  */
-function toSamePath(path: string | null | undefined): string | null {
+export function toSamePath(path: string | null | undefined): string | null {
     if (typeof path !== 'string' || !path.startsWith('/')) {
         return null;
     }
 
     try {
         const url = new URL(path, SAME_ORIGIN_BASE);
-        return url.origin === SAME_ORIGIN_BASE ? `${url.pathname}${url.search}${url.hash}` : null;
+        return url.origin === SAME_ORIGIN_BASE && !url.pathname.startsWith('//') ? `${url.pathname}${url.search}${url.hash}` : null;
     } catch {
         return null;
     }

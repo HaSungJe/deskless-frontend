@@ -4,6 +4,9 @@ import { takeSseEvents } from '@/shared/api/sse';
 /** 큐 응답 이벤트 이름 — contracts/common/sse.ts COMMAND_STREAM_EVENT 와 같은 값 (shared 는 contracts 를 가져오지 않는다) */
 const QUEUE_EVENT = {DONE: 'done', FAILED: 'failed', PENDING: 'pending'} as const;
 
+/** 큐가 30초 안에 결과를 주지 않음(pending) — 처리됐을 수 있어 다시 조회 · 다시 시도를 안내 */
+export const QUEUE_PENDING_MESSAGE = '처리가 늦어지고 있어요. 잠시 뒤 다시 시도해 주세요.';
+
 /** 큐 요청 옵션 */
 export type QueueOptionsType = {
     method: Exclude<HttpMethodType, 'GET'>; // 상태를 바꾸는 쓰기

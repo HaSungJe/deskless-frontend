@@ -140,4 +140,41 @@ describe('SmsVerification', () => {
         expect(screen.queryByLabelText('인증번호')).toBeNull();
         expect(screen.getByRole('button', {name: '인증번호 받기'})).toBeTruthy();
     });
+
+    it('[SUCCESS] inline — 확인 버튼이 인증번호 칸 옆, notice false 면 안내 없음', async () => {
+        const onConfirm = vi.fn().mockResolvedValue(undefined);
+        render(<SmsVerification onSend={vi.fn().mockResolvedValue(SENT)} onConfirm={onConfirm} confirmLabel="확인" confirmPlacement="inline" notice={false} />);
+        fireEvent.change(screen.getByLabelText('휴대폰 번호'), {target: {value: '01012345678'}});
+        await act(async () => {
+            fireEvent.click(screen.getByRole('button', {name: '인증번호 받기'}));
+        });
+
+        const code = screen.getByLabelText('인증번호');
+        const confirm = screen.getByRole('button', {name: '확인'});
+        expect(confirm.parentElement).toBe(code.parentElement?.parentElement);
+        expect(screen.queryByText(/5분 동안 쓸 수 있어요/)).toBeNull();
+
+        fireEvent.change(code, {target: {value: '123456'}});
+        await act(async () => {
+            fireEvent.click(confirm);
+        });
+        expect(onConfirm).toHaveBeenCalledTimes(1);
+        expect(onConfirm).toHaveBeenCalledWith(SENT.sms_verification_id, '123456');
+    });
+
+    it('[SUCCESS] slot — 확인 버튼을 넘긴 요소 안에, 보내기 전에는 비어 있다', async () => {
+        const slot = document.createElement('div');
+        document.body.appendChild(slot);
+        render(<SmsVerification onSend={vi.fn().mockResolvedValue(SENT)} onConfirm={vi.fn()} confirmPlacement="slot" confirmSlot={slot} />);
+        expect(slot.childElementCount).toBe(0);
+
+        fireEvent.change(screen.getByLabelText('휴대폰 번호'), {target: {value: '01012345678'}});
+        await act(async () => {
+            fireEvent.click(screen.getByRole('button', {name: '인증번호 받기'}));
+        });
+
+        expect(slot.querySelector('button')?.textContent).toBe('인증하기');
+        expect(screen.getAllByRole('button', {name: '인증하기'})).toHaveLength(1);
+        slot.remove();
+    });
 });

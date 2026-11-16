@@ -1,0 +1,87 @@
+/* 시안 user.html:839-871 */
+.page {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+.body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    justify-content: center;
+    gap: 40px;
+    padding: 0 24px 32px;
+}
+
+.brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+}
+
+.logo {
+    font-size: 32px;
+    font-weight: 700;
+    color: var(--primary);
+}
+
+.tagline {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+.buttons {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.sns {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: var(--control-h-lg);
+    border: 0;
+    border-radius: var(--radius);
+    color: var(--fg);
+    font: inherit;
+    font-size: 16px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.kakao {
+    background: var(--kakao);
+}
+
+.naver {
+    background: var(--naver);
+}
+
+.notice {
+    margin: 4px 0 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted);
+    text-align: center;
+}
+
+.find {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.find a {
+    font-weight: 700;
+    color: var(--primary);
+}

@@ -1,0 +1,17 @@
+/* 시안 화면 규칙(user.html:327-334): 휴대폰 화면 하나 = 390px — 가운데 · 최대 480px */
+.frame {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    max-width: 480px;
+    min-height: 100dvh;
+    margin: 0 auto;
+    background: var(--surface);
+}
+
+.body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    min-height: 0;
+}

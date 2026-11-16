@@ -10,7 +10,7 @@ flowchart LR
   P2["Phase 2 · API 기반 (3)"]:::done
   P3["Phase 3 · 영역별 로그인 기반 (3)"]:::done
   P4["Phase 4 · 이용자 공통 인프라 (5)"]:::done
-  P5["Phase 5 · 이용자 틀·로그인·가입 (5)"]:::todo
+  P5["Phase 5 · 이용자 틀·로그인·가입 (5)"]:::inprog
   P6["Phase 6 · 업체 둘러보기 (2)"]:::todo
   P7["Phase 7 · 예약·결제 (2)"]:::todo
   P8["Phase 8 · 내 예약 (4)"]:::todo
@@ -60,7 +60,7 @@ flowchart LR
 - Phase 2 — API 기반 · 유닛 3개 · 의존: — · 푼다: Phase 3 · 파일 집합: src/shared/api, src/contracts/common, src/shared/utils · done
 - Phase 3 — 영역별 로그인 기반 · 유닛 3개 · 의존: Phase 2 · 푼다: Phase 4 · 파일 집합: src/app/api/cookie, src/shared/api(auth), src/shared/providers, src/app/RootLayoutContent.tsx · done
 - Phase 4 — 이용자 공통 인프라 · 유닛 5개 · 의존: Phase 1, Phase 3 · 푼다: Phase 5, Phase 6, Phase 10 · 파일 집합: src/shared/components(map·sms·upload), src/shared/payment, src/app/api/payments · done
-- Phase 5 — 이용자 틀·로그인·가입 · 유닛 5개 · 의존: Phase 4 · 푼다: Phase 7, Phase 9 · 파일 집합: src/app/(user)/layout · login · signup · phone-verification · find-login-id, src/app/api/auth, src/contracts/user · todo
+- Phase 5 — 이용자 틀·로그인·가입 · 유닛 5개 · 의존: Phase 4 · 푼다: Phase 7, Phase 9 · 파일 집합: src/app/(user)/layout · login · signup · phone-verification · find-login-id, src/app/api/auth, src/contracts/user · in-progress
 - Phase 6 — 업체 둘러보기 · 유닛 2개 · 의존: Phase 4 · 푼다: Phase 7 · 파일 집합: src/app/(user)/page · stores/[store_id], src/contracts/discovery · todo
 - Phase 7 — 예약·결제 · 유닛 2개 · 의존: Phase 5, Phase 6 · 푼다: Phase 8 · 파일 집합: src/app/(user)/stores/[store_id]/booking · payments, src/contracts/reservation · todo
 - Phase 8 — 내 예약 · 유닛 4개 · 의존: Phase 7 · 푼다: Phase 13 · 파일 집합: src/app/(user)/reservation, src/contracts/reservation · todo
@@ -76,7 +76,7 @@ flowchart LR
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: 진행 중 없음 · Next up: Phase 5
+지금: Phase 5 진행 중 · Next up: Phase 5
 
 ## 지금 할 일
 Phase 5 이용자 틀·로그인·가입 시작하기
@@ -181,11 +181,11 @@ Phase 5 이용자 틀·로그인·가입 시작하기
 ### Phase 5 — 이용자 틀·로그인·가입 (U5) · depends: Phase 4
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 14 | 이용자 모바일 틀 | `(user)` layout — 모바일 폭 · 상단 로그인 / 내 예약 진입 · 회원 상태 띠(BLOCK · LEAVE_WAIT) | — | 8 | todo |
-| 15 | SNS 로그인 | `/login` 카카오 · 네이버 → `user/login` → 토큰 저장 → 휴대폰 미인증이면 `/phone-verification`, 아니면 돌아갈 주소 — 예전 아이디 · 비밀번호 로그인 교체 | next-auth 유지 vs 카카오 · 네이버 SDK 직접 | 8, 14 | todo |
-| 16 | 가입 | `/signup` 성별 · 생년월일(만 19세) · 닉네임 → `user/sign`(큐) | — | 15 | todo |
-| 17 | 휴대폰 인증 | `/phone-verification` 번호 → 인증번호 → 완료 | — | 11, 15 | todo |
-| 18 | 아이디 찾기 | `/find-login-id` 번호 → 인증번호 → 가입한 SNS · 가입일 | — | 11 | todo |
+| 14 | 이용자 모바일 틀 | `(user)` layout — 모바일 폭 · 상단 로그인 / 내 예약 진입 · 회원 상태 띠(BLOCK · LEAVE_WAIT) | — | 8 | in-progress |
+| 15 | SNS 로그인 | `/login` 카카오 · 네이버 → `user/login` → 토큰 저장 → 휴대폰 미인증이면 `/phone-verification`, 아니면 돌아갈 주소 — 예전 아이디 · 비밀번호 로그인 교체 | next-auth 유지 vs 카카오 · 네이버 SDK 직접 | 8, 14 | in-progress |
+| 16 | 가입 | `/signup` 성별 · 생년월일(만 19세) · 닉네임 → `user/sign`(큐) | — | 15 | in-progress |
+| 17 | 휴대폰 인증 | `/phone-verification` 번호 → 인증번호 → 완료 | — | 11, 15 | in-progress |
+| 18 | 아이디 찾기 | `/find-login-id` 번호 → 인증번호 → 가입한 SNS · 가입일 | — | 11 | in-progress |
 
 **Expected pages**:
 
@@ -196,6 +196,8 @@ Phase 5 이용자 틀·로그인·가입 시작하기
 | #16 | `/signup` | U5 가입 · `POST user/sign` | 추가 정보 |
 | #17 | `/phone-verification` | U5 휴대폰 인증 · `POST user/phone-verification` · `/confirm` | 휴대폰 인증 |
 | #18 | `/find-login-id` | U5 아이디 찾기 · `POST user/find-login-id` · `/confirm` | 가입 SNS 찾기 |
+
+> build 완료(2026-11-16) — report: `.beaver/output/report/user/user-login-report.md`. next-auth + 서버 route 로그인 · 가입, jsonwebtoken · SNS 쿠키 제거. 테스트는 `/beaver:test`, 화면은 `.env.local` 의 NEXTAUTH_SECRET · 카카오 · 네이버 키로 `/login/`.
 
 ### Phase 6 — 업체 둘러보기 (U1 · U2) · depends: Phase 4
 | # | Unit | Goal | Key decision | Depends | Status |

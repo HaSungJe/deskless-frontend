@@ -25,7 +25,7 @@ roomless 이용자 · 업체 관리자 · 관리자 화면. 규칙의 근거는 
 - [frontend/dto/](frontend/dto/) — DTO 사본 → `src/contracts/` 로 옮겨 쓴다
 - [frontend/changes/](frontend/changes/README.md) — 이후 백엔드 수정 요청. 위에서부터 차례로 반영하고 어디까지 반영했는지 이 저장소에 기록한다
 - [frontend/design/](frontend/design/) — 시안 원본 HTML(색 토큰 · 간격 값)
-⚠️ 로그인 화면은 아직 없다 — 이용자 U5(카카오 · 네이버)는 Phase 5, 매니저 M1 은 Phase 10, 관리자 A1 은 Phase 15. `/login` 은 그때까지 자리 표시(`src/app/(user)/login/page.tsx`). 새 코드는 지침서대로 — 영역마다 토큰이 따로, 쓰기 API 는 SSE 큐, 키는 snake_case.
+⚠️ 매니저 M1(Phase 10) · 관리자 A1(Phase 15) 로그인 화면은 아직 없다 — 이용자 U5(카카오 · 네이버)는 `/login`(Phase 5). 새 코드는 지침서대로 — 영역마다 토큰이 따로, 쓰기 API 는 SSE 큐, 키는 snake_case.
 
 ## Architecture
 Next.js 16.4 App Router (`package.json:17`) · React 19.3 + React Compiler (`next.config.ts:37`) · TypeScript 5 · fetch(HTTP 라이브러리 없음) · class-validator · next-auth 4 · Vitest 5 + Testing Library (선택: 사용자) · CSS Modules (선택: 사용자).
@@ -38,7 +38,7 @@ src/
 └─ test/         테스트 — src 와 같은 경로에 <대상>.test.ts(x)
 ```
 - import 방향은 `app → contracts → shared` 한쪽으로만. 거꾸로 가면 ESLint 오류 (`eslint.config.mjs:12`).
-- `page.tsx` · `layout.tsx` 는 서버 컴포넌트로 얇게 두고 화면은 `<화면>Content` 를 그리기만 한다 (`src/app/(user)/login/page.tsx:4`).
+- `page.tsx` · `layout.tsx` 는 서버 컴포넌트로 얇게 두고 화면은 `<화면>Content` 를 그리기만 한다 (`src/app/(user)/login/page.tsx:5`).
 - 화면 파일(`<화면>Content.tsx` · `dto.ts` · 테스트)은 그 주소의 `page.tsx` 옆에 둔다(css 는 `src/app/css/<영역>/`) — 주소가 되는 건 `page` · `route` 같은 특수 파일뿐이라 옆 파일은 노출되지 않는다. 별도 `features/` 층은 두지 않는다 (선택: 사용자 · 표준: Next.js project-structure "Colocation").
 - 영역 폴더(`manager/` · `admin/` · `contracts/<도메인>`)는 그 화면 · API 를 만들 때 생긴다.
 
@@ -69,7 +69,7 @@ src/
 ## Data Layer
 - 백엔드 호출은 fetch 하나 — 조회 · 로그인 같은 동기는 `request<T>({method, path, query, body, token})`, 상태를 바꾸는 쓰기는 큐 `callQueue<T>({method, path, body, token})` (`src/shared/api/request.ts` · `queue.ts`). 주소는 `${NEXT_PUBLIC_API_URL}/api/v1${path}` — 게이트웨이 하나만 부른다(로컬 `http://localhost:3000` · Swagger `/swagger`, 내부 3010 · 3020 은 직접 부르지 않음 — docs/architecture.md "로컬 포트").
 - 큐 결과는 `done` → data, `pending` · 결과 없이 끝남 → `null`(그 리소스를 다시 조회).
-- 로그인이 필요한 API 는 `withAuth(auth, (token) => request · callQueue(…))` (`src/shared/api/auth.ts:30`) — 401 이면 그 영역 재발급 한 번 · 재시도, 또 401 이면 그 영역 로그인 화면. 재발급이 일시 실패(네트워크 · 백엔드 5xx)면 로그아웃하지 않고 `NetworkError`. 응답이 없는 실패는 `NetworkError`.
+- 로그인이 필요한 API 는 `withAuth(auth, (token) => request · callQueue(…))` (`src/shared/api/auth.ts:31`) — 401 이면 그 영역 재발급 한 번 · 재시도, 또 401 이면 그 영역 로그인 화면. 재발급이 일시 실패(네트워크 · 백엔드 5xx)면 로그아웃하지 않고 `NetworkError`. 응답이 없는 실패는 `NetworkError`.
 - 토큰은 영역마다 httpOnly 쿠키 `<area>_access_token` · `<area>_refresh_token` 으로 route handler(`src/app/api/cookie/[area]/` · `[area]/refresh/`)가 쓰고 읽는다 (`src/app/api/cookie/token-cookie.ts:88`). 저장(`POST`)은 같은 사이트 JSON 요청만 받는다(`isSameSiteJson` — 다른 사이트 form 이 토큰을 심는 것 막기). 클라이언트는 `src/shared/api/cookie.ts` 로만 접근한다.
 - 전역 상태는 Context 만 쓴다 (`RootLayoutProvider.tsx:17-18`) — 상태 관리 라이브러리 없음.
 - 목록 응답은 `{list, pagination}` — `pagination` 은 snake_case `PaginationType`(`src/shared/types/pagination.ts`)이고 `Pagination`(`src/shared/components/ui/nav/Pagination.tsx`)에 그대로 넘긴다. 공통 계약은 `src/contracts/common/`(지침서 사본).
@@ -82,7 +82,7 @@ src/
 - 지침서 DTO 사본은 `contracts/` 에 그대로 두고 화면 검증에도 그대로 쓴다 (지침서: frontend/api.md:62).
 
 ## Error & Response
-- route handler 는 항상 200 + `{success: boolean, data?}` JSON (`src/app/api/route-util.ts:15` · `src/app/api/cookie/[area]/route.ts:14,20`). 클라이언트 쿠키 함수는 실패를 삼키고 `null` · `false` 를 돌려준다 (`src/shared/api/cookie.ts:37-54`).
+- route handler 는 항상 200 + `{success: boolean, data?}` JSON (`src/app/api/route-util.ts:18` · `src/app/api/cookie/[area]/route.ts:14,20`). 클라이언트 쿠키 함수는 실패를 삼키고 `null` · `false` 를 돌려준다 (`src/shared/api/cookie.ts:29-46`).
 - API 호출 실패는 catch 에서 `handleApiError(error)` (`src/shared/api/error.ts:21`) — `validation_errors` 는 칸 옆에(맞는 칸이 없으면 오류 팝업), 없으면 `message` 를 오류 팝업으로, `NetworkError` 는 네트워크 문구, 그 밖의 오류는 일반 문구(개발 때만 원문), 취소(`AbortError`) · 로그인 만료(`LoginRequiredError`)는 무시. axios 는 쓰지 않는다(사용자 2026-11-15).
 - 오류는 브라우저 alert 대신 오류 팝업 하나 — `showErrorPopup(message, detail?)` (`src/shared/utils/error-popup.ts:25`), 루트의 `ErrorPopup`(`src/shared/components/ui/modal/ErrorPopup.tsx`)이 띄운다(사용자 2026-11-15).
 
@@ -91,10 +91,10 @@ src/
 ## Auth
 - 영역은 주소로 안다 — `areaOf(pathname)` (`src/shared/utils/area.ts:21`): `/manager…` manager · `/admin…` admin · 그 밖 user. 영역마다 토큰이 따로다(쿠키 이름으로 나눔 — 사용자 2026-11-15).
 - 주소가 바뀔 때마다 `RootLayoutContent` 가 그 영역 토큰을 확인한다(`GET /api/cookie/<area>/` — 없거나 곧 만료면 refresh 쿠키로 재발급, 로그인 안 된 상태는 주소마다 다시 확인) (`src/app/RootLayoutContent.tsx:54-66`) → `RootLayoutLoadingContext` · `AuthContext`(`{area, token, isLogin, setToken, onExpired, logout}`).
-- 브라우저가 백엔드를 직접 부른다(사용자 2026-11-15). 로그인이 필요한 API 는 contracts 함수가 `withAuth(auth, …)` — 401 이면 재발급 한 번 · 재시도, 또 401 이면 그 영역 로그인 화면(`loginUrl(area, 지금 주소)` → `?return_url=`). 로그인 결과는 `saveAreaTokens(area, tokens)`, 로그아웃은 `auth.logout()`(로그아웃 API 없음). 로그인 화면은 `safeReturnPath(return_url, area)` 로 돌아갈 주소를 읽는다(URL 로 읽어 같은 사이트 주소만 — 탭 · 줄바꿈을 끼운 주소도 막는다).
-- 로그인이 필요한 영역은 layout 에서 `<AuthGuard>` 로 감싼다 — 영역 로그인 주소는 주소로 알고, 그 영역 로그인 화면 자신은 막지 않는다 (`src/shared/components/AuthGuard.tsx:19` · 지금 호출처 0 — 미적용).
-- 클라이언트 코드는 쿠키를 직접 읽지 않는다(`src/shared/api/cookie.ts` 로만). 토큰은 JWT 복호화하지 않는다(만료는 응답의 `*_expires_at`) — `NEXT_PUBLIC_JWT_CODE` 는 SNS 쿠키 route handler 에서만 (`src/app/api/cookie/sns/route.ts:15`).
-- SNS 로그인은 next-auth (`src/app/api/auth/[...nextauth]/route.ts`).
+- 브라우저가 백엔드를 직접 부른다(사용자 2026-11-15). 로그인이 필요한 API 는 contracts 함수가 `withAuth(auth, …)` — 401 이면 재발급 한 번 · 재시도, 또 401 이면 그 영역 로그인 화면(`loginUrl(area, 지금 주소)` → `?return_url=`). 로그인 결과 토큰은 이용자는 서버 route 가 `setTokenCookies`(아래 SNS 로그인), 매니저 · 관리자는 화면이 `saveAreaTokens(area, tokens)`, 로그아웃은 `auth.logout()`(로그아웃 API 없음). 로그인 화면은 `safeReturnPath(return_url, area)` 로 돌아갈 주소를 읽는다(URL 로 읽어 같은 사이트 주소만 — 탭 · 줄바꿈을 끼운 주소도 막는다).
+- 로그인이 필요한 영역은 layout 에서 `<AuthGuard>` 로 감싼다 — 영역 로그인 주소는 주소로 알고, 그 영역 로그인 화면 자신은 막지 않는다 (`src/shared/components/AuthGuard.tsx:19`). 이용자 영역은 지도 · 업체 보기가 로그인 없이 되므로 로그인이 필요한 화면의 page 만 감싼다 (`src/app/(user)/phone-verification/page.tsx` — 사용자 2026-11-16).
+- 클라이언트 코드는 쿠키를 직접 읽지 않는다(`src/shared/api/cookie.ts` 로만). 토큰은 JWT 복호화하지 않는다(만료는 응답의 `*_expires_at`).
+- SNS 로그인(이용자 — 사용자 2026-11-16): next-auth(카카오 · 네이버, `src/app/api/auth/[...nextauth]/route.ts`)가 OAuth 를 하고, 검증된 SNS 계정(`sns_id` · `sns_user_id`)은 next-auth 세션(httpOnly · 10분)에만 둔다 — 백엔드가 `sns_user_id` 를 다시 확인하지 않으므로 브라우저에 내보내지 않는다. `GET /api/user/sns-login/`(next-auth callbackUrl)이 `getToken` 으로 읽어 백엔드 로그인 → 이용자 토큰 쿠키 · SNS 세션 삭제 → 휴대폰 인증 · 돌아갈 주소(가입 전이면 `/signup/`), 가입은 `POST /api/user/sign/` (`src/app/api/user/`). 로그인도 Next 서버가 부르므로 로그인 IP 와 재발급 IP 가 같다.
 
 ## 외부 연동
 - 지도 · 주소 · 인증번호 · 파일 · 결제는 `shared` 의 연동 부품을 쓴다 — `map/StoreMap` · `useMyLocation` · `searchAddressWithCoords` · `sms/SmsVerification` · `uploadFile` + `upload/ImageUploader` · `payment/TossPaymentWidget` + `requestTossConfirm`. 부품은 도메인 API 를 모르고, 화면이 그 화면의 contracts 함수(검증 · 실패 안내 포함)를 감싸 넘긴다. 미리보기 `/dev/infra`(개발 전용).
@@ -122,9 +122,9 @@ Vitest 5 + Testing Library + jsdom (`vitest.config.mts`) (선택: 사용자). �
 - [ ] 제출 전 `validateAction(dto)`, 입력 칸마다 `<span data-type="validation-alert" data-id="<필드>">`
 - [ ] API 호출 실패는 catch 에서 `handleApiError(error)` — 오류는 `alert` 대신 오류 팝업(`showErrorPopup`)
 - [ ] 클라이언트에서 쿠키 · 토큰을 직접 읽지 않고 `shared/api/cookie.ts` 를 쓴다
-- [ ] 로그인이 필요한 영역 layout 은 `<AuthGuard>` 로 감싸고, 로그인이 필요한 API 는 `withAuth(auth, …)` 로 부른다
+- [ ] 로그인이 필요한 영역 layout(이용자는 그 화면 page)은 `<AuthGuard>` 로 감싸고, 로그인이 필요한 API 는 `withAuth(auth, …)` 로 부른다
 - [ ] `window` 를 쓰는 라이브러리는 `next/dynamic` + `ssr: false`
-- [ ] 시크릿은 서버 코드(route handler)에서만 — 클라이언트 코드에 `NEXT_PUBLIC_JWT_CODE` 금지
+- [ ] 시크릿(`NEXTAUTH_SECRET` · `TOSS_SECRET_KEY`)은 서버 코드(route handler)에서만 — `NEXT_PUBLIC_` 을 붙이지 않는다, SNS 계정은 브라우저에 내보내지 않는다
 - [ ] 지도 · 주소 · 인증번호 · 파일 · 결제는 `shared` 연동 부품에 화면의 contracts 함수만 넘긴다 — 토스 시크릿 키는 결제 승인 route handler 에서만 (docs/integrations.md)
 - [ ] 내부 링크는 `/` 로 끝난다 (`trailingSlash`)
 - [ ] 스타일은 `<Name>.module.css` 를 css 폴더에(화면 `src/app/css/<영역>/`, 공통 부품 `src/shared/css/…`), 색 · 크기는 `globals.css` 토큰 `var(--…)` 만 (값 직접 쓰지 않음 — 부품 고유 치수 · 간격 · 글자 크기 예외는 docs/conventions.md "스타일")

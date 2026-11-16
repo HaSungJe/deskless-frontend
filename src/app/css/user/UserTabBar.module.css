@@ -1,0 +1,27 @@
+/* 하단 탭 — 주 탭 화면(지도 · 내 예약 · 마이), 시안 user.html:120-122 · 447 */
+.bar {
+    position: sticky;
+    bottom: 0;
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    height: 64px;
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+}
+
+.tab {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 2px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    text-decoration: none;
+}
+
+.active {
+    font-weight: 700;
+    color: var(--primary);
+}

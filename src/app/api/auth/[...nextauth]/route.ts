@@ -1,15 +1,20 @@
-import { cookies, headers as nextHeaders } from "next/headers";
-import NaverProvider from "next-auth/providers/naver";
-import KakaoProvider from "next-auth/providers/kakao";
-import GoogleProvider from "next-auth/providers/google";
-import AppleProvider from "next-auth/providers/apple";
-import NextAuth from "next-auth";
-import * as jwt from 'jsonwebtoken';
+import NextAuth from 'next-auth';
+import KakaoProvider from 'next-auth/providers/kakao';
+import NaverProvider from 'next-auth/providers/naver';
+import { toSnsAccount } from '../../user/sns-session';
 
+/** SNS 세션 — 로그인 · 가입을 마칠 동안만(초) */
+const SNS_SESSION_MAX_AGE = 10 * 60;
+
+// SNS 로그인(카카오 · 네이버) — 검증된 SNS 계정은 이 세션(httpOnly · NEXTAUTH_SECRET 암호화)에만 두고, 백엔드 로그인 · 가입은 /api/user/* route 가 한다
 const handler = NextAuth({
     pages: {
-        signIn: '/sign/in',
-        error: '/sign/in',
+        signIn: '/login/',
+        error: '/login/',
+    },
+    session: {
+        strategy: 'jwt',
+        maxAge: SNS_SESSION_MAX_AGE,
     },
     logger: {
         error(code, ...message) {
@@ -17,103 +22,31 @@ const handler = NextAuth({
             console.error(code, ...message);
         },
     },
-    useSecureCookies: process.env.NODE_ENV === 'production',
-    cookies: {
-        pkceCodeVerifier: {
-            name: 'next-auth.pkce.code_verifier',
-            options: {
-                httpOnly: true,
-                sameSite: 'lax',
-                path: '/',
-                secure: process.env.NODE_ENV === 'production',
-            },
-        },
-    },
     providers: [
+        KakaoProvider({
+            clientId: process.env.KAKAO_LOGIN_CLIENT_ID,
+            clientSecret: process.env.KAKAO_LOGIN_SECRET_ID,
+        }),
         NaverProvider({
             clientId: process.env.NAVER_LOGIN_CLIENT_ID,
             clientSecret: process.env.NAVER_LOGIN_SECRET_ID,
         }),
-        KakaoProvider({
-            clientId: process.env.KAKAO_LOGIN_CLIENT_ID,
-            clientSecret: process.env.KAKAO_LOGIN_SECRET_ID
-        }),
-        GoogleProvider({
-            clientId: process.env.GOOGLE_LOGIN_CLIENT_ID,
-            clientSecret: process.env.GOOGLE_LOGIN_SECRET_ID
-        }),
-        AppleProvider({
-            clientId: process.env.APPLE_LOGIN_CLIENT_ID,
-            clientSecret: process.env.APPLE_LOGIN_SECRET_ID
-        }),        
     ],
     callbacks: {
-        async signIn({ account, profile }) {
-            const headerList = await nextHeaders();
-            const proto = headerList.get('x-forwarded-proto') || 'http';
-            const isSecure = proto === 'https';
-            let data = {};
-
-            // console.log(`--------------------`)
-            // console.log(profile)
-
-            if (account.provider === 'naver') {
-                const naverProfile = profile as {response?: {id?: string; name?: string}};
-                data = { 
-                    sns_code: 'NAVER',
-                    sns_id: naverProfile?.response?.id ?? account.providerAccountId,
-                    access_token: account.access_token, 
-                    name: naverProfile?.response?.name ?? `NAVER${new Date().getTime()}`, 
-                }
-            } else if (account.provider === 'kakao') {
-                const kakaoProfile = profile as {name?: string; kakao_account?: {profile?: {nickname?: string}}};
-                data = { 
-                    sns_code: 'KAKAO',
-                    sns_id: account.providerAccountId,
-                    access_token: account.access_token, 
-                    name: kakaoProfile?.kakao_account?.profile?.nickname ?? kakaoProfile?.name ?? `KAKAO${new Date().getTime()}`, 
-                }
-            } else if (account.provider === 'google') {
-                data = { 
-                    sns_code: 'GOOGLE',
-                    sns_id: account.providerAccountId,
-                    access_token: account.access_token, 
-                    name: profile?.name ?? `GOOGLE${new Date().getTime()}`,
-                }
-            } else if (account.provider === 'apple') {
-                data = { 
-                    sns_code: 'APPLE',
-                    sns_id: account.providerAccountId,
-                    access_token: account.access_token, 
-                    name: profile?.name ?? `APPLE${new Date().getTime()}`,
-                }
-            }
-
-            // console.log(data)
-
-            try {
-                const setTime = new Date().getTime() + (60 * 60 * 1000);
-                const token = jwt.sign(data, process.env.NEXT_PUBLIC_JWT_CODE, {expiresIn: `1d`});
-                
-                // await 추가
-                const cookieStore = await cookies();
-                cookieStore.set('sns', token, {
-                    path: "/",
-                    domain: process.env.SERVER_DOMAIN ?? undefined,
-                    httpOnly: true,
-                    sameSite: "lax",
-                    secure: process.env.NODE_ENV === 'development' ? false : isSecure, 
-                    expires: setTime
-                });
-
-                return '/sign/sns';
-            } catch {
-                // console.log(`-----------sns 로그인 에러-----------`);
-                // console.log(error);
-                return false; // 에러 시 명시적 반환 추가
-            }
-        }
-    }
+        signIn({account}) {
+            // 카카오 · 네이버 계정 ID 가 있을 때만
+            return Boolean(account && toSnsAccount(account.provider, account.providerAccountId));
+        },
+        jwt({token, account}) {
+            // 처음 로그인할 때만 account 가 온다 — SNS 계정만 세션 토큰에(이름 · 메일 · 사진은 담지 않는다)
+            const sns = account ? toSnsAccount(account.provider, account.providerAccountId) : null;
+            return sns ? {sns_id: sns.sns_id, sns_user_id: sns.sns_user_id} : token;
+        },
+        session({session}) {
+            // /api/auth/session 이 브라우저에 주는 값 — SNS 계정 · 개인 정보 없이 만료만
+            return {expires: session.expires};
+        },
+    },
 });
 
 export { handler as GET, handler as POST };

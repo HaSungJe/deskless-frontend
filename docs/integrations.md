@@ -24,7 +24,8 @@
 
 ## 인증번호
 
-- `<SmsVerification onSend onConfirm confirmLabel?>{번호 위 칸}</SmsVerification>` — 번호 → "인증번호 받기 / 다시 받기" → 6자리 + 남은 시간(`Timer`) → 확인.
+- `<SmsVerification onSend onConfirm confirmLabel? confirmPlacement? confirmSlot? notice?>{번호 위 칸}</SmsVerification>` — 번호 → "인증번호 받기 / 다시 받기" → 6자리 + 남은 시간(`Timer`) → 확인.
+- 확인 버튼(보낸 뒤에만) 자리 `confirmPlacement` — `below`(안내 아래 · 기본) · `inline`(인증번호 칸 옆 — 아이디 찾기) · `slot`(화면의 아래 고정 영역 요소를 `confirmSlot` 으로 — `createPortal`, 휴대폰 인증). slot 영역은 화면이 `useState` + `ref` 로 넘기고 `:empty` 면 숨긴다(`src/app/(user)/phone-verification/PhoneVerificationContent.tsx`). `notice={false}` 면 아래 안내(5분 · 횟수)를 뺀다.
 - 검증 · API · 실패 안내는 **화면 함수**가 한다: `onSend(phone)` 는 DTO `validateAction` → contracts(큐) → 결과, 못 보냈으면(검증 실패 · 오류 · 큐 `pending`) 안내를 띄우고 `null`. `onConfirm(sms_verification_id, code)` 는 결과로 다음 화면.
 - 입력 칸은 `<Field name="phone">` · `<Field name="code">` — DTO 필드 이름과 같아 검증 오류가 칸 옆에 나온다.
 - 번호를 고치면 받은 인증번호를 비우고, 남은 시간이 0 이면 확인을 막는다.

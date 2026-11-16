@@ -16,14 +16,6 @@ export type AreaTokensType = {
     refresh_token_expires_at: string;
 };
 
-/** SNS 로그인 정보 — next-auth signIn 이 sns 쿠키에 담은 값(src/app/api/auth/[...nextauth]/route.ts) */
-export type SnsLoginType = {
-    sns_code: string;
-    sns_id: string;
-    access_token: string;
-    name: string;
-};
-
 /** 영역별 진행 중인 재발급 — 동시에 걸리면 하나를 나눈다 */
 const refreshing = new Map<AreaType, Promise<string | null>>();
 
@@ -51,26 +43,6 @@ async function callCookieRoute<T>(url: string, method: string = 'GET', body?: un
     } catch {
         return null;
     }
-}
-
-/**
- * 소셜 로그인 정보 얻기
- *
- * @returns 없으면 null
- */
-export async function getSNSAccessToken(): Promise<SnsLoginType | null> {
-    const result = await callCookieRoute<SnsLoginType>('/api/cookie/sns/');
-    return result?.success ? result.data ?? null : null;
-}
-
-/**
- * 소셜 로그인 정보 삭제
- *
- * @returns
- */
-export async function deleteSNSAccessToken(): Promise<boolean> {
-    const result = await callCookieRoute('/api/cookie/sns/', 'DELETE');
-    return result?.success === true;
 }
 
 /**

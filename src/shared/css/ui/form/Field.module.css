@@ -4,9 +4,17 @@
     min-width: 0;
 }
 
+/* 묶음(fieldset) — 브라우저 기본 테두리 · 여백 없앰 */
+.group {
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
 .label {
     display: block;
     margin: 0 0 6px;
+    padding: 0;
     font-size: 13px;
     font-weight: 700;
     color: var(--fg);

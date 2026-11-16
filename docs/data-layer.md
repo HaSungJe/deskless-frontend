@@ -18,7 +18,7 @@
 - 헤더는 `Accept`(큐는 `text/event-stream`), 본문이 있으면 `Content-Type: application/json`, 토큰이 있으면 `Authorization: Bearer`.
 - 큐 이벤트는 `takeSseEvents(buffer)`(`sse.ts`)가 자른다 — 빈 줄 경계, CRLF 허용, 여러 줄 `data:` 는 `\n` 으로 잇고 `:` 주석 줄은 무시. 결과는 지침서 예시 그대로(선택: 사용자) — 응답 DTO 가 `null` 인 큐 API 는 `done` 과 `pending` 이 같은 `null` 이라 화면은 `null` 이면 그 리소스를 다시 조회한다.
 - 응답이 없는 실패(fetch `TypeError` · 본문 · 스트림 읽기 실패)는 `NetworkError`(원래 오류는 `cause`), 취소(`AbortError`)는 그대로 던진다. 화면을 떠날 때 취소하려면 `AbortController` 의 `signal` 을 넘긴다.
-- 로그인이 필요한 API 는 `withAuth(auth, (token) => request · callQueue(…))` (`src/shared/api/auth.ts:30`) — 401 이면 `refreshAreaToken(area)`(같은 영역 동시 재발급은 하나로) → 한 번 재시도, 재발급 결과 로그인이 끝났거나(refresh 4xx) 또 401 이면 그 영역 토큰 삭제 · `onExpired()`(로그인 화면) · `LoginRequiredError`. 재발급이 일시 실패(네트워크 · 백엔드 5xx — route handler 가 `retry: true`)면 쿠키 · 로그인을 그대로 두고 `NetworkError` 를 던진다(화면은 네트워크 문구 팝업). 응답이 없는 실패(fetch 실패 · 큐 스트림 끊김)는 `NetworkError`(`request.ts` `sendRequest`), 취소는 `AbortError` 그대로.
+- 로그인이 필요한 API 는 `withAuth(auth, (token) => request · callQueue(…))` (`src/shared/api/auth.ts:31`) — 401 이면 `refreshAreaToken(area)`(같은 영역 동시 재발급은 하나로) → 한 번 재시도, 재발급 결과 로그인이 끝났거나(refresh 4xx) 또 401 이면 그 영역 토큰 삭제 · `onExpired()`(로그인 화면) · `LoginRequiredError`. 재발급이 일시 실패(네트워크 · 백엔드 5xx — route handler 가 `retry: true`)면 쿠키 · 로그인을 그대로 두고 `NetworkError` 를 던진다(화면은 네트워크 문구 팝업). 응답이 없는 실패(fetch 실패 · 큐 스트림 끊김)는 `NetworkError`(`request.ts` `sendRequest`), 취소는 `AbortError` 그대로.
 - 도메인별 엔드포인트 함수는 `src/contracts/<도메인>/api.ts` 에 두고 그 함수가 `request` · `callQueue` 를 부른다(아직 없음 — 첫 화면 때).
 - axios 는 쓰지 않는다(패키지 제거 — 사용자 2026-11-15). 예전 래퍼(`axios.ts` · `axios-error.ts`)는 지웠고, 토큰 쿠키 route handler 부르기(`src/shared/api/cookie.ts`) · 재발급(`src/app/api/cookie/token-cookie.ts` → `request`)도 fetch 다.
 
@@ -51,7 +51,7 @@
 |---|---|---|
 | `<area>_access_token` | `POST /api/cookie/<area>/`(로그인 결과 저장), `GET` · `POST …/refresh/` 안의 재발급 (`token-cookie.ts:88`) | `httpOnly`, `path: "/"`, `domain: SERVER_DOMAIN`(빈 값이면 없음), `sameSite: SERVER_DOMAIN ? "lax" : "strict"`, `secure: 개발이면 false, 아니면 x-forwarded-proto 가 https`, 만료 = `access_token_expires_at` − 60초 |
 | `<area>_refresh_token` | 같은 곳 | 같은 옵션, 만료 = `refresh_token_expires_at` |
-| `sns` | next-auth `signIn` 콜백 (`src/app/api/auth/[...nextauth]/route.ts`) | `httpOnly`, `sameSite: "lax"`, 1시간 |
+| `next-auth.session-token`(https 면 `__Secure-…`) | next-auth(`src/app/api/auth/[...nextauth]/route.ts`) — SNS 계정(`sns_id` · `sns_user_id`)만, `/api/user/sns-login/` · `/api/user/sign/` 가 `getToken` 으로 읽고 이용자 토큰을 심으면 지운다 | next-auth 기본(httpOnly · `NEXTAUTH_SECRET` 암호화), 10분 |
 
 | route handler | 하는 일 | 결과 |
 |---|---|---|
@@ -60,9 +60,16 @@
 | `DELETE /api/cookie/<area>/` | 로그아웃 — 그 영역 두 쿠키만 삭제(로그아웃 API 없음) | `{success}` |
 | `POST /api/cookie/<area>/refresh/` | 401 뒤 강제 재발급 | `GET` 의 재발급과 같음 — 로그인이 끝났으면 두 쿠키 삭제, 일시 실패면 `retry: true` |
 
-- ⚠️ 백엔드 재발급은 지금 로그인 때 IP 와 재발급 요청 IP 가 다르면 401 이다 — 재발급은 Next 서버가 부르므로 배포 환경에서는 access 토큰이 끝날 때 로그인이 풀린다(로컬은 IP 가 같아 영향 없음). 백엔드에 IP 검사 완화를 요청했다(2026-11-16).
+이용자 로그인 · 가입 route(`src/app/api/user/` — 사용자 2026-11-16, SNS 계정을 브라우저에 내보내지 않으려고 서버가 백엔드까지 부른다):
+
+| route handler | 하는 일 | 결과 |
+|---|---|---|
+| `GET /api/user/sns-login/?return_url=` | next-auth callbackUrl — SNS 세션(`getToken`)으로 백엔드 `user/login` → 이용자 토큰 쿠키(`setTokenCookies`) · next-auth 쿠키 삭제 | 303 `afterLoginPath`(휴대폰 인증 전이면 `/phone-verification/`) / 가입 전(404) `/signup/?sns=…` / `/login/?error=sns · login · retry` |
+| `POST /api/user/sign/` | 같은 사이트 JSON `{gender, birth, nickname}` + SNS 세션 → 백엔드 `user/sign`(큐, 결과 없이 끝나면 `user/login` 으로 한 번 다시 조회) → 토큰 쿠키 · next-auth 쿠키 삭제(https 의 `__Secure-` · `__Host-` 이름은 secure 로) | `{success, data: {is_phone_verified}}` / `{success: false, code: 'NO_SNS'}` / `{success: false, message, validation_errors}` / `{success: false, message, retry: true}` |
+
+- ⚠️ 백엔드 재발급은 지금 로그인 때 IP 와 재발급 요청 IP 가 다르면 401 이다 — 재발급은 Next 서버가 부르므로 배포 환경에서는 access 토큰이 끝날 때 로그인이 풀린다(로컬은 IP 가 같아 영향 없음). 백엔드에 IP 검사 완화를 요청했다(2026-11-16). 이용자는 로그인도 Next 서버(`/api/user/sns-login/`)가 부르므로 IP 가 같다 — 매니저 · 관리자 로그인(Phase 10 · 15)은 그 화면에서 정한다.
 - 영역별 재발급 API: 이용자 `/user-service/user/token-refresh` · 매니저 `/admin-service/manager/token-refresh` · 관리자 `/admin-service/admin/token-refresh` (`src/contracts/{user,manager,admin}/api.ts`, 본문 `{refresh_token}`).
-- 클라이언트는 쿠키를 직접 읽지 않고 `src/shared/api/cookie.ts` 로 route handler 를 부른다 — `getAreaToken` · `saveAreaTokens` · `deleteAreaTokens` · `refreshAreaToken`(같은 영역 동시 재발급은 진행 중인 하나를 나눈다 — refresh 토큰이 재발급마다 바뀌어서. 로그인이 끝났으면 `null`, `retry` · 응답 없음이면 `NetworkError`) · `getSNSAccessToken` · `deleteSNSAccessToken`. 주소는 `trailingSlash` 에 맞춰 `/` 로 끝낸다.
+- 클라이언트는 쿠키를 직접 읽지 않고 `src/shared/api/cookie.ts` 로 route handler 를 부른다 — `getAreaToken` · `saveAreaTokens` · `deleteAreaTokens` · `refreshAreaToken`(같은 영역 동시 재발급은 진행 중인 하나를 나눈다 — refresh 토큰이 재발급마다 바뀌어서. 로그인이 끝났으면 `null`, `retry` · 응답 없음이면 `NetworkError`). 주소는 `trailingSlash` 에 맞춰 `/` 로 끝낸다.
 
 ## 전역 상태
 

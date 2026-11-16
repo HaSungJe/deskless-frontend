@@ -21,9 +21,9 @@ export async function POST(request: Request): Promise<Response> {
     }
 }
 ```
-근거: `src/app/api/cookie/[area]/route.ts:32-49`, `src/app/api/route-util.ts:15`(`json`). 상태 코드는 항상 200, 성패는 본문 `success`. 데이터는 `data` 키 (`[area]/route.ts:20`). 결제 승인(`src/app/api/payments/confirm/route.ts`)은 실패 문구를 `message`, 토스 오류 코드를 `code`, 잠시 뒤 다시면 `retry: true` 로 준다.
+근거: `src/app/api/cookie/[area]/route.ts:32-49`, `src/app/api/route-util.ts:18`(`json`). 상태 코드는 항상 200, 성패는 본문 `success`. 데이터는 `data` 키 (`[area]/route.ts:20`). 결제 승인(`src/app/api/payments/confirm/route.ts`)은 실패 문구를 `message`, 토스 오류 코드를 `code`, 잠시 뒤 다시면 `retry: true` 로 준다.
 
-클라이언트 쪽 짝 (`src/shared/api/cookie.ts:37-54`) — 실패(네트워크 · 2xx 아님 · JSON 아님)는 던지지 않고 `null`:
+클라이언트 쪽 짝 (`src/shared/api/cookie.ts:29-46`) — 실패(네트워크 · 2xx 아님 · JSON 아님)는 던지지 않고 `null`:
 ```ts
 async function callCookieRoute<T>(url: string, method: string = 'GET', body?: unknown): Promise<RouteResultType<T> | null> {
     try {

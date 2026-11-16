@@ -1,6 +1,7 @@
 # Testing
 
 Vitest 5 + Testing Library(`@testing-library/react`) + jsdom (선택: 사용자 · 설정 `vitest.config.mts`, 정리 `vitest.setup.ts`).
+`vitest.config.mts` 의 `env.__NEXT_TRAILING_SLASH` 는 `next.config.ts` 의 `trailingSlash: true` 를 테스트에서도 켠다 — next build 가 넣는 값이라 없으면 `next/link` 의 `href` 끝 `/` 가 떨어진다.
 
 ## Testing Approach
 
