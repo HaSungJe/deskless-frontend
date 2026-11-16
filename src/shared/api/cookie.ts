@@ -1,6 +1,7 @@
 'use client';
 import { NetworkError, sendRequest } from '@/shared/api/request';
 import { AreaType } from '@/shared/utils/area';
+import { withBasePath } from '@/shared/utils/base-path';
 
 /** route handler(src/app/api/cookie/*) 응답 — 항상 200 + {success, data?} */
 type RouteResultType<T> = {
@@ -52,7 +53,7 @@ async function callCookieRoute<T>(url: string, method: string = 'GET', body?: un
  * @returns 로그인 안 돼 있으면 null
  */
 export async function getAreaToken(area: AreaType): Promise<string | null> {
-    const result = await callCookieRoute<string>(`/api/cookie/${area}/`);
+    const result = await callCookieRoute<string>(withBasePath(`/api/cookie/${area}/`));
     return result?.success ? result.data ?? null : null;
 }
 
@@ -63,7 +64,7 @@ export async function getAreaToken(area: AreaType): Promise<string | null> {
  * @param tokens 로그인 결과의 토큰 4개
  */
 export async function saveAreaTokens(area: AreaType, tokens: AreaTokensType): Promise<boolean> {
-    const result = await callCookieRoute(`/api/cookie/${area}/`, 'POST', tokens);
+    const result = await callCookieRoute(withBasePath(`/api/cookie/${area}/`), 'POST', tokens);
     return result?.success === true;
 }
 
@@ -73,7 +74,7 @@ export async function saveAreaTokens(area: AreaType, tokens: AreaTokensType): Pr
  * @param area 영역
  */
 export async function deleteAreaTokens(area: AreaType): Promise<boolean> {
-    const result = await callCookieRoute(`/api/cookie/${area}/`, 'DELETE');
+    const result = await callCookieRoute(withBasePath(`/api/cookie/${area}/`), 'DELETE');
     return result?.success === true;
 }
 
@@ -104,7 +105,7 @@ export function refreshAreaToken(area: AreaType): Promise<string | null> {
  * @param area 영역
  */
 async function requestRefresh(area: AreaType): Promise<string | null> {
-    const response = await sendRequest(`/api/cookie/${area}/refresh/`, {method: 'POST'});
+    const response = await sendRequest(withBasePath(`/api/cookie/${area}/refresh/`), {method: 'POST'});
     if (!response.ok) {
         throw new NetworkError(new Error(`refresh route ${response.status}`));
     }

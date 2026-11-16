@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { TossPaymentsWidgets } from '@tosspayments/tosspayments-sdk';
 import Timer from '@/shared/components/Timer';
 import Button from '@/shared/components/ui/button/Button';
+import { withBasePath } from '@/shared/utils/base-path';
 import { showErrorPopup } from '@/shared/utils/error-popup';
 import { formatPrice } from '@/shared/utils/format';
 import styles from '@/shared/css/payment/TossPaymentWidget.module.css';
@@ -207,7 +208,7 @@ function appendWidgetTarget(box: HTMLElement, prefix: string): HTMLDivElement {
  * @param result success · fail
  */
 function paymentResultUrl(result: 'success' | 'fail'): string {
-    return `${window.location.origin}${process.env.NEXT_PUBLIC_LOCAL_SERVER_PREFIX ?? ''}/payments/${result}/`;
+    return `${window.location.origin}${withBasePath(`/payments/${result}/`)}`;
 }
 
 /**

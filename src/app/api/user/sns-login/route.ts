@@ -4,6 +4,7 @@ import { afterLoginPath, loginErrorPath, SIGNUP_PATH, withReturnUrl } from '@/ap
 import { loginUser } from '@/contracts/user/api';
 import { ApiError } from '@/shared/api/request';
 import { RETURN_URL_KEY } from '@/shared/utils/area';
+import { withBasePath } from '@/shared/utils/base-path';
 import { setTokenCookies } from '../../cookie/token-cookie';
 import { clearSnsSession, readSnsAccount } from '../sns-session';
 
@@ -47,5 +48,5 @@ export async function GET(request: NextRequest): Promise<Response> {
  * @param path 앱 안 주소
  */
 function redirect(path: string): Response {
-    return new Response(null, {status: 303, headers: {Location: `${process.env.NEXT_PUBLIC_LOCAL_SERVER_PREFIX ?? ''}${path}`}});
+    return new Response(null, {status: 303, headers: {Location: withBasePath(path)}});
 }

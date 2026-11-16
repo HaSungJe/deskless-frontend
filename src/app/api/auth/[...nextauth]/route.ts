@@ -1,6 +1,8 @@
 import NextAuth from 'next-auth';
 import KakaoProvider from 'next-auth/providers/kakao';
 import NaverProvider from 'next-auth/providers/naver';
+import { AREA_LOGIN_PATH } from '@/shared/utils/area';
+import { withBasePath } from '@/shared/utils/base-path';
 import { toSnsAccount } from '../../user/sns-session';
 
 /** SNS 세션 — 로그인 · 가입을 마칠 동안만(초) */
@@ -9,8 +11,8 @@ const SNS_SESSION_MAX_AGE = 10 * 60;
 // SNS 로그인(카카오 · 네이버) — 검증된 SNS 계정은 이 세션(httpOnly · NEXTAUTH_SECRET 암호화)에만 두고, 백엔드 로그인 · 가입은 /api/user/* route 가 한다
 const handler = NextAuth({
     pages: {
-        signIn: '/login/',
-        error: '/login/',
+        signIn: withBasePath(AREA_LOGIN_PATH.user), // next-auth 는 이 주소를 그대로 Location 으로 써 basePath 를 직접 넣는다
+        error: withBasePath(AREA_LOGIN_PATH.user),
     },
     session: {
         strategy: 'jwt',

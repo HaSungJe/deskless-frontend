@@ -1,12 +1,18 @@
-import { beforeEach, describe, expect, it, vi } from 'vitest';
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { fireEvent, render, screen } from '@testing-library/react';
 import LoginContent from '@/app/(user)/login/LoginContent';
 import RootLayoutProvider, { AuthContextType } from '@/shared/providers/RootLayoutProvider';
 
-const {replace, signIn, showErrorPopup} = vi.hoisted(() => ({replace: vi.fn(), signIn: vi.fn(), showErrorPopup: vi.fn()}));
+const {replace, signIn, sessionProvider, showErrorPopup} = vi.hoisted(() => ({replace: vi.fn(), signIn: vi.fn(), sessionProvider: vi.fn(), showErrorPopup: vi.fn()}));
 
 vi.mock('next/navigation', () => ({useRouter: () => ({replace})}));
-vi.mock('next-auth/react', () => ({signIn}));
+vi.mock('next-auth/react', () => ({
+    signIn,
+    SessionProvider: (props: {children: React.ReactNode}) => {
+        sessionProvider(props);
+        return props.children;
+    },
+}));
 vi.mock('@/shared/utils/error-popup', () => ({showErrorPopup}));
 
 /**
@@ -35,7 +41,12 @@ function renderLogin(error: string | null, isLogin: boolean = false): void {
 beforeEach(() => {
     replace.mockClear();
     signIn.mockClear();
+    sessionProvider.mockClear();
     showErrorPopup.mockClear();
+});
+
+afterEach(() => {
+    vi.unstubAllEnvs();
 });
 
 describe('LoginContent', () => {
@@ -50,6 +61,18 @@ describe('LoginContent', () => {
         expect(signIn).toHaveBeenNthCalledWith(2, 'naver', {callbackUrl: '/api/user/sns-login/?return_url=%2Fstores%2F1%2F'});
         expect(showErrorPopup).not.toHaveBeenCalled();
         expect(screen.getByRole('link', {name: '아이디 찾기'}).getAttribute('href')).toBe('/find-login-id/');
+        expect(sessionProvider).toHaveBeenLastCalledWith(expect.objectContaining({basePath: '/api/auth', session: null, refetchOnWindowFocus: false}));
+    });
+
+    it('[SUCCESS] basePath 로 띄우면 next-auth 주소 · callbackUrl 앞에 basePath', () => {
+        vi.stubEnv('NEXT_PUBLIC_LOCAL_SERVER_PREFIX', '/roomless');
+        renderLogin(null);
+
+        fireEvent.click(screen.getByRole('button', {name: '카카오로 계속하기'}));
+
+        expect(sessionProvider).toHaveBeenLastCalledWith(expect.objectContaining({basePath: '/roomless/api/auth'}));
+        expect(signIn).toHaveBeenCalledTimes(1);
+        expect(signIn).toHaveBeenCalledWith('kakao', {callbackUrl: '/roomless/api/user/sns-login/?return_url=%2Fstores%2F1%2F'});
     });
 
     it('[FAIL:error] error 가 있으면 한 번 안내하고 주소에서 error 를 지운다', () => {

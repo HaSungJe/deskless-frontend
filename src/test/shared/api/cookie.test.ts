@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { refreshAreaToken } from '@/shared/api/cookie';
+import { deleteAreaTokens, getAreaToken, refreshAreaToken, saveAreaTokens } from '@/shared/api/cookie';
 import { NetworkError } from '@/shared/api/request';
 
 const fetchMock = vi.fn();
@@ -21,6 +21,28 @@ beforeEach(() => {
 
 afterEach(() => {
     vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+});
+
+describe('토큰 쿠키 route 주소', () => {
+    it('[SUCCESS] basePath 로 띄우면 route 주소 앞에 basePath — 조회 · 저장 · 삭제 · 재발급 모두', async () => {
+        vi.stubEnv('NEXT_PUBLIC_LOCAL_SERVER_PREFIX', '/roomless');
+        fetchMock.mockImplementation(async () => routeResponse({success: true, data: 'access'}));
+        const tokens = {access_token: 'a', refresh_token: 'r', access_token_expires_at: '2026-11-16T10:20:00.000Z', refresh_token_expires_at: '2027-11-16T10:00:00.000Z'};
+
+        await getAreaToken('user');
+        await saveAreaTokens('manager', tokens);
+        await deleteAreaTokens('admin');
+        await refreshAreaToken('user');
+
+        expect(fetchMock).toHaveBeenCalledTimes(4);
+        expect(fetchMock.mock.calls.map((call) => [call[0], call[1]?.method ?? 'GET'])).toEqual([
+            ['/roomless/api/cookie/user/', 'GET'],
+            ['/roomless/api/cookie/manager/', 'POST'],
+            ['/roomless/api/cookie/admin/', 'DELETE'],
+            ['/roomless/api/cookie/user/refresh/', 'POST'],
+        ]);
+    });
 });
 
 describe('refreshAreaToken', () => {

@@ -1,5 +1,5 @@
 // @vitest-environment node
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { afterLoginPath, loginErrorMessage, loginErrorPath, snsLoginCallbackUrl } from '@/app/(user)/login/login-flow';
 
 describe('afterLoginPath', () => {
@@ -20,6 +20,14 @@ describe('login-flow 주소 · 문구', () => {
     it('[SUCCESS] next-auth callbackUrl 은 로그인 route + 돌아갈 주소', () => {
         expect(snsLoginCallbackUrl('/stores/1/')).toBe('/api/user/sns-login/?return_url=%2Fstores%2F1%2F');
         expect(snsLoginCallbackUrl(null)).toBe('/api/user/sns-login/');
+    });
+
+    it('[SUCCESS] basePath 로 띄우면 callbackUrl 앞에 basePath — next-auth 가 origin 뒤에 그대로 붙인다', () => {
+        vi.stubEnv('NEXT_PUBLIC_LOCAL_SERVER_PREFIX', '/roomless');
+
+        expect(snsLoginCallbackUrl('/stores/1/')).toBe('/roomless/api/user/sns-login/?return_url=%2Fstores%2F1%2F');
+
+        vi.unstubAllEnvs();
     });
 
     it('[SUCCESS] 로그인 오류 주소 · 모르는 코드는 SNS 실패 문구', () => {

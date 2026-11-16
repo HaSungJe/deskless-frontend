@@ -1,4 +1,5 @@
 import { NetworkError, sendRequest } from '@/shared/api/request';
+import { withBasePath } from '@/shared/utils/base-path';
 
 /** 결제 성공 주소 query — 토스가 붙여 준 값 그대로 */
 export type TossConfirmQueryType = {
@@ -22,7 +23,7 @@ export type TossConfirmResultType = {
  * @param query 성공 주소 query
  */
 export async function requestTossConfirm(query: TossConfirmQueryType): Promise<TossConfirmResultType> {
-    const response = await sendRequest('/api/payments/confirm/', {
+    const response = await sendRequest(withBasePath('/api/payments/confirm/'), {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify(query),

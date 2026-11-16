@@ -1,5 +1,6 @@
 import type { Metadata, Viewport } from 'next';
 import { Noto_Sans_KR } from 'next/font/google';
+import { withBasePath } from '@/shared/utils/base-path';
 import RootLayoutContent from './RootLayoutContent';
 import './css/globals.css';
 
@@ -27,7 +28,7 @@ export const metadata: Metadata = {
     title: serverName,
     description: serverName,
     icons: {
-        icon: '/favicon.ico',
+        icon: withBasePath('/favicon.ico'), // 메타데이터 주소에는 Next 가 basePath 를 붙이지 않는다
     },
     openGraph: {
         type: 'website',
@@ -35,7 +36,7 @@ export const metadata: Metadata = {
         description: serverName,
         images: [
             {
-                url: '/og.jpg',
+                url: withBasePath('/og.jpg'),
                 width: 512,
                 height: 269,
             },
@@ -43,7 +44,7 @@ export const metadata: Metadata = {
     },
     twitter: {
         card: 'summary_large_image',
-        images: ['/og.jpg'],
+        images: [withBasePath('/og.jpg')],
     },
     other: adsensePublisherId ? { 'google-adsense-account': adsensePublisherId } : undefined,
 }

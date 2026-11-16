@@ -1,6 +1,7 @@
 import { AuthType, withAuth } from '@/shared/api/auth';
 import { callQueue } from '@/shared/api/queue';
 import { ApiError, NetworkError, request, sendRequest } from '@/shared/api/request';
+import { withBasePath } from '@/shared/utils/base-path';
 import { ValidationErrorType } from '@/shared/utils/validation';
 import { UserFindLoginIdConfirmDto, UserFindLoginIdConfirmResultDto } from './dto/user-find-login-id-confirm.dto';
 import { UserFindLoginIdDto, UserFindLoginIdResultDto } from './dto/user-find-login-id.dto';
@@ -112,7 +113,7 @@ export function confirmFindLoginId(dto: UserFindLoginIdConfirmDto): Promise<User
  * @param form 성별 · 생년월일 · 닉네임
  */
 export async function signWithSns(form: UserSignFormType): Promise<SignWithSnsResultType> {
-    const response = await sendRequest('/api/user/sign/', {
+    const response = await sendRequest(withBasePath('/api/user/sign/'), {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({gender: form.gender, birth: form.birth, nickname: form.nickname}),

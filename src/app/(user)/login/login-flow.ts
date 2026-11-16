@@ -1,4 +1,5 @@
 import { AREA_LOGIN_PATH, RETURN_URL_KEY, safeReturnPath, toSamePath } from '@/shared/utils/area';
+import { withBasePath } from '@/shared/utils/base-path';
 
 export const PHONE_VERIFICATION_PATH = '/phone-verification/';
 export const SIGNUP_PATH = '/signup/';
@@ -52,12 +53,13 @@ export function afterLoginPath(isPhoneVerified: number, returnUrl: string | null
 }
 
 /**
- * SNS 로그인 시작 때 next-auth 에 줄 callbackUrl — 로그인 route + 돌아갈 주소
+ * SNS 로그인 시작 때 next-auth 에 줄 callbackUrl — basePath + 로그인 route + 돌아갈 주소
+ * - next-auth 는 '/' 로 시작하는 callbackUrl 을 origin 뒤에 그대로 붙여 basePath 를 직접 넣는다
  *
  * @param returnUrl 돌아갈 주소
  */
 export function snsLoginCallbackUrl(returnUrl: string | null): string {
-    return withReturnUrl(SNS_LOGIN_ROUTE, returnUrl);
+    return withBasePath(withReturnUrl(SNS_LOGIN_ROUTE, returnUrl));
 }
 
 /**

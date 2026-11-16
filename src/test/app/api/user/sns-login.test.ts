@@ -131,4 +131,15 @@ describe('GET /api/user/sns-login', () => {
         expect(rejected.headers.get('Location')).toBe('/login/?error=login&return_url=%2Fstores%2F1%2F');
         expect(store.set).not.toHaveBeenCalled();
     });
+
+    it('[SUCCESS] basePath 로 띄우면 303 Location 앞에 basePath', async () => {
+        vi.stubEnv('NEXT_PUBLIC_LOCAL_SERVER_PREFIX', '/roomless');
+        getTokenMock.mockResolvedValue({sns_id: 'KAKAO', sns_user_id: '1234567890'});
+        fetchMock.mockResolvedValue(new Response(JSON.stringify(LOGIN_RESULT), {status: 200}));
+
+        const response = await GET(snsLoginRequest());
+
+        expect(response.status).toBe(303);
+        expect(response.headers.get('Location')).toBe('/roomless/phone-verification/?return_url=%2Fstores%2F1%2F');
+    });
 });
