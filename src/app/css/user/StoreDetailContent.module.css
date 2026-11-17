@@ -1,0 +1,283 @@
+/* U2 업체 상세 + 객실 그룹 — 시안 user.html:456-579 */
+.page {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    background: var(--bg);
+}
+
+.body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.summary {
+    display: flex;
+    flex-direction: column;
+    background: var(--surface);
+}
+
+.info {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+}
+
+.name {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.badges {
+    display: flex;
+    gap: 4px;
+}
+
+.contact {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 14px;
+}
+
+.contactRow {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.icon {
+    flex-shrink: 0;
+    color: var(--muted);
+}
+
+.phone {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-weight: 500;
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.intro {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+/* 위치 지도 — 시안 72px · 모서리 */
+.locationMap {
+    --store-map-h: 72px;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 16px;
+    background: var(--surface);
+}
+
+.sectionTitle {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.text {
+    margin: 0;
+    font-size: 14px;
+}
+
+/* 영업시간 — 2열, 위에서 아래로 */
+.hours {
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-rows: repeat(4, auto);
+    gap: 6px 12px;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+}
+
+.hour {
+    display: flex;
+    gap: 8px;
+}
+
+.day {
+    width: 16px;
+    font-weight: 700;
+}
+
+.today {
+    color: var(--primary-strong);
+    font-weight: 700;
+}
+
+.breaks {
+    display: flex;
+    gap: 8px;
+    padding-top: 10px;
+    border-top: 1px solid var(--line);
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+}
+
+.breakTitle {
+    font-weight: 700;
+}
+
+/* 판매 상품 — 배지 열 + 설명 열 */
+.plans {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);
+    align-items: start;
+    gap: 10px 8px;
+    font-size: 14px;
+    line-height: 1.5;
+    font-variant-numeric: tabular-nums;
+}
+
+.planBadge {
+    justify-self: start;
+}
+
+.policies {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin: 0;
+    padding-left: 18px;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+/* 객실 그룹 카드 */
+.group {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    color: var(--fg);
+    text-decoration: none;
+}
+
+.groupHead {
+    display: flex;
+    gap: 12px;
+}
+
+.groupThumb {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    border-radius: var(--radius);
+    background: var(--neutral-bg);
+    color: var(--neutral-fg);
+    font-size: 12px;
+    font-weight: 500;
+    overflow: hidden;
+}
+
+.img {
+    object-fit: cover;
+}
+
+.groupText {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.groupName {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.groupDesc {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.roomCount {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.amenities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.amenity {
+    display: inline-flex;
+    align-items: center;
+    height: var(--badge-h);
+    padding: 0 10px;
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--neutral-fg);
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.prices {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+    font-variant-numeric: tabular-nums;
+}
+
+.price {
+    display: flex;
+    flex-direction: column;
+}
+
+.priceLabel {
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.priceValue {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.period {
+    margin: 0;
+    padding: 6px 10px;
+    border-radius: var(--radius);
+    background: var(--surface-2);
+    color: var(--muted);
+    font-size: 12px;
+    font-variant-numeric: tabular-nums;
+}
+
+.muted {
+    margin: 0;
+    color: var(--muted);
+}
+
+.footer {
+    position: sticky;
+    bottom: 0;
+    padding: 12px 16px 16px;
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+}

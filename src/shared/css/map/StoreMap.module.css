@@ -1,7 +1,92 @@
+/* 시안 frontend/design/user.html:363-401 */
+.wrap {
+    position: relative;
+}
+
 .map {
     width: 100%;
     height: var(--store-map-h, 320px);
-    border-radius: var(--radius);
+    border-radius: var(--store-map-radius, var(--radius));
     background: var(--map-bg);
     overflow: hidden;
+}
+
+/* 업체 핀 — 이름표 + 핀 */
+.pin {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    cursor: pointer;
+}
+
+/* 누를 수 없는 핀(U2 위치) */
+span.pin {
+    cursor: default;
+}
+
+.pinLabel {
+    max-width: 120px;
+    padding: 2px 8px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--fg);
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.pin path {
+    fill: var(--primary);
+    stroke: var(--surface);
+}
+
+.pin circle {
+    fill: var(--surface);
+}
+
+/* 지금 영업 안 함 — 회색 */
+.muted .pinLabel {
+    color: var(--neutral-fg);
+}
+
+.muted path {
+    fill: var(--faint);
+}
+
+/* 내 위치 점 — 시안 :390 */
+.myLocation {
+    display: block;
+    width: 16px;
+    height: 16px;
+    border: 3px solid var(--surface);
+    border-radius: 999px;
+    background: var(--primary);
+    box-shadow: 0 0 0 6px var(--primary-halo);
+}
+
+/* 내 위치로 이동 — 시안 :400 */
+.myLocationButton {
+    position: absolute;
+    right: 12px;
+    bottom: 12px;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--fg);
+    cursor: pointer;
 }

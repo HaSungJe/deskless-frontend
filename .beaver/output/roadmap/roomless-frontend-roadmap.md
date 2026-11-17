@@ -11,7 +11,7 @@ flowchart LR
   P3["Phase 3 · 영역별 로그인 기반 (3)"]:::done
   P4["Phase 4 · 이용자 공통 인프라 (5)"]:::done
   P5["Phase 5 · 이용자 틀·로그인·가입 (5)"]:::done
-  P6["Phase 6 · 업체 둘러보기 (2)"]:::todo
+  P6["Phase 6 · 업체 둘러보기 (2)"]:::inprog
   P7["Phase 7 · 예약·결제 (2)"]:::todo
   P8["Phase 8 · 내 예약 (4)"]:::todo
   P9["Phase 9 · 마이페이지·입점 신청 (4)"]:::todo
@@ -61,7 +61,7 @@ flowchart LR
 - Phase 3 — 영역별 로그인 기반 · 유닛 3개 · 의존: Phase 2 · 푼다: Phase 4 · 파일 집합: src/app/api/cookie, src/shared/api(auth), src/shared/providers, src/app/RootLayoutContent.tsx · done
 - Phase 4 — 이용자 공통 인프라 · 유닛 5개 · 의존: Phase 1, Phase 3 · 푼다: Phase 5, Phase 6, Phase 10 · 파일 집합: src/shared/components(map·sms·upload), src/shared/payment, src/app/api/payments · done
 - Phase 5 — 이용자 틀·로그인·가입 · 유닛 5개 · 의존: Phase 4 · 푼다: Phase 7, Phase 9 · 파일 집합: src/app/(user)/layout · login · signup · phone-verification · find-login-id, src/app/api/auth, src/contracts/user · done
-- Phase 6 — 업체 둘러보기 · 유닛 2개 · 의존: Phase 4 · 푼다: Phase 7 · 파일 집합: src/app/(user)/page · stores/[store_id], src/contracts/discovery · todo
+- Phase 6 — 업체 둘러보기 · 유닛 2개 · 의존: Phase 4 · 푼다: Phase 7 · 파일 집합: src/app/(user)/page · stores/[store_id], src/contracts/discovery · in-progress
 - Phase 7 — 예약·결제 · 유닛 2개 · 의존: Phase 5, Phase 6 · 푼다: Phase 8 · 파일 집합: src/app/(user)/stores/[store_id]/booking · payments, src/contracts/reservation · todo
 - Phase 8 — 내 예약 · 유닛 4개 · 의존: Phase 7 · 푼다: Phase 13 · 파일 집합: src/app/(user)/reservation, src/contracts/reservation · todo
 - Phase 9 — 마이페이지·입점 신청 · 유닛 4개 · 의존: Phase 5 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/(user)/me · store-applications, src/contracts/user, src/contracts/store · todo
@@ -76,7 +76,7 @@ flowchart LR
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: 진행 중 없음 · Next up: Phase 6
+지금: Phase 6 진행 중 · Next up: Phase 6
 
 ## 지금 할 일
 Phase 6 업체 둘러보기 시작하기
@@ -195,8 +195,8 @@ Phase 6 업체 둘러보기 시작하기
 ### Phase 6 — 업체 둘러보기 (U1 · U2) · depends: Phase 4
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 19 | U1 지도 · 주변 업체 | `/` 지도 마커 · 반경(5 · 10 · 20 · 50km) · 업체 카드, 지도를 멈추면 다시 조회, `is_truncated` 안내 | — | 9 | todo |
-| 20 | U2 업체 상세 + 객실 그룹 | `/stores/[store_id]` 사진 · 영업시간 · 상품 · 규정 · 객실 그룹 카드 → 예약하기 | — | 19 | todo |
+| 19 | U1 지도 · 주변 업체 | `/` 지도 마커 · 반경(5 · 10 · 20 · 50km) · 업체 카드, 지도를 멈추면 다시 조회, `is_truncated` 안내 | — | 9 | in-progress |
+| 20 | U2 업체 상세 + 객실 그룹 | `/stores/[store_id]` 사진 · 영업시간 · 상품 · 규정 · 객실 그룹 카드 → 예약하기 | — | 19 | in-progress |
 
 **Expected pages**:
 
@@ -204,6 +204,8 @@ Phase 6 업체 둘러보기 시작하기
 |------|-------|--------------|---------|
 | #19 | `/` | U1 · `GET discovery/store` | 주변 업체 |
 | #20 | `/stores/[store_id]` | U2 · `GET discovery/store/:store_id` · `/room-group` | 업체 상세 |
+
+> build 완료(2026-11-16) — report: `.beaver/output/report/discovery/store-discovery-report.md`. StoreMap 핀 · 반경 원 · 내 위치, `formatDays` 범위, swiper 사진. 테스트는 `/beaver:test`, 화면은 백엔드를 켜고 `/` · `/stores/<id>/`.
 
 ### Phase 7 — 예약·결제 (U3 · U4) · depends: Phase 5, Phase 6
 | # | Unit | Goal | Key decision | Depends | Status |

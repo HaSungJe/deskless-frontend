@@ -14,6 +14,9 @@ export const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'] as co
 /** 매일 — days_of_week 비트합 */
 export const EVERY_DAY_BITS = 127;
 
+/** 범위로 묶는 최소 날 수 — 이보다 짧게 이어지면 나열 */
+const DAY_RANGE_MIN = 3;
+
 /**
  * ISO 시각 → 한국 시각 문자열
  * - Z · 오프셋이 붙은 시각(…T09:30:00.000Z)만 넘긴다. 날짜 'YYYY-MM-DD' · 달 'YYYY-MM' · 'HH:mm' 은 이미 한국 기준이라 그대로 보여 준다
@@ -74,7 +77,8 @@ export function bitsToDays(bits: number): Array<number> {
 }
 
 /**
- * 비트합 → 요일 표시 — 127 은 '매일', 그 밖은 '월 · 수 · 금'
+ * 비트합 → 요일 표시 — 127 은 '매일', 3일 이상 이어지면 '일 ~ 목'(토 → 일로 주를 넘어도), 그 밖은 '월 · 수 · 금'
+ * - 묶음은 시작 요일 순
  *
  * @param bits days_of_week 응답 값
  */
@@ -83,5 +87,26 @@ export function formatDays(bits: number): string {
         return '매일';
     }
 
-    return bitsToDays(bits).map((day) => DAY_NAMES[day]).join(' · ');
+    // 이어진 묶음 — 일 → 토 순서로 자른다
+    const runs: Array<Array<number>> = [];
+    for (const day of bitsToDays(bits)) {
+        const last = runs[runs.length - 1];
+        if (last && last[last.length - 1] === day - 1) {
+            last.push(day);
+        } else {
+            runs.push([day]);
+        }
+    }
+
+    // 토 다음은 일 — 첫 묶음이 일로 시작하고 마지막 묶음이 토로 끝나면 이어 붙인다
+    const lastRun = runs[runs.length - 1];
+    if (runs.length > 1 && runs[0][0] === 0 && lastRun[lastRun.length - 1] === 6) {
+        lastRun.push(...runs[0]);
+        runs.shift();
+    }
+
+    return runs
+        .sort((a, b) => a[0] - b[0])
+        .map((run) => (run.length >= DAY_RANGE_MIN ? `${DAY_NAMES[run[0]]} ~ ${DAY_NAMES[run[run.length - 1]]}` : run.map((day) => DAY_NAMES[day]).join(' · ')))
+        .join(' · ');
 }

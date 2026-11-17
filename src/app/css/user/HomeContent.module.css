@@ -1,4 +1,4 @@
-/* U1 자리 — 머리만(지도 · 업체 목록은 Phase 6), 시안 user.html:352-359 */
+/* U1 지도 · 주변 업체 — 시안 user.html:351-455 */
 .home {
     display: flex;
     flex: 1;
@@ -34,11 +34,131 @@
     text-decoration: none;
 }
 
-.placeholder {
+/* 지도 — 화면 너비 꽉, 모서리 없음 */
+.mapArea {
+    --store-map-h: 320px;
+    --store-map-radius: 0;
+    position: relative;
+    flex-shrink: 0;
+}
+
+.locating {
     display: flex;
-    flex: 1;
     align-items: center;
     justify-content: center;
+    height: var(--store-map-h);
     background: var(--map-bg);
+    color: var(--muted);
+    font-size: 14px;
+}
+
+/* 반경 칩 줄 — 칩 사이 · 오른쪽 빈 곳은 지도를 끌고 핀을 누를 수 있게 통과 */
+.radius {
+    position: absolute;
+    top: 12px;
+    right: 16px;
+    left: 16px;
+    z-index: 2;
+    display: flex;
+    gap: 8px;
+    pointer-events: none;
+}
+
+.radius > * {
+    pointer-events: auto;
+}
+
+/* 목록 */
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+}
+
+.listHead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.listTitle {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.listSort {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.card {
+    display: flex;
+    gap: 12px;
+    padding: 12px;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    color: var(--fg);
+    text-decoration: none;
+}
+
+.thumb {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    width: 88px;
+    height: 88px;
+    border-radius: var(--radius);
+    background: var(--neutral-bg);
+    color: var(--neutral-fg);
+    font-size: 12px;
+    font-weight: 500;
+    overflow: hidden;
+}
+
+.thumbImg {
+    object-fit: cover;
+}
+
+.cardBody {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 4px;
+    min-width: 0;
+}
+
+.cardName {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.badges {
+    display: flex;
+    gap: 4px;
+}
+
+.cardMeta {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.prices {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 4px 12px;
+    font-size: 13px;
+    font-variant-numeric: tabular-nums;
+}
+
+.muted {
     color: var(--muted);
 }

@@ -13,10 +13,16 @@
 ## 지도 · 주소
 
 - 카카오 SDK 는 `loadKakaoMap()` 하나로 붙인다 — `autoload=false&libraries=services`(지도 · 지오코더가 같은 스크립트). 키 `NEXT_PUBLIC_DAUM_MAP_API_KEY`, 카카오 디벨로퍼스에 사이트 도메인 등록.
-- `StoreMap` — `center` · `markers`(`{id, latitude, longitude, title}`) · `level` · `onIdle(center)` · `onMarkerClick(id)`.
-  - `idle` 은 처음 그릴 때 · `center` 로 옮겼을 때 · 사용자가 움직이고 멈췄을 때 온다 → 화면은 `onIdle` 에서만 조회한다. `onIdle` 값을 `center` 로 되돌려 넣지 않는다.
-  - 높이는 감싼 요소의 CSS 변수 `--store-map-h`(기본 320px).
-  - 한 업체 위치(U2)는 마커 하나 · `onIdle` 없이.
+- `StoreMap` — `center` · `markers`(`{id, latitude, longitude, title, label?, muted?}`) · `level` · `radiusKm?` · `myLocation?` · `locked?` · `onIdle(center)` · `onMarkerClick(id)`.
+  - `idle` 은 처음 그릴 때 · `center` 로 옮겼을 때 · 반경에 맞춰 확대했을 때 · 사용자가 움직이고 멈췄을 때 온다 → 화면은 `onIdle` 에서만 조회한다. `onIdle` 값을 `center` 로 되돌려 넣지 않는다.
+  - 핀은 시안 모양의 `CustomOverlay`(기본 마커 아님) — 위에 이름표(`label`, 길면 말줄임), `muted` 면 회색(지금 영업 안 함). 글자는 `textContent` 로만 넣는다(업체 이름이 HTML 로 읽히지 않게). `onMarkerClick` 이 있으면 버튼(탭 순서에서는 뺀다 — 같은 업체로 가는 목록 링크가 키보드 길), 없으면 `span`(U2 위치). 핀은 내용(id · 좌표 · 회색 · 이름표) 키가 바뀔 때만 다시 찍는다 — `markers` 배열이 새로 만들어져도 그대로.
+  - `radiusKm` — 지도 중심에 점선 원, 멈출 때마다 중심을 따라가고, 바뀌면(처음 포함) 원이 다 보이게 `setBounds`(이때 `level` 보다 원이 이긴다). 원 색은 `--primary` 를 `getComputedStyle` 로 읽어 넘긴다(카카오 옵션은 CSS 변수를 못 받음).
+  - `myLocation` — 내 위치 점 + 오른쪽 아래 "내 위치로 이동"(누르면 `panTo` → idle → 화면이 다시 조회). 기본 위치(서울시청)면 넘기지 않는다.
+  - `locked` — 끌기 · 확대 끔(작은 위치 지도가 화면 스크롤을 잡아먹지 않게).
+  - 높이는 감싼 요소의 CSS 변수 `--store-map-h`(기본 320px), 모서리는 `--store-map-radius`(기본 `--radius` — U1 처럼 화면 너비 꽉이면 0).
+  - 한 업체 위치(U2)는 핀 하나 · `onIdle` 없이 · `locked` (`src/app/(user)/stores/[store_id]/StoreDetailContent.tsx`).
+- U1 조회 흐름(`src/app/(user)/HomeContent.tsx`) — `onIdle` 의 중심 + 고른 반경으로 조회, 반경을 바꾸면 마지막으로 멈춘 지도 중심으로 바로. 같은 중심(차이 0.0001° — 약 11m 안, `setBounds` 뒤 중심이 조금 흔들려도) · 같은 반경이면 거르고, 새 조회는 이전 요청을 취소(`AbortController` — 늦게 온 이전 결과는 그리지 않음), 실패한 조회는 다음 idle 에 다시.
+  - React Compiler 는 `try` 안의 값 갈래(`??` · `?:` · `&&` · `?.`)가 있는 컴포넌트를 건너뛴다(메모 없음 → 핀이 렌더마다 다시 찍힘) — `try` 안에는 `await` 만 두고 결과 처리는 밖에서.
 - `useMyLocation()` → `{location, isDefault, loading}` — 거부 · 지원 안 함 · 10초 동안 답 없음이면 서울시청(37.5665, 126.978) · `isDefault: true`(사용자 결정 2026-11-16). 브라우저 `timeout` 은 권한 창이 떠 있는 시간을 세지 않아 자체 10초 타이머로도 끊는다(늦게 온 위치는 버린다).
 - `searchAddressWithCoords()` → `{zonecode, address, latitude, longitude}` — 다음 우편번호 팝업에서 고른 주소를 지오코더 첫 결과로. 고르지 않고 닫으면 `null`, 좌표를 못 찾으면 오류 팝업 후 `null`, 스크립트를 못 불러오면 `Error`(화면 catch 에서 `handleApiError`). 좌표는 숫자(DTO `@IsLatitude` · `@IsLongitude`).
   - 우편번호 팝업은 클릭 직후에 열어야 브라우저가 막지 않는다 — 주소 검색 버튼이 있는 화면은 처음 그릴 때 효과에서 `preloadAddressSearch()`, 카카오 SDK 는 팝업을 연 뒤 좌표를 구할 때 기다린다.
