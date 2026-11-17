@@ -12,8 +12,8 @@ flowchart LR
   P4["Phase 4 · 이용자 공통 인프라 (5)"]:::done
   P5["Phase 5 · 이용자 틀·로그인·가입 (5)"]:::done
   P6["Phase 6 · 업체 둘러보기 (2)"]:::done
-  P7["Phase 7 · 예약·결제 (2)"]:::todo
-  P8["Phase 8 · 내 예약 (4)"]:::todo
+  P7["Phase 7 · 예약·결제 (2)"]:::done
+  P8["Phase 8 · 내 예약 (4)"]:::done
   P9["Phase 9 · 마이페이지·입점 신청 (4)"]:::todo
   P10["Phase 10 · 콘솔 틀·매니저 로그인 (6)"]:::todo
   P11["Phase 11 · 내 업체 설정 (6)"]:::todo
@@ -62,8 +62,8 @@ flowchart LR
 - Phase 4 — 이용자 공통 인프라 · 유닛 5개 · 의존: Phase 1, Phase 3 · 푼다: Phase 5, Phase 6, Phase 10 · 파일 집합: src/shared/components(map·sms·upload), src/shared/payment, src/app/api/payments · done
 - Phase 5 — 이용자 틀·로그인·가입 · 유닛 5개 · 의존: Phase 4 · 푼다: Phase 7, Phase 9 · 파일 집합: src/app/(user)/layout · login · signup · phone-verification · find-login-id, src/app/api/auth, src/contracts/user · done
 - Phase 6 — 업체 둘러보기 · 유닛 2개 · 의존: Phase 4 · 푼다: Phase 7 · 파일 집합: src/app/(user)/page · stores/[store_id], src/contracts/discovery · done
-- Phase 7 — 예약·결제 · 유닛 2개 · 의존: Phase 5, Phase 6 · 푼다: Phase 8 · 파일 집합: src/app/(user)/stores/[store_id]/booking · payments, src/contracts/reservation · todo
-- Phase 8 — 내 예약 · 유닛 4개 · 의존: Phase 7 · 푼다: Phase 13 · 파일 집합: src/app/(user)/reservation, src/contracts/reservation · todo
+- Phase 7 — 예약·결제 · 유닛 2개 · 의존: Phase 5, Phase 6 · 푼다: Phase 8 · 파일 집합: src/app/(user)/stores/[store_id]/booking · payments, src/contracts/reservation · done
+- Phase 8 — 내 예약 · 유닛 4개 · 의존: Phase 7 · 푼다: Phase 13 · 파일 집합: src/app/(user)/reservation, src/contracts/reservation · done
 - Phase 9 — 마이페이지·입점 신청 · 유닛 4개 · 의존: Phase 5 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/(user)/me · store-applications, src/contracts/user, src/contracts/store · todo
 - Phase 10 — 콘솔 틀·매니저 로그인 · 유닛 6개 · 의존: Phase 4 · 푼다: Phase 11, Phase 12, Phase 14, Phase 15 · 파일 집합: src/shared/components/console, src/app/manager, src/contracts/manager · todo
 - Phase 11 — 내 업체 설정 · 유닛 6개 · 의존: Phase 10 · 푼다: Phase 16 · 파일 집합: src/app/manager/(console)/store, src/contracts/store · todo
@@ -76,12 +76,14 @@ flowchart LR
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: 진행 중 없음 · Next up: Phase 7
+지금: 진행 중 없음 · Next up: Phase 9
 
 ## 지금 할 일
-Phase 7 예약·결제 시작하기
-- #21 U3 예약
-- #22 U4 결제 결과
+Phase 9 마이페이지·입점 신청 시작하기
+- #27 U10 마이페이지
+- #28 U11 입점 신청 목록
+- #29 U11 입점 신청 작성
+- #30 U11 입점 신청 상세 · 파일
 - ok → 다음
 
 ## Scope & Actors
@@ -210,8 +212,8 @@ Phase 7 예약·결제 시작하기
 ### Phase 7 — 예약·결제 (U3 · U4) · depends: Phase 5, Phase 6
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 21 | U3 예약 | `/stores/[store_id]/booking` 상품 탭 → 달력 → 그룹 카드 넘기기 → 시간대 → 호수 → 예약(큐) → 결제창 | 달력을 직접 그릴지 라이브러리를 쓸지 | 13, 15, 20 | todo |
-| 22 | U4 결제 결과 | `/payments/success` · `/payments/fail` 승인 → `payment-confirm`(큐) → U7 / U3 | — | 13, 21 | todo |
+| 21 | U3 예약 | `/stores/[store_id]/booking` 상품 탭 → 달력 → 그룹 카드 넘기기 → 시간대 → 호수 → 예약(큐) → 결제창 | 달력을 직접 그릴지 라이브러리를 쓸지 | 13, 15, 20 | done(e8f8e12) |
+| 22 | U4 결제 결과 | `/payments/success` · `/payments/fail` 승인 → `payment-confirm`(큐) → U7 / U3 | — | 13, 21 | done(e8f8e12) |
 
 **Expected pages**:
 
@@ -220,13 +222,15 @@ Phase 7 예약·결제 시작하기
 | #21 | `/stores/[store_id]/booking` | U3 · `GET reservation/availability` · `POST reservation` | 고르기 · 예약 |
 | #22 | `/payments/success` · `/payments/fail` | U4 · `POST reservation/payment-confirm` | 결제 확정 |
 
+> build 완료(2026-11-17, Phase 8 과 함께) — report: `.beaver/output/report/reservation/booking-payment-report.md`. 직접 그린 달력 · swiper 그룹 넘기기 · 결제위젯 `returnUrl`. 토스가 `return_url` 뒤에 값을 잇는 모양은 테스트 결제로 확인.
+
 ### Phase 8 — 내 예약 (U6~U9) · depends: Phase 7
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 23 | U6 내 예약 목록 | `/reservation` 예약 카드 · 페이지 | — | 21 | todo |
-| 24 | U7 예약 1건 ★ | `/reservation/[reservation_id]` 상세 · 구간 · 환불 안내 · QR(이용 중) · 취소 · 결제하기 · 연장으로 | QR 라이브러리 — 이 화면만 쓰므로 phase 안에 둔다 | 13, 23 | todo |
-| 25 | U8 이용 중 취소 동의 ★ | `/reservation/[reservation_id]/cancel-request` 사유 · 환불 · 남은 시간 · 승인 / 거절 | — | 24 | todo |
-| 26 | U9 연장 | `/reservation/[reservation_id]/extension` 새 끝 · 추가 금액 → 연장 신청(큐) → 결제창 | — | 13, 24 | todo |
+| 23 | U6 내 예약 목록 | `/reservation` 예약 카드 · 페이지 | — | 21 | done(e8f8e12) |
+| 24 | U7 예약 1건 ★ | `/reservation/[reservation_id]` 상세 · 구간 · 환불 안내 · QR(이용 중) · 취소 · 결제하기 · 연장으로 | QR 라이브러리 — 이 화면만 쓰므로 phase 안에 둔다 | 13, 23 | done(e8f8e12) |
+| 25 | U8 이용 중 취소 동의 ★ | `/reservation/[reservation_id]/cancel-request` 사유 · 환불 · 남은 시간 · 승인 / 거절 | — | 24 | done(e8f8e12) |
+| 26 | U9 연장 | `/reservation/[reservation_id]/extension` 새 끝 · 추가 금액 → 연장 신청(큐) → 결제창 | — | 13, 24 | done(e8f8e12) |
 
 **Expected pages**:
 
@@ -236,6 +240,8 @@ Phase 7 예약·결제 시작하기
 | #24 | `/reservation/[reservation_id]` | U7 · `GET reservation/:id` · `/qr` · `PATCH /cancel` | 예약 1건 |
 | #25 | `/reservation/[reservation_id]/cancel-request` | U8 · `GET` · `PATCH /approve` · `/reject` | 취소 동의 |
 | #26 | `/reservation/[reservation_id]/extension` | U9 · `GET` · `POST /extension` | 연장 |
+
+> build 완료(2026-11-17, Phase 7 과 함께) — report: `.beaver/output/report/reservation/my-reservation-report.md`. `qrcode.react` 문 QR · 환불 안내 · 취소 동의 · 연장 결제. 화면은 백엔드를 켜고 `/reservation/`.
 
 ### Phase 9 — 마이페이지·입점 신청 (U10 · U11) · depends: Phase 5
 | # | Unit | Goal | Key decision | Depends | Status |
@@ -388,8 +394,8 @@ Phase 7 예약·결제 시작하기
 | #60 | `/admin/users` | A6 · `GET user` | 이용자 목록 |
 | #61 | `/admin/users/[user_id]` | A6 · `GET user/:id` · `/reservation` · `PATCH /state` | 이용 제한 |
 
-**Progress**: 20/61 units done (6/17 phases)
-**Next up**: Phase 7 예약·결제 — 의존(Phase 5, Phase 6) 모두 완료
+**Progress**: 26/61 units done (8/17 phases)
+**Next up**: Phase 9 마이페이지·입점 신청 — 의존(Phase 5) 모두 완료
 
 ## Cross-Cutting Rules
 - 주소 · 화면 키 · 쓰는 API 는 `frontend/screens.md` 그대로. ★ 주소(`/reservation/[reservation_id]` · `…/cancel-request`)는 SMS 링크라 바꾸지 않는다.
