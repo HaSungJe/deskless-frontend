@@ -1,10 +1,10 @@
 # syntax=docker/dockerfile:1
-# 운영 이미지 — docker compose up -d --build
+# 운영 이미지 — docker compose up -d --build (Node 24.22.3 — 로컬 .nvmrc · package.json engines 와 같은 버전)
 # 환경변수는 .env.production 하나로 관리한다
 #  - 빌드: BuildKit secret 으로 잠깐 붙여 next build 가 읽는다(NEXT_PUBLIC_* · basePath · 이미지 호스트는 빌드할 때 코드에 박힌다)
 #  - 실행: docker-compose.yml 의 env_file 로 넘긴다(서버에서만 쓰는 값)
 
-FROM node:22-alpine AS base
+FROM node:24.22.3-alpine AS base
 
 # 의존성 설치
 FROM base AS deps

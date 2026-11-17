@@ -1,6 +1,6 @@
 # Architecture
 
-Next.js 16.4 App Router (`package.json:17`) · React 19.3 (`package.json:20`) + React Compiler (`next.config.ts:37`) · TypeScript 5 · fetch(HTTP 라이브러리 없음) · class-validator 0.14 (`package.json:14`) · next-auth 4 (`package.json:18`) · dayjs · nextjs-toploader · apexcharts / react-apexcharts · react-quill-new · react-spinners · Vitest 5 + Testing Library + jsdom (선택: 사용자) · CSS Modules (선택: 사용자 · 아직 CSS 없음).
+Node 24.22.3 (`.nvmrc` · `package.json` engines · `Dockerfile:7` — 로컬 · 운영 이미지가 같은 버전) · Next.js 16.4 App Router (`package.json:17`) · React 19.3 (`package.json:20`) + React Compiler (`next.config.ts:37`) · TypeScript 5 · fetch(HTTP 라이브러리 없음) · class-validator 0.14 (`package.json:14`) · next-auth 4 (`package.json:18`) · dayjs · nextjs-toploader · apexcharts / react-apexcharts · react-quill-new · react-spinners · Vitest 5 + Testing Library + jsdom (선택: 사용자) · CSS Modules (선택: 사용자 · 아직 CSS 없음).
 
 ## Directory Layout
 

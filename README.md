@@ -6,6 +6,8 @@ roomless 이용자 · 업체 관리자 · 관리자 화면 (Next.js 16 App Route
 
 ## 로컬 개발
 
+Node 24.22.3 (`.nvmrc` — nvm 을 쓰면 `nvm use`). 운영 이미지(`Dockerfile`)도 같은 버전이다.
+
 ```bash
 cp .env.example .env.local   # 값 채우기
 npm install

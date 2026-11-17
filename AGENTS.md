@@ -28,7 +28,7 @@ roomless 이용자 · 업체 관리자 · 관리자 화면. 규칙의 근거는 
 ⚠️ 매니저 M1(Phase 10) · 관리자 A1(Phase 15) 로그인 화면은 아직 없다 — 이용자 U5(카카오 · 네이버)는 `/login`(Phase 5). 새 코드는 지침서대로 — 영역마다 토큰이 따로, 쓰기 API 는 SSE 큐, 키는 snake_case.
 
 ## Architecture
-Next.js 16.4 App Router (`package.json:17`) · React 19.3 + React Compiler (`next.config.ts:37`) · TypeScript 5 · fetch(HTTP 라이브러리 없음) · class-validator · next-auth 4 · Vitest 5 + Testing Library (선택: 사용자) · CSS Modules (선택: 사용자).
+Node 24.22.3 (`.nvmrc` · `package.json` engines · `Dockerfile:7`) · Next.js 16.4 App Router (`package.json:20`) · React 19.3 + React Compiler (`next.config.ts:37`) · TypeScript 5 · fetch(HTTP 라이브러리 없음) · class-validator · next-auth 4 · Vitest 5 + Testing Library (선택: 사용자) · CSS Modules (선택: 사용자).
 
 ```
 src/
