@@ -11,7 +11,7 @@ flowchart LR
   P3["Phase 3 · 영역별 로그인 기반 (3)"]:::done
   P4["Phase 4 · 이용자 공통 인프라 (5)"]:::done
   P5["Phase 5 · 이용자 틀·로그인·가입 (5)"]:::done
-  P6["Phase 6 · 업체 둘러보기 (2)"]:::inprog
+  P6["Phase 6 · 업체 둘러보기 (2)"]:::done
   P7["Phase 7 · 예약·결제 (2)"]:::todo
   P8["Phase 8 · 내 예약 (4)"]:::todo
   P9["Phase 9 · 마이페이지·입점 신청 (4)"]:::todo
@@ -61,7 +61,7 @@ flowchart LR
 - Phase 3 — 영역별 로그인 기반 · 유닛 3개 · 의존: Phase 2 · 푼다: Phase 4 · 파일 집합: src/app/api/cookie, src/shared/api(auth), src/shared/providers, src/app/RootLayoutContent.tsx · done
 - Phase 4 — 이용자 공통 인프라 · 유닛 5개 · 의존: Phase 1, Phase 3 · 푼다: Phase 5, Phase 6, Phase 10 · 파일 집합: src/shared/components(map·sms·upload), src/shared/payment, src/app/api/payments · done
 - Phase 5 — 이용자 틀·로그인·가입 · 유닛 5개 · 의존: Phase 4 · 푼다: Phase 7, Phase 9 · 파일 집합: src/app/(user)/layout · login · signup · phone-verification · find-login-id, src/app/api/auth, src/contracts/user · done
-- Phase 6 — 업체 둘러보기 · 유닛 2개 · 의존: Phase 4 · 푼다: Phase 7 · 파일 집합: src/app/(user)/page · stores/[store_id], src/contracts/discovery · in-progress
+- Phase 6 — 업체 둘러보기 · 유닛 2개 · 의존: Phase 4 · 푼다: Phase 7 · 파일 집합: src/app/(user)/page · stores/[store_id], src/contracts/discovery · done
 - Phase 7 — 예약·결제 · 유닛 2개 · 의존: Phase 5, Phase 6 · 푼다: Phase 8 · 파일 집합: src/app/(user)/stores/[store_id]/booking · payments, src/contracts/reservation · todo
 - Phase 8 — 내 예약 · 유닛 4개 · 의존: Phase 7 · 푼다: Phase 13 · 파일 집합: src/app/(user)/reservation, src/contracts/reservation · todo
 - Phase 9 — 마이페이지·입점 신청 · 유닛 4개 · 의존: Phase 5 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/(user)/me · store-applications, src/contracts/user, src/contracts/store · todo
@@ -76,12 +76,12 @@ flowchart LR
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: Phase 6 진행 중 · Next up: Phase 6
+지금: 진행 중 없음 · Next up: Phase 7
 
 ## 지금 할 일
-Phase 6 업체 둘러보기 시작하기
-- #19 U1 지도 · 주변 업체
-- #20 U2 업체 상세 + 객실 그룹
+Phase 7 예약·결제 시작하기
+- #21 U3 예약
+- #22 U4 결제 결과
 - ok → 다음
 
 ## Scope & Actors
@@ -195,8 +195,8 @@ Phase 6 업체 둘러보기 시작하기
 ### Phase 6 — 업체 둘러보기 (U1 · U2) · depends: Phase 4
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 19 | U1 지도 · 주변 업체 | `/` 지도 마커 · 반경(5 · 10 · 20 · 50km) · 업체 카드, 지도를 멈추면 다시 조회, `is_truncated` 안내 | — | 9 | in-progress |
-| 20 | U2 업체 상세 + 객실 그룹 | `/stores/[store_id]` 사진 · 영업시간 · 상품 · 규정 · 객실 그룹 카드 → 예약하기 | — | 19 | in-progress |
+| 19 | U1 지도 · 주변 업체 | `/` 지도 마커 · 반경(5 · 10 · 20 · 50km) · 업체 카드, 지도를 멈추면 다시 조회, `is_truncated` 안내 | — | 9 | done(3c13e62) |
+| 20 | U2 업체 상세 + 객실 그룹 | `/stores/[store_id]` 사진 · 영업시간 · 상품 · 규정 · 객실 그룹 카드 → 예약하기 | — | 19 | done(3c13e62) |
 
 **Expected pages**:
 
@@ -388,8 +388,8 @@ Phase 6 업체 둘러보기 시작하기
 | #60 | `/admin/users` | A6 · `GET user` | 이용자 목록 |
 | #61 | `/admin/users/[user_id]` | A6 · `GET user/:id` · `/reservation` · `PATCH /state` | 이용 제한 |
 
-**Progress**: 18/61 units done (5/17 phases)
-**Next up**: Phase 6 업체 둘러보기 — 의존(Phase 4) 모두 완료
+**Progress**: 20/61 units done (6/17 phases)
+**Next up**: Phase 7 예약·결제 — 의존(Phase 5, Phase 6) 모두 완료
 
 ## Cross-Cutting Rules
 - 주소 · 화면 키 · 쓰는 API 는 `frontend/screens.md` 그대로. ★ 주소(`/reservation/[reservation_id]` · `…/cancel-request`)는 SMS 링크라 바꾸지 않는다.
