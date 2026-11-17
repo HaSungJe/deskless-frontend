@@ -91,7 +91,9 @@ React Compiler(`next.config.ts:37`)는 아래 모양이 있는 컴포넌트 · �
 - 변수 영역의 `useEffectEvent` 가 그보다 아래에서 선언되는 값(`useState` 의 setter · 함수 영역의 함수)을 부르는 것 — 효과 이벤트는 값을 돌려주게만 두고, setState 는 효과 안 `.then` 에서 한다(`src/app/(user)/payments/success/PaymentSuccessContent.tsx` `loadView`)
 - `useRef` 를 쓰는 함수를 render 중에 부르는 함수의 인자로 넘기는 것("Cannot access refs during render") — 그 함수는 JSX 의 prop(`closeFunc` · `onClick` …)으로 직접 넘긴다(`src/app/(user)/reservation/[reservation_id]/ReservationDetailContent.tsx` `expirePending`)
 
-그래서 **`try` 안에는 `await` 만** 두고, 결과 처리는 밖에서 한다 — 결과를 `let` 에 담고 `catch` 는 실패 처리 뒤 `return`, 정리(`setBusy(false)` 등)는 `try` 다음 줄에 (`src/app/(user)/stores/[store_id]/booking/BookingContent.tsx` `submit` · `src/shared/components/payment/TossPaymentWidget.tsx` `pay`).
+그래서 **`try` 안에는 `await` 만** 두고, 결과 처리는 밖에서 한다 — 결과를 `let` 에 담고 `catch` 는 실패 처리 뒤 `return`, 정리(`setBusy(false)` 등)는 `try` 다음 줄에 (`src/app/(user)/stores/[store_id]/booking/BookingContent.tsx` `submit` · `src/shared/components/payment/TossPaymentWidget.tsx` `pay`). 오류를 부르는 쪽에 그대로 넘겨야 하는 공통 부품(`try … finally` 를 쓰던 곳)은 `catch` 에서 `{error}` 로 담고, 정리 뒤 다시 던진다(`src/shared/components/sms/SmsVerification.tsx` `send` · `src/shared/components/upload/ImageUploader.tsx` `chooseFile`).
+
+`src/test/react-compiler.test.ts` 가 `src` 의 모든 컴포넌트(`.tsx`) · 훅(`use*.ts`)을 컴파일해 보고, 건너뛰는 것이 있으면 "파일:줄 이유" 로 실패한다.
 
 ```tsx
 setSubmitting(true);

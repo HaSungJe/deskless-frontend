@@ -74,10 +74,16 @@ export default function ImageUploader({images, max = 5, onUpload, onDelete, onRe
         }
 
         setUploading(true);
+        let failure: {error: unknown} | null = null; // 화면이 던진 오류 — 막힘을 푼 뒤 그대로 다시 던진다(try … finally 는 React Compiler 가 건너뛴다)
         try {
             await onUpload(file);
-        } finally {
-            setUploading(false);
+        } catch (error) {
+            failure = {error};
+        }
+
+        setUploading(false);
+        if (failure) {
+            throw failure.error;
         }
     }
 

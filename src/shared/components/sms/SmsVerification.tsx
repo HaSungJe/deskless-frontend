@@ -76,15 +76,23 @@ export default function SmsVerification({onSend, onConfirm, confirmLabel = '인�
     async function send(): Promise<void> {
         // 발송 — 결과가 있을 때만 인증번호 칸을 연다(null 이면 화면이 이미 안내함)
         setBusy(true);
+        let result: SmsSentType | null = null;          // 받은 인증
+        let failure: {error: unknown} | null = null;    // 화면이 던진 오류 — 막힘을 푼 뒤 그대로 다시 던진다
         try {
-            const result = await onSend(phone);
-            if (result) {
-                setSent(result);
-                setCode('');
-                setExpired(false);
-            }
-        } finally {
-            setBusy(false);
+            result = await onSend(phone);
+        } catch (error) {
+            failure = {error};
+        }
+
+        setBusy(false);
+        if (failure) {
+            throw failure.error;
+        }
+
+        if (result) {
+            setSent(result);
+            setCode('');
+            setExpired(false);
         }
     }
 
@@ -95,10 +103,16 @@ export default function SmsVerification({onSend, onConfirm, confirmLabel = '인�
         }
 
         setBusy(true);
+        let failure: {error: unknown} | null = null; // 화면이 던진 오류 — 막힘을 푼 뒤 그대로 다시 던진다
         try {
             await onConfirm(sent.sms_verification_id, code);
-        } finally {
-            setBusy(false);
+        } catch (error) {
+            failure = {error};
+        }
+
+        setBusy(false);
+        if (failure) {
+            throw failure.error;
         }
     }
 

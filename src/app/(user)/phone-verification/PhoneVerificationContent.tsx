@@ -3,6 +3,7 @@ import { useRouter } from 'next/navigation';
 import { useContext, useState } from 'react';
 import { confirmPhoneVerification, sendPhoneVerification } from '@/contracts/user/api';
 import { UserPhoneVerificationConfirmDto } from '@/contracts/user/dto/user-phone-verification-confirm.dto';
+import { UserMeResultDto } from '@/contracts/user/dto/user-me.dto';
 import { UserPhoneVerificationDto } from '@/contracts/user/dto/user-phone-verification.dto';
 import { handleApiError } from '@/shared/api/error';
 import { QUEUE_PENDING_MESSAGE } from '@/shared/api/queue';
@@ -45,16 +46,18 @@ export default function PhoneVerificationContent({returnUrl}: PhoneVerificationC
             return null;
         }
 
+        let result: SmsSentType | null; // try 안에는 await 만 — 값 갈래가 있으면 React Compiler 가 이 화면을 건너뛴다
         try {
-            const result = await sendPhoneVerification(auth, dto);
-            if (!result) {
-                showErrorPopup(QUEUE_PENDING_MESSAGE);
-            }
-            return result;
+            result = await sendPhoneVerification(auth, dto);
         } catch (error) {
             handleApiError(error);
             return null;
         }
+
+        if (!result) {
+            showErrorPopup(QUEUE_PENDING_MESSAGE);
+        }
+        return result;
     }
 
     async function confirm(sms_verification_id: string, code: string): Promise<void> {
@@ -64,18 +67,21 @@ export default function PhoneVerificationContent({returnUrl}: PhoneVerificationC
             return;
         }
 
+        let me: UserMeResultDto | null;
         try {
             await confirmPhoneVerification(auth, dto);
-            const me = await reloadMe();
-            if (me?.is_phone_verified === 1) {
-                router.replace(safeReturnPath(returnUrl, 'user'));
-                return;
-            }
-
-            showErrorPopup(PHONE_UNVERIFIED_MESSAGE);
+            me = await reloadMe();
         } catch (error) {
             handleApiError(error);
+            return;
         }
+
+        if (me?.is_phone_verified === 1) {
+            router.replace(safeReturnPath(returnUrl, 'user'));
+            return;
+        }
+
+        showErrorPopup(PHONE_UNVERIFIED_MESSAGE);
     }
 
     return (

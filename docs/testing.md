@@ -32,6 +32,7 @@ Vitest 5 + Testing Library(`@testing-library/react`) + jsdom (선택: 사용자 
 | 공통 컴포넌트 | 사용자 동작 → 콜백 호출 횟수 · 인자, 그리지 않는 조건 |
 | 화면 Content | 제출 성공(부른 주소 · 본문 · 이동), 화면 검증 실패(API 미호출), 서버 실패(`handleApiError` 경로), 큐 `pending`(`null` → 다시 조회) |
 | contracts api | 부른 메서드 · 주소 · 본문 키(snake_case) |
+| React Compiler | `src/test/react-compiler.test.ts` 하나가 모든 컴포넌트 · 훅을 컴파일 — 건너뛰면 "파일:줄 이유" 로 실패([conventions.md](conventions.md) "React Compiler 가 건너뛰는 모양") |
 
 ## Strength Rules
 
