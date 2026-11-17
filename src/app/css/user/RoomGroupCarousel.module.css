@@ -1,0 +1,103 @@
+/* 시안 user.html U3-select 객실 그룹 */
+.carousel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.swiper {
+    width: 100%;
+    padding: 0 24px 4px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    padding: 0 0 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    overflow: hidden;
+}
+
+.current {
+    border: 2px solid var(--primary);
+    background: var(--primary-soft);
+}
+
+.empty {
+    background: var(--bg);
+    color: var(--muted);
+}
+
+.photo {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 112px;
+    background: var(--neutral-bg);
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 0 14px;
+}
+
+.name {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.desc {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.price {
+    padding: 0 14px;
+    font-size: 16px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.controls {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+}
+
+.navButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--fg);
+    cursor: pointer;
+}
+
+.navButton:disabled {
+    color: var(--faint);
+    cursor: not-allowed;
+}
+
+.count {
+    min-width: 48px;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--muted);
+    text-align: center;
+    font-variant-numeric: tabular-nums;
+}

@@ -22,7 +22,7 @@
   - 높이는 감싼 요소의 CSS 변수 `--store-map-h`(기본 320px), 모서리는 `--store-map-radius`(기본 `--radius` — U1 처럼 화면 너비 꽉이면 0).
   - 한 업체 위치(U2)는 핀 하나 · `onIdle` 없이 · `locked` (`src/app/(user)/stores/[store_id]/StoreDetailContent.tsx`).
 - U1 조회 흐름(`src/app/(user)/HomeContent.tsx`) — `onIdle` 의 중심 + 고른 반경으로 조회, 반경을 바꾸면 마지막으로 멈춘 지도 중심으로 바로. 같은 중심(차이 0.0001° — 약 11m 안, `setBounds` 뒤 중심이 조금 흔들려도) · 같은 반경이면 거르고, 새 조회는 이전 요청을 취소(`AbortController` — 늦게 온 이전 결과는 그리지 않음), 실패한 조회는 다음 idle 에 다시.
-  - React Compiler 는 `try` 안의 값 갈래(`??` · `?:` · `&&` · `?.`)가 있는 컴포넌트를 건너뛴다(메모 없음 → 핀이 렌더마다 다시 찍힘) — `try` 안에는 `await` 만 두고 결과 처리는 밖에서.
+  - `try` 안에는 `await` 만 둔다 — React Compiler 가 건너뛰면 메모가 없어 핀이 렌더마다 다시 찍힌다([conventions.md](conventions.md) "React Compiler 가 건너뛰는 모양").
 - `useMyLocation()` → `{location, isDefault, loading}` — 거부 · 지원 안 함 · 10초 동안 답 없음이면 서울시청(37.5665, 126.978) · `isDefault: true`(사용자 결정 2026-11-16). 브라우저 `timeout` 은 권한 창이 떠 있는 시간을 세지 않아 자체 10초 타이머로도 끊는다(늦게 온 위치는 버린다).
 - `searchAddressWithCoords()` → `{zonecode, address, latitude, longitude}` — 다음 우편번호 팝업에서 고른 주소를 지오코더 첫 결과로. 고르지 않고 닫으면 `null`, 좌표를 못 찾으면 오류 팝업 후 `null`, 스크립트를 못 불러오면 `Error`(화면 catch 에서 `handleApiError`). 좌표는 숫자(DTO `@IsLatitude` · `@IsLongitude`).
   - 우편번호 팝업은 클릭 직후에 열어야 브라우저가 막지 않는다 — 주소 검색 버튼이 있는 화면은 처음 그릴 때 효과에서 `preloadAddressSearch()`, 카카오 SDK 는 팝업을 연 뒤 좌표를 구할 때 기다린다.
@@ -57,13 +57,16 @@ await uploadFile(file, {
 
 사용자 결정(2026-11-16): 결제위젯 · npm `@tosspayments/tosspayments-sdk` · 구매자 키 `ANONYMOUS`. 키는 "결제위젯 연동 키" — 클라이언트 `NEXT_PUBLIC_TOSS_CLIENT_KEY`(`gck`), 시크릿 `TOSS_SECRET_KEY`(`gsk`, `NEXT_PUBLIC_` 없음).
 
-1. 예약 생성 · 연장 신청(큐) done → `{payment_id, order_name, amount, expires_at}` → `<TossPaymentWidget payment onExpired?>` — 결제 마감 남은 시간 · 결제수단 · 약관 · "결제하기". SDK 는 효과 안에서 `import()`(서버 렌더 밖). `payment` 가 바뀌면(새 결제 · 새 마감) 만료를 풀고, 금액이 바뀌면 위젯을 다시 그릴 때까지 "결제하기"를 막는다.
-2. "결제하기" → 토스 결제창 → 성공 `<basePath>/payments/success/?paymentKey&orderId&amount` · 실패 `<basePath>/payments/fail/?code&message&orderId`. PC 결제창을 닫으면 `requestPayment` 가 `USER_CANCEL` 로 끝나 조용히, 모바일(같은 창)에서 취소하면 실패 주소로 `code=PAY_PROCESS_CANCELED` — 결과 화면(U4)도 이 코드는 오류로 보이지 않는다.
+1. 예약 생성 · 연장 신청(큐) done → `{payment_id, order_name, amount, expires_at}` → `<TossPaymentWidget payment returnUrl? onExpired?>` — 결제 마감 남은 시간 · 결제수단 · 약관 · "결제하기". SDK 는 효과 안에서 `import()`(서버 렌더 밖). `payment` 가 바뀌면(새 결제 · 새 마감) 만료를 풀고, 금액이 바뀌면 위젯을 다시 그릴 때까지 "결제하기"를 막는다.
+   - 결제하는 곳 — U3 예약, U7 결제하기(결제 대기 구간 · 주문명 "업체 호실" — 상세 응답에 주문명이 없다), U9 연장. `returnUrl` 은 셋 다 **그 예약 1건**(`/reservation/<id>/` — 사용자 결정 2026-11-18): 결제창에서 실패 · 취소해도 결제 대기 예약 · 연장 구간은 남아 있고, 예약 1건 화면에서만 다시 결제하거나 취소할 수 있다(예약 · 연장 화면은 처음부터 다시 시작한다).
+2. "결제하기" → 토스 결제창 → 성공 `<basePath>/payments/success/?return_url=…&paymentKey&orderId&amount` · 실패 `<basePath>/payments/fail/?return_url=…&code&message&orderId`. `return_url` 은 `returnUrl` 이 같은 사이트 주소(`toSamePath`)일 때만 붙인다(사용자 결정 2026-11-17). PC 결제창을 닫으면 `requestPayment` 가 `USER_CANCEL` 로 끝나 조용히, 모바일(같은 창)에서 취소하면 실패 주소로 `code=PAY_PROCESS_CANCELED` — 결과 화면(U4)도 이 코드는 오류로 보이지 않는다.
+   - 우리 주소에 query 가 이미 있을 때 토스가 `&` 로 잇는지는 문서에 없다 — U4 는 `paymentReturnPath`(`src/app/(user)/payments/payment-result.ts`)로 `?` 앞까지만 읽어 `?` 로 붙어도 우리 주소만 쓴다. **테스트 결제로 확인할 것.**
 3. 성공 화면(U4)이 `requestTossConfirm({paymentKey, orderId, amount})` → route handler `POST /api/payments/confirm/` 가 시크릿 키로 토스 승인.
    - 같은 사이트 JSON · 이용자 refresh 쿠키 · 값 검사(`paymentKey` 영문 · 숫자 · `_` · `-` 200자까지 · `orderId` 32자 hex · `amount` 양의 정수) · 시크릿 키가 있을 때만 토스를 부른다. refresh 쿠키는 있는지만 본다 — 금액 · 주문 대조는 4 의 백엔드 몫.
    - `Idempotency-Key` = `paymentKey`, 이미 처리됨(`ALREADY_PROCESSED_PAYMENT`)은 성공 — 새로고침해도 된다. 같은 승인이 아직 처리 중(409 `IDEMPOTENT_REQUEST_PROCESSING`)이면 잠시 뒤 다시. 토스 호출은 30초 제한.
    - 결과 `{success}` / `{success: false, message, code?}` / 처리 중 · 토스 5xx · 응답 없음 · 시간 초과 `{success: false, message, retry: true}`.
 4. `success` 면 화면이 백엔드 `POST /api/v1/user-service/reservation/payment-confirm`(큐, 이용자 토큰) — 백엔드가 토스에서 다시 읽어 금액 · 주문을 대조하고 확정한다(금액이 다르면 환불). 프론트 서버는 예약 금액을 모르므로 승인 금액은 성공 주소 `amount` 그대로.
+5. 결과 화면(U4 — `src/app/(user)/payments/success/PaymentSuccessContent.tsx`)은 승인 · 확인을 한 번만 한다(개발 모드 효과 두 번 실행도 `useRef` 로 막음). 확정 → "예약이 확정되었어요" · 예약 보기(U7). 토스 거절 · 결제 확인 실패(`payment_error_code`) → 사유 · 오류 코드 · 예약으로 돌아가기(`return_url`, 없으면 "처음으로") — 토스가 거절하면 결제 확인을 부르지 않는다. 토스 장애 · 응답 없음 → 다시 확인(토스 · 백엔드 모두 같은 결제를 다시 확인해도 된다). 결제 확인 늦어짐(큐 결과 없음) → 내 예약(U6). 실패 주소(`/payments/fail/`)는 사유 · 오류 코드 · 예약으로 돌아가기만 — 오류 팝업은 띄우지 않는다.
 
 - 결제 마감(`expires_at`, 5분)이 지나면 "결제하기"를 막고 `onExpired()`.
 - 시크릿 키는 route handler(`src/app/api/payments/confirm/`)에서만 읽는다.

@@ -8,7 +8,6 @@ import { getStoreDetail, getStoreRoomGroups } from '@/contracts/discovery/api';
 import { DiscoveryRoomGroupItemResultDto } from '@/contracts/discovery/dto/discovery-room-group-list.dto';
 import { DiscoveryStoreDetailResultDto } from '@/contracts/discovery/dto/discovery-store-detail.dto';
 import { handleApiError } from '@/shared/api/error';
-import { ApiError } from '@/shared/api/request';
 import StoreMap from '@/shared/components/map/StoreMap';
 import Button, { buttonClass } from '@/shared/components/ui/button/Button';
 import Badge from '@/shared/components/ui/display/Badge';
@@ -17,15 +16,13 @@ import { showErrorPopup } from '@/shared/utils/error-popup';
 import { DAY_NAMES, formatPrice, todayKst } from '@/shared/utils/format';
 import UserTopBar from '../../_components/UserTopBar';
 import StoreImageSlider from './_components/StoreImageSlider';
+import { isStoreNotFound, STORE_NOT_FOUND_MESSAGE } from './store-not-found';
 import { amenityLabels, describeBookingPolicy, describePlan, formatHourRange, formatPeriodPrice, planPriceLabel } from './store-detail-format';
 import styles from '@/app/css/user/StoreDetailContent.module.css';
 
 type StoreDetailContentProps = {
     storeId: string; // 주소의 업체 ID
 };
-
-/** 없는 업체 · 잘못된 업체 ID */
-export const STORE_NOT_FOUND_MESSAGE = '업체를 찾을 수 없습니다.';
 
 /** 위치 지도 확대 단계 — 동네가 보이는 정도 */
 const LOCATION_MAP_LEVEL = 4;
@@ -73,7 +70,7 @@ export default function StoreDetailContent({storeId}: StoreDetailContentProps): 
 
             // 상세 — 404 · 400 · 빈 본문이면 없는 업체, 그 밖의 실패는 안내만
             if (detail.status === 'rejected') {
-                if (isNotFound(detail.reason)) {
+                if (isStoreNotFound(detail.reason)) {
                     leaveNotFound();
                 } else {
                     handleApiError(detail.reason);
@@ -235,13 +232,4 @@ function roomGroupBody(group: DiscoveryRoomGroupItemResultDto): React.ReactNode 
             )))}
         </>
     );
-}
-
-/**
- * 없는 업체인지 — 상세 · 객실 그룹이 404(없음) · 400(ID 모양)
- *
- * @param error 잡은 오류
- */
-function isNotFound(error: unknown): boolean {
-    return error instanceof ApiError && (error.status === 404 || error.status === 400);
 }

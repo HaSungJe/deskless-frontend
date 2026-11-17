@@ -3,6 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import type { TossPaymentsWidgets } from '@tosspayments/tosspayments-sdk';
 import Timer from '@/shared/components/Timer';
 import Button from '@/shared/components/ui/button/Button';
+import { RETURN_URL_KEY, toSamePath } from '@/shared/utils/area';
 import { withBasePath } from '@/shared/utils/base-path';
 import { showErrorPopup } from '@/shared/utils/error-popup';
 import { formatPrice } from '@/shared/utils/format';
@@ -20,8 +21,9 @@ export type TossPaymentType = {
 };
 
 type TossPaymentWidgetProps = {
-    payment: TossPaymentType; // 결제 정보
-    onExpired?: () => void;   // 결제 마감이 지나면
+    payment: TossPaymentType;  // 결제 정보
+    returnUrl?: string | null; // 결제 뒤 돌아갈 주소(같은 사이트 path — U3 예약 · U7 결제하기 · U9 연장) — 성공 · 실패 주소에 return_url 로
+    onExpired?: () => void;    // 결제 마감이 지나면
 };
 
 /** 결제위젯 연동 클라이언트 키(빌드 때 박힌다) */
@@ -37,13 +39,13 @@ const PAYMENT_REQUEST_FAIL_MESSAGE = '결제를 시작하지 못했습니다. �
 
 /**
  * 토스 결제위젯 — 결제 마감 남은 시간 · 결제수단 · 약관 · "결제하기"
- * - 결제창 성공 · 실패는 /payments/success/ · /payments/fail/ 로 돌아온다(basePath 포함)
+ * - 결제창 성공 · 실패는 /payments/success/ · /payments/fail/ 로 돌아온다(basePath 포함) — returnUrl 이 있으면 ?return_url= 로 붙인다
  * - SDK 는 효과 안에서 import() — 서버 렌더에 들어가지 않는다
  *
  * @param param0
  * @returns
  */
-export default function TossPaymentWidget({payment, onExpired}: TossPaymentWidgetProps): React.ReactNode {
+export default function TossPaymentWidget({payment, returnUrl = null, onExpired}: TossPaymentWidgetProps): React.ReactNode {
     // 변수
     const methodsRef = useRef<HTMLDivElement>(null);             // 결제수단 위젯 자리
     const agreementRef = useRef<HTMLDivElement>(null);           // 약관 위젯 자리
@@ -118,19 +120,21 @@ export default function TossPaymentWidget({payment, onExpired}: TossPaymentWidge
         }
 
         setRequesting(true);
+        let failure: unknown = null; // try 안에는 await 만 — finally · 값 갈래가 있으면 React Compiler 가 건너뛴다
         try {
             await widgets.requestPayment({
                 orderId: payment.payment_id,
                 orderName: payment.order_name,
-                successUrl: paymentResultUrl('success'),
-                failUrl: paymentResultUrl('fail'),
+                successUrl: paymentResultUrl('success', returnUrl),
+                failUrl: paymentResultUrl('fail', returnUrl),
             });
         } catch (error) {
-            if (errorField(error, 'code') !== USER_CANCEL_CODE) {
-                showErrorPopup(errorField(error, 'message') ?? PAYMENT_REQUEST_FAIL_MESSAGE);
-            }
-        } finally {
-            setRequesting(false);
+            failure = error;
+        }
+
+        setRequesting(false);
+        if (failure !== null && errorField(failure, 'code') !== USER_CANCEL_CODE) {
+            showErrorPopup(errorField(failure, 'message') ?? PAYMENT_REQUEST_FAIL_MESSAGE);
         }
     }
 
@@ -203,12 +207,15 @@ function appendWidgetTarget(box: HTMLElement, prefix: string): HTMLDivElement {
 }
 
 /**
- * 결제창이 돌아올 주소 — origin + basePath + /payments/<결과>/
+ * 결제창이 돌아올 주소 — origin + basePath + /payments/<결과>/, 돌아갈 주소가 같은 사이트면 ?return_url=
  *
  * @param result success · fail
+ * @param returnUrl 결제 뒤 돌아갈 주소
  */
-function paymentResultUrl(result: 'success' | 'fail'): string {
-    return `${window.location.origin}${withBasePath(`/payments/${result}/`)}`;
+function paymentResultUrl(result: 'success' | 'fail', returnUrl: string | null): string {
+    const base = `${window.location.origin}${withBasePath(`/payments/${result}/`)}`;
+    const samePath = toSamePath(returnUrl);
+    return samePath ? `${base}?${RETURN_URL_KEY}=${encodeURIComponent(samePath)}` : base;
 }
 
 /**

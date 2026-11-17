@@ -82,6 +82,32 @@
 - 비어 있는 영역은 쓰지 않는다. JSX 안의 이벤트 처리는 화살표 함수로 길게 쓰지 않고 함수 영역의 이름 있는 함수로 뺀다.
 - **새로 만드는 코드와 그때 고치는 파일부터** 적용한다 — 손대지 않는 기존 파일을 한꺼번에 고치지 않는다(그 파일을 고칠 때 맞춘다).
 
+### React Compiler 가 건너뛰는 모양
+
+React Compiler(`next.config.ts:37`)는 아래 모양이 있는 컴포넌트 · 훅을 **통째로 건너뛴다** — 오류 없이 메모만 빠져, 렌더마다 자식 · 효과가 다시 돈다(`babel-plugin-react-compiler` 로 확인 2026-11-17).
+
+- `try` 안의 값 갈래 — `??` · `?:` · `&&` · `?.`
+- `finally` 가 있는 `try`, `catch` 없는 `try`
+- 변수 영역의 `useEffectEvent` 가 그보다 아래에서 선언되는 값(`useState` 의 setter · 함수 영역의 함수)을 부르는 것 — 효과 이벤트는 값을 돌려주게만 두고, setState 는 효과 안 `.then` 에서 한다(`src/app/(user)/payments/success/PaymentSuccessContent.tsx` `loadView`)
+- `useRef` 를 쓰는 함수를 render 중에 부르는 함수의 인자로 넘기는 것("Cannot access refs during render") — 그 함수는 JSX 의 prop(`closeFunc` · `onClick` …)으로 직접 넘긴다(`src/app/(user)/reservation/[reservation_id]/ReservationDetailContent.tsx` `expirePending`)
+
+그래서 **`try` 안에는 `await` 만** 두고, 결과 처리는 밖에서 한다 — 결과를 `let` 에 담고 `catch` 는 실패 처리 뒤 `return`, 정리(`setBusy(false)` 등)는 `try` 다음 줄에 (`src/app/(user)/stores/[store_id]/booking/BookingContent.tsx` `submit` · `src/shared/components/payment/TossPaymentWidget.tsx` `pay`).
+
+```tsx
+setSubmitting(true);
+let result: ReservationResultDto | null;
+try {
+    result = await createReservation(auth, dto);
+} catch (error) {
+    setSubmitting(false);
+    handleApiError(error);
+    return;
+}
+
+setSubmitting(false);
+if (!result) { … }
+```
+
 ```tsx
 function ReasonModalBody({maxLength = 200, required = true, busy = false, onConfirm, onClose}: ReasonModalBodyProps): React.ReactNode {
     // 변수

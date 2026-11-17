@@ -20,6 +20,7 @@
     "next": "^16.4.6",
     "next-auth": "^4.24.15",
     "nextjs-toploader": "^3.9.17",
+    "qrcode.react": "^4.2.0",
     "react": "^19.3.1",
     "react-apexcharts": "^1.9.0",
     "react-dom": "^19.3.1",

@@ -1,0 +1,111 @@
+/* 시안 user.html U3-select 날짜 */
+.calendar {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.title {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.picked {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary-strong);
+    font-variant-numeric: tabular-nums;
+}
+
+.monthRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.navButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--fg);
+    cursor: pointer;
+}
+
+.navButton:disabled {
+    color: var(--faint);
+    cursor: not-allowed;
+}
+
+.monthLabel {
+    font-size: 16px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(7, minmax(0, 1fr));
+    gap: 4px;
+    font-variant-numeric: tabular-nums;
+}
+
+.weekday {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--muted);
+    text-align: center;
+}
+
+.day {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 44px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius);
+    background: transparent;
+    color: var(--faint);
+    font: inherit;
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 1.1;
+}
+
+.open {
+    color: var(--fg);
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.selected {
+    background: var(--primary);
+    color: var(--on-primary);
+    font-weight: 700;
+}
+
+.todayMark {
+    font-size: 10px;
+    font-weight: 700;
+}
+
+.note {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+}

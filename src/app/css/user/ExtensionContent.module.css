@@ -1,0 +1,131 @@
+/* 시안 user.html U9(:1417-1487) */
+.wide {
+    gap: 16px;
+}
+
+.titleBlock {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.muted {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.compare {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 32px minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    font-variant-numeric: tabular-nums;
+}
+
+.box {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    border-radius: var(--radius);
+    background: var(--surface-2);
+}
+
+.boxNext {
+    background: var(--primary-soft);
+    color: var(--primary-strong);
+}
+
+.boxLabel {
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.boxTime {
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.boxSub {
+    font-size: 12px;
+}
+
+.arrow {
+    justify-self: center;
+    color: var(--muted);
+}
+
+.totalLabel {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.warnBox {
+    display: flex;
+    gap: 8px;
+    margin: 0;
+    padding: 12px;
+    border-radius: var(--radius);
+    background: var(--warn-soft);
+    color: var(--fg);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.warnBox svg {
+    flex-shrink: 0;
+    margin-top: 1px;
+    color: var(--warn);
+}
+
+.lead {
+    gap: 12px;
+    padding: 20px 16px;
+}
+
+.title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.reason {
+    margin: 0;
+    padding: 12px;
+    border-radius: var(--radius);
+    background: var(--surface-2);
+    font-size: 15px;
+    line-height: 1.5;
+}
+
+.endRow {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+    font-variant-numeric: tabular-nums;
+}
+
+.endTime {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.amountRow {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.amountLabel {
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.amount {
+    font-size: 20px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}

@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
-import { formatDays } from '@/shared/utils/format';
+import { formatDateTimeRange, formatDays, formatTimeRange } from '@/shared/utils/format';
 
 describe('formatDays', () => {
     it('[SUCCESS] 모든 요일은 매일, 요일이 없으면 빈 글자', () => {
@@ -26,5 +26,25 @@ describe('formatDays', () => {
 
     it('[SUCCESS] 따로 떨어진 하루와 이어진 사흘이 섞이면 시작 요일 순', () => {
         expect(formatDays(29)).toBe('일 · 화 ~ 목');
+    });
+});
+
+describe('formatDateTimeRange — 이용 시간 글자', () => {
+    it('[SUCCESS] 한국 날짜가 같으면 끝은 시각만 쓴다(UTC 로는 전날이어도)', () => {
+        expect(formatDateTimeRange('2026-11-10T15:30:00.000Z', '2026-11-10T18:30:00.000Z')).toBe('11월 11일(수) 00:30 ~ 03:30');
+    });
+
+    it('[SUCCESS] 1박처럼 날이 바뀌면 끝에도 날짜와 요일을 쓴다', () => {
+        expect(formatDateTimeRange('2026-11-14T11:00:00.000Z', '2026-11-15T02:00:00.000Z')).toBe('11월 14일(토) 20:00 ~ 11월 15일(일) 11:00');
+    });
+});
+
+describe('formatTimeRange — 구간 시간 글자', () => {
+    it('[SUCCESS] 끝이 다음 날이면 "다음 날"을 붙인다', () => {
+        expect(formatTimeRange('2026-11-09T11:00:00.000Z', '2026-11-10T02:00:00.000Z')).toBe('20:00 ~ 다음 날 11:00');
+    });
+
+    it('[SUCCESS] 이틀 넘게 뒤면 끝에 날짜를 쓴다', () => {
+        expect(formatTimeRange('2026-11-10T11:00:00.000Z', '2026-11-13T02:00:00.000Z')).toBe('20:00 ~ 11월 13일 11:00');
     });
 });

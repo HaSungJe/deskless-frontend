@@ -1,0 +1,177 @@
+/* 시안 user.html U7(:1113-1371) */
+.content {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+}
+
+/* 상태 띠 — 색은 ReservationPage 의 .primary · .warn · .ok · .danger · .neutral */
+.band {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 14px 16px;
+}
+
+.bandTitle {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.bandText {
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--fg);
+    font-variant-numeric: tabular-nums;
+}
+
+.bandTime {
+    color: var(--warn);
+}
+
+.relaxed {
+    line-height: 1.5;
+}
+
+/* QR */
+.qrCard {
+    gap: 12px;
+}
+
+.qrBox {
+    padding: 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+}
+
+.qrText {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 500;
+}
+
+.qrEnds {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+/* QR 잠김 */
+.lockTitle {
+    margin: 4px 0 0;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.countdown {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.countdownLabel {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.countdownTime {
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--primary-strong);
+    font-variant-numeric: tabular-nums;
+}
+
+/* 결제 구간 */
+.segment {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    font-variant-numeric: tabular-nums;
+}
+
+.segmentRow {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.segmentRowCenter {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.segmentName {
+    font-size: 14px;
+}
+
+.segmentPrice {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.receipt {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    min-height: 32px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.muted {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* 환불 안내 */
+.refundRows {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+}
+
+.refundRow {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 6px 10px;
+    color: var(--muted);
+}
+
+.refundCurrent {
+    align-items: center;
+    border-radius: var(--radius);
+    background: var(--primary-soft);
+    color: var(--primary-strong);
+    font-weight: 700;
+}
+
+.refundValue {
+    font-weight: 700;
+}
+
+.refundDanger {
+    font-weight: 700;
+    color: var(--danger);
+}
+
+.refundMessage {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+}

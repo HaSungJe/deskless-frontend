@@ -1,0 +1,222 @@
+/* U3 결제 대기 · U4 · U7 · U8 · U9 공통(시안 user.html 카드 · 히어로 · dl · 합계 · 아래 영역) */
+.page {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    background: var(--bg);
+}
+
+.plainHeader {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    height: 56px;
+    padding: 0 16px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+}
+
+.plainTitle {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 16px;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.cardTitle {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.hero {
+    align-items: center;
+    gap: 8px;
+    padding: 20px 16px;
+    text-align: center;
+}
+
+.icon {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    border-radius: 999px;
+}
+
+.icon44 { width: 44px; height: 44px; }
+.icon48 { width: 48px; height: 48px; }
+.icon64 { width: 64px; height: 64px; }
+
+.primary { background: var(--primary-soft); color: var(--primary-strong); }
+.warn { background: var(--warn-soft); color: var(--warn); }
+.ok { background: var(--ok-soft); color: var(--ok); }
+.danger { background: var(--danger-soft); color: var(--danger); }
+.neutral { background: var(--neutral-bg); color: var(--neutral-fg); }
+
+.heroTitle {
+    margin: 4px 0 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.heroText {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.dl {
+    display: grid;
+    grid-template-columns: 72px minmax(0, 1fr);
+    gap: 8px 12px;
+    margin: 0;
+    font-size: 14px;
+    font-variant-numeric: tabular-nums;
+}
+
+.dl64 {
+    grid-template-columns: 64px minmax(0, 1fr);
+}
+
+.dl dt {
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.dl dd {
+    margin: 0;
+}
+
+.strong {
+    font-weight: 700;
+}
+
+.total {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+}
+
+.totalLabel {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.totalValue {
+    font-size: 20px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.note {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+/* 결과 화면(U4) — 가운데 */
+.resultBody {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    gap: 24px;
+    padding: 48px 16px 16px;
+}
+
+.resultHero {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+}
+
+.resultHero .heroTitle {
+    margin-top: 6px;
+}
+
+.stretch {
+    align-self: stretch;
+}
+
+.rowBetween {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.stack {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.label {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.mono {
+    font-family: var(--mono);
+    font-size: 13px;
+    word-break: break-all;
+}
+
+.dangerText {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--danger);
+}
+
+/* 아래 고정 영역 */
+.footer {
+    position: sticky;
+    bottom: 0;
+    flex-shrink: 0;
+    padding: 12px 16px 16px;
+    border-top: 1px solid var(--line);
+    background: var(--surface);
+}
+
+.footerCol {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.footerSplit {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 8px;
+}
+
+.footerHalf {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+}

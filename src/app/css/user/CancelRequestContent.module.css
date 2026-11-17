@@ -1,0 +1,51 @@
+/* 시안 user.html U8(:1372-1416) */
+.lead {
+    gap: 10px;
+    padding: 20px 16px;
+}
+
+.title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.deadline {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 4px;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    background: var(--warn-soft);
+    font-size: 13px;
+    font-weight: 500;
+    font-variant-numeric: tabular-nums;
+}
+
+.deadlineTime {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--warn);
+}
+
+.reason {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px;
+    border-radius: var(--radius);
+    background: var(--surface-2);
+}
+
+.reasonLabel {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.reasonText {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.5;
+}

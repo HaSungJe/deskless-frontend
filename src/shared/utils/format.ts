@@ -17,6 +17,9 @@ export const EVERY_DAY_BITS = 127;
 /** 범위로 묶는 최소 날 수 — 이보다 짧게 이어지면 나열 */
 const DAY_RANGE_MIN = 3;
 
+/** 하루(ms) */
+const MS_PER_DAY = 24 * 60 * 60 * 1000;
+
 /**
  * ISO 시각 → 한국 시각 문자열
  * - Z · 오프셋이 붙은 시각(…T09:30:00.000Z)만 넘긴다. 날짜 'YYYY-MM-DD' · 달 'YYYY-MM' · 'HH:mm' 은 이미 한국 기준이라 그대로 보여 준다
@@ -109,4 +112,59 @@ export function formatDays(bits: number): string {
         .sort((a, b) => a[0] - b[0])
         .map((run) => (run.length >= DAY_RANGE_MIN ? `${DAY_NAMES[run[0]]} ~ ${DAY_NAMES[run[run.length - 1]]}` : run.map((day) => DAY_NAMES[day]).join(' · ')))
         .join(' · ');
+}
+
+/**
+ * 'YYYY-MM-DD' → 'M월 D일(요일)' — 날짜 문자열을 시간대 없이 그대로 읽는다
+ *
+ * @param date 날짜
+ */
+export function formatMonthDayWeek(date: string): string {
+    const [year, month, day] = date.split('-').map(Number);
+    return `${month}월 ${day}일(${DAY_NAMES[new Date(Date.UTC(year, month - 1, day)).getUTCDay()]})`;
+}
+
+/**
+ * ISO 시각 → 'M월 D일(요일) HH:mm'(한국 시각), 읽을 수 없으면 ''
+ *
+ * @param iso ISO 시각
+ */
+export function formatDateTime(iso: string | null | undefined): string {
+    const date = toKst(iso, 'YYYY-MM-DD');
+    return date ? `${formatMonthDayWeek(date)} ${toKst(iso, 'HH:mm')}` : '';
+}
+
+/**
+ * 이용 시작 ~ 끝 → '11월 10일(화) 14:30 ~ 17:30', 한국 날짜가 다르면 '11월 14일(토) 20:00 ~ 11월 15일(일) 11:00'
+ *
+ * @param startIso 시작(ISO)
+ * @param endIso 끝(ISO)
+ */
+export function formatDateTimeRange(startIso: string | null | undefined, endIso: string | null | undefined): string {
+    const startDate = toKst(startIso, 'YYYY-MM-DD');
+    const endDate = toKst(endIso, 'YYYY-MM-DD');
+    if (!startDate || !endDate) {
+        return '';
+    }
+
+    return `${formatDateTime(startIso)} ~ ${startDate === endDate ? toKst(endIso, 'HH:mm') : formatDateTime(endIso)}`;
+}
+
+/**
+ * 구간 시작 ~ 끝 → '14:30 ~ 17:30', 다음 날이면 '20:00 ~ 다음 날 11:00', 그 뒤면 '20:00 ~ 11월 13일 11:00'
+ *
+ * @param startIso 시작(ISO)
+ * @param endIso 끝(ISO)
+ */
+export function formatTimeRange(startIso: string | null | undefined, endIso: string | null | undefined): string {
+    const startDate = toKst(startIso, 'YYYY-MM-DD');
+    const endDate = toKst(endIso, 'YYYY-MM-DD');
+    if (!startDate || !endDate) {
+        return '';
+    }
+
+    const endTime = toKst(endIso, 'HH:mm');
+    const days = Math.round((Date.parse(`${endDate}T00:00:00Z`) - Date.parse(`${startDate}T00:00:00Z`)) / MS_PER_DAY);
+    const end = days === 0 ? endTime : days === 1 ? `다음 날 ${endTime}` : `${toKst(endIso, 'M월 D일')} ${endTime}`;
+    return `${toKst(startIso, 'HH:mm')} ~ ${end}`;
 }
