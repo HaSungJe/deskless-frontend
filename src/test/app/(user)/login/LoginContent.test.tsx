@@ -89,4 +89,21 @@ describe('LoginContent', () => {
 
         expect(replace).toHaveBeenCalledWith('/stores/1/');
     });
+
+    it('[SUCCESS] 개발 서버면 테스트 이용자 로그인 버튼이 돌아갈 주소를 들고 테스트 로그인 route 를 연다', () => {
+        render(
+            <RootLayoutProvider rootLayoutLoading={false} auth={userAuth(false)}>
+                <LoginContent returnUrl="/stores/1/" error={null} testLogin />
+            </RootLayoutProvider>,
+        );
+
+        expect(screen.getByRole('link', {name: '테스트 이용자로 로그인'}).getAttribute('href')).toBe('/api/user/test-login/?return_url=%2Fstores%2F1%2F');
+        expect(signIn).not.toHaveBeenCalled();
+    });
+
+    it('[FAIL:disabled] 테스트 로그인을 쓸 수 없으면(운영 빌드) 버튼이 없다', () => {
+        renderLogin(null);
+
+        expect(screen.queryByRole('link', {name: '테스트 이용자로 로그인'})).toBeNull();
+    });
 });

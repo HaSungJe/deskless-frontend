@@ -95,6 +95,7 @@ src/
 - 로그인이 필요한 영역은 layout 에서 `<AuthGuard>` 로 감싼다 — 영역 로그인 주소는 주소로 알고, 그 영역 로그인 화면 자신은 막지 않는다 (`src/shared/components/AuthGuard.tsx:19`). 이용자 영역은 지도 · 업체 보기가 로그인 없이 되므로 로그인이 필요한 화면의 page 만 감싼다 (`src/app/(user)/phone-verification/page.tsx` — 사용자 2026-11-16).
 - 클라이언트 코드는 쿠키를 직접 읽지 않는다(`src/shared/api/cookie.ts` 로만). 토큰은 JWT 복호화하지 않는다(만료는 응답의 `*_expires_at`).
 - SNS 로그인(이용자 — 사용자 2026-11-16): next-auth(카카오 · 네이버, `src/app/api/auth/[...nextauth]/route.ts`)가 OAuth 를 하고, 검증된 SNS 계정(`sns_id` · `sns_user_id`)은 next-auth 세션(httpOnly · 10분)에만 둔다 — 백엔드가 `sns_user_id` 를 다시 확인하지 않으므로 브라우저에 내보내지 않는다. `GET /api/user/sns-login/`(next-auth callbackUrl)이 `getToken` 으로 읽어 백엔드 로그인 → 이용자 토큰 쿠키 · SNS 세션 삭제 → 휴대폰 인증 · 돌아갈 주소(가입 전이면 `/signup/`), 가입은 `POST /api/user/sign/` (`src/app/api/user/`). 로그인도 Next 서버가 부르므로 로그인 IP 와 재발급 IP 가 같다.
+- 개발용 테스트 로그인(사용자 2026-11-18): 개발 서버(`NODE_ENV=development`)에서만 로그인 화면에 "테스트 이용자로 로그인" → `GET /api/user/test-login/` 이 백엔드 테스트 이용자(`KAKAO` · `sample-user-01`)로 로그인해 SNS 로그인과 같은 다음 화면으로(카카오 로그인 키가 있어도 보인다). 버튼과 route 가 같은 판단(`isTestLoginEnabled` — `src/app/(user)/login/test-login.ts`)을 쓰고, 운영 빌드에서는 버튼이 숨고 route 는 404.
 
 ## 외부 연동
 - 지도 · 주소 · 인증번호 · 파일 · 결제는 `shared` 의 연동 부품을 쓴다 — `map/StoreMap` · `useMyLocation` · `searchAddressWithCoords` · `sms/SmsVerification` · `uploadFile` + `upload/ImageUploader` · `payment/TossPaymentWidget` + `requestTossConfirm`. 부품은 도메인 API 를 모르고, 화면이 그 화면의 contracts 함수(검증 · 실패 안내 포함)를 감싸 넘긴다. 미리보기 `/dev/infra`(개발 전용).

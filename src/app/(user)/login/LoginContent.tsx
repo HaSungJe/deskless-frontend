@@ -8,12 +8,14 @@ import { loginUrl, safeReturnPath } from '@/shared/utils/area';
 import { withBasePath } from '@/shared/utils/base-path';
 import { showErrorPopup } from '@/shared/utils/error-popup';
 import UserTopBar from '../_components/UserTopBar';
-import { FIND_LOGIN_ID_PATH, loginErrorMessage, snsLoginCallbackUrl } from './login-flow';
+import { FIND_LOGIN_ID_PATH, loginErrorMessage, snsLoginCallbackUrl, withReturnUrl } from './login-flow';
+import { TEST_LOGIN_ROUTE } from './test-login';
 import styles from '@/app/css/user/LoginContent.module.css';
 
 type LoginContentProps = {
     returnUrl: string | null; // 로그인 뒤 돌아갈 주소
     error: string | null;     // 로그인 route · next-auth 가 알린 실패 코드
+    testLogin?: boolean;      // 개발용 테스트 이용자 로그인 버튼 — 개발 서버에서만(page 가 서버에서 판단)
 };
 
 /** SNS 공급자 — next-auth provider id */
@@ -25,11 +27,12 @@ type SnsProviderType = 'kakao' | 'naver';
  * @param param0
  * @returns
  */
-export default function LoginContent({returnUrl, error}: LoginContentProps): React.ReactNode {
+export default function LoginContent({returnUrl, error, testLogin = false}: LoginContentProps): React.ReactNode {
     // 변수
     const router = useRouter();                     // 오류 안내 뒤 · 이미 로그인 때 이동
     const auth = useContext(AuthContext);           // 이미 로그인했는지
     const authBasePath = withBasePath('/api/auth'); // next-auth API 주소 — 클라이언트 signIn 은 NEXTAUTH_URL 을 못 읽어 SessionProvider 로 넘긴다
+    const testLoginHref = withBasePath(withReturnUrl(TEST_LOGIN_ROUTE, returnUrl)); // 테스트 로그인 route — 화면 이동이 아니라 route 를 연다(basePath 를 직접 붙인다)
 
     // 효과
     useEffect(() => {
@@ -80,6 +83,14 @@ export default function LoginContent({returnUrl, error}: LoginContentProps): Rea
                             네이버로 계속하기
                         </button>
                         <p className={styles.notice}>처음이면 SNS 로그인 뒤 가입 정보(성별 · 생년월일 · 닉네임)를 입력해요.<br />가입은 만 19세 이상만 할 수 있어요.</p>
+
+                        {/* 개발용 테스트 로그인 — 개발 서버에서만 */}
+                        {testLogin ? (
+                            <div className={styles.testBox}>
+                                <a className={styles.test} href={testLoginHref}>테스트 이용자로 로그인</a>
+                                <span className={styles.testNote}>개발 서버에서만 보여요 (sample-user-01)</span>
+                            </div>
+                        ) : null}
                     </div>
 
                     {/* 아이디 찾기 */}
