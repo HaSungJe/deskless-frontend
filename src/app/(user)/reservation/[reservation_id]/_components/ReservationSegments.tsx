@@ -3,7 +3,7 @@ import { ReservationSegmentResultDto } from '@/contracts/reservation/dto/reserva
 import Badge from '@/shared/components/ui/display/Badge';
 import { formatPrice, formatTimeRange, toKst } from '@/shared/utils/format';
 import { paymentStateTone } from '../../reservation-state';
-import pageStyles from '@/app/css/user/ReservationPage.module.css';
+import pageStyles from '@/app/css/user/UserPage.module.css';
 import styles from '@/app/css/user/ReservationDetailContent.module.css';
 
 type ReservationSegmentsProps = {

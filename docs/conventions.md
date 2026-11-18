@@ -56,9 +56,9 @@
   - 예외 — 영역(이용자 / 콘솔)에 따라 바뀌지 않는 **부품 고유 치수**는 시안 값을 그 부품 `module.css` 에 그대로 쓴다: 탭 높이 44px(`frontend/design/manager.html` `.tabs a`) · 스위치 40×24(손잡이 18) · 모달 닫기 32×32 · 모달 최대 너비 520px · 칩 최소 너비 40px · 선택 버튼 묶음 안쪽 모서리 6px · 알약 모양 모서리 999px · 페이지 탭 32×32(시안 `.pager a`) (`Tabs` · `Switch` · `Modal` · `Chip` · `Segmented` · `Badge` · `Pagination` `.module.css`). 영역 따라 바뀌는 높이(버튼 · 입력 · 배지)는 토큰.
   - 간격(`gap` · `padding`)과 글자 크기는 토큰이 없어 시안 값을 그대로 쓴다.
 - 공통 부품은 `src/shared/components/ui/<종류>/` 를 먼저 쓴다. 모습은 개발 전용 `/dev/ui` 에서 본다. 지도 · 인증번호 · 사진 · 결제 부품(`map/` · `sms/` · `upload/` · `payment/`)은 [integrations.md](integrations.md) — 미리보기 `/dev/infra`.
-  - `button/` — `Button`(`buttonClass()` 로 `<Link>` 를 버튼 모양으로) · `CopyButton`
+  - `button/` — `Button`(`buttonClass()` 로 `<Link>` 를 버튼 모양으로) · `CopyButton`(`variant` · `full` 로 버튼 모양)
   - `form/` — `Input` · `Textarea` · `Field`(라벨 + 오류 span + 도움말) · `Switch` · `Chip` · `Segmented`
-  - `display/` — `Badge` · `Band`(상태 안내 띠) · `Card` · `Table` · `EmptyState`
+  - `display/` — `Badge` · `Band`(상태 안내 띠 — `info` · `warn` · `danger` · `ok`) · `Card` · `Table` · `EmptyState`
   - `nav/` — `Tabs` · `Pagination`(`‹ 번호 ›`, 목록 응답의 `pagination` 을 그대로)
   - `modal/` — `Modal` · `ConfirmModal` · `ReasonModal` · `RouteModal` · `ErrorPopup`(루트에 하나 — `showErrorPopup` 으로 연다)
   - 새 부품은 맞는 종류 폴더에 넣는다. 같은 종류 폴더 안은 `./<Name>`, 다른 종류는 `@/shared/components/ui/<종류>/<Name>` 로 import.

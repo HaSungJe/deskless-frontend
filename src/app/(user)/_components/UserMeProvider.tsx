@@ -6,7 +6,7 @@ import { AuthContext } from '@/shared/providers/RootLayoutProvider';
 
 export type UserMeContextType = {
     me: UserMeResultDto | null;                      // 내 정보 — 로그인 안 했거나 못 읽었으면 null
-    reloadMe: () => Promise<UserMeResultDto | null>; // 다시 읽기(휴대폰 인증 · 탈퇴 신청 뒤) — 못 읽으면 null
+    reloadMe: () => Promise<UserMeResultDto | null>; // 다시 읽기(휴대폰 인증 · 탈퇴 신청 뒤) — 못 읽으면 null(이전 값은 그대로)
 };
 
 type UserMeProviderProps = {
@@ -58,9 +58,12 @@ export default function UserMeProvider({children}: UserMeProviderProps): React.R
 
     // 함수
     async function reloadMe(): Promise<UserMeResultDto | null> {
-        // 다시 읽기 — 못 읽으면 null
+        // 다시 읽기 — 못 읽으면 이미 읽은 내 정보는 두고 null(화면 · 회원 상태 띠가 사라지지 않게)
         const next = await getMe(auth).catch((): null => null);
-        setLoadedMe(next);
+        if (next) {
+            setLoadedMe(next);
+        }
+
         return next;
     }
 

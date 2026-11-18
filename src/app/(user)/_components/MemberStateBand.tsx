@@ -5,6 +5,7 @@ import Band from '@/shared/components/ui/display/Band';
 
 type MemberStateBandProps = {
     me: Pick<UserMeResultDto, 'state_id' | 'block_comment' | 'leave_reserved_at'> | null; // 내 정보 — 없으면 그리지 않음
+    action?: React.ReactNode;                                                               // 탈퇴 대기 띠의 할 일 — 없으면 마이페이지로 가는 "탈퇴 철회하기" 링크(마이페이지는 철회 버튼을 넘긴다)
 };
 
 /**
@@ -14,7 +15,7 @@ type MemberStateBandProps = {
  * @param param0
  * @returns
  */
-export default function MemberStateBand({me}: MemberStateBandProps): React.ReactNode {
+export default function MemberStateBand({me, action}: MemberStateBandProps): React.ReactNode {
     if (me?.state_id === 'BLOCK') {
         return (
             // 이용 제한
@@ -30,7 +31,7 @@ export default function MemberStateBand({me}: MemberStateBandProps): React.React
             // 탈퇴 대기
             <Band tone="warn" title="탈퇴 대기 중이에요">
                 <span>{formatLeaveAt(me.leave_reserved_at)}에 탈퇴돼요. 그 전까지 철회할 수 있어요.</span>
-                <Link href="/me/">탈퇴 철회하기</Link>
+                {action ?? <Link href="/me/">탈퇴 철회하기</Link>}
             </Band>
         );
     }

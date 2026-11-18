@@ -2,7 +2,7 @@ import { RESERVATION_PAYMENT_PENDING_MINUTES, RESERVATION_REBOOK_BLOCK_MINUTES }
 import { ReservationResultDto } from '@/contracts/reservation/dto/reservation.dto';
 import TossPaymentWidget from '@/shared/components/payment/TossPaymentWidget';
 import { formatDateTimeRange, formatPrice, toKst } from '@/shared/utils/format';
-import styles from '@/app/css/user/ReservationPage.module.css';
+import styles from '@/app/css/user/UserPage.module.css';
 
 type BookingPaymentProps = {
     payment: ReservationResultDto; // 예약 생성 done — 결제 정보 · 이용 시간

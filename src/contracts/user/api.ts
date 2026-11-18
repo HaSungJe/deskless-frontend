@@ -5,6 +5,7 @@ import { withBasePath } from '@/shared/utils/base-path';
 import { ValidationErrorType } from '@/shared/utils/validation';
 import { UserFindLoginIdConfirmDto, UserFindLoginIdConfirmResultDto } from './dto/user-find-login-id-confirm.dto';
 import { UserFindLoginIdDto, UserFindLoginIdResultDto } from './dto/user-find-login-id.dto';
+import { UserLeaveDto } from './dto/user-leave.dto';
 import { UserLoginDto, UserLoginResultDto } from './dto/user-login.dto';
 import { UserMeResultDto } from './dto/user-me.dto';
 import { UserPhoneVerificationConfirmDto } from './dto/user-phone-verification-confirm.dto';
@@ -86,6 +87,27 @@ export function sendPhoneVerification(auth: AuthType, dto: UserPhoneVerification
  */
 export function confirmPhoneVerification(auth: AuthType, dto: UserPhoneVerificationConfirmDto): Promise<null> {
     return withAuth(auth, (token) => callQueue<null>({method: 'POST', path: '/user-service/user/phone-verification/confirm', body: dto, token}));
+}
+
+/**
+ * 회원 탈퇴 신청 — 큐 · 이용자 (DELETE /user-service/user/leave)
+ * - 응답 DTO 가 null 이라 done · pending 이 같은 null — 화면은 내 정보를 다시 읽어 확인한다
+ *
+ * @param auth AuthContext 값
+ * @param dto 탈퇴 사유(선택)
+ */
+export function leaveUser(auth: AuthType, dto: UserLeaveDto): Promise<null> {
+    return withAuth(auth, (token) => callQueue<null>({method: 'DELETE', path: '/user-service/user/leave', body: dto, token}));
+}
+
+/**
+ * 회원 탈퇴 철회 — 큐 · 이용자 (PATCH /user-service/user/leave)
+ * - 응답 DTO 가 null — 화면은 내 정보를 다시 읽어 확인한다
+ *
+ * @param auth AuthContext 값
+ */
+export function cancelLeave(auth: AuthType): Promise<null> {
+    return withAuth(auth, (token) => callQueue<null>({method: 'PATCH', path: '/user-service/user/leave', token}));
 }
 
 /**

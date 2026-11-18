@@ -19,7 +19,7 @@ import MemberStateBand from '../../../_components/MemberStateBand';
 import { UserMeContext } from '../../../_components/UserMeProvider';
 import UserTopBar from '../../../_components/UserTopBar';
 import { RESERVATION_NOT_FOUND_MESSAGE, extensionLengthLabel } from '../reservation-rules';
-import pageStyles from '@/app/css/user/ReservationPage.module.css';
+import pageStyles from '@/app/css/user/UserPage.module.css';
 import styles from '@/app/css/user/ExtensionContent.module.css';
 
 type ExtensionContentProps = {

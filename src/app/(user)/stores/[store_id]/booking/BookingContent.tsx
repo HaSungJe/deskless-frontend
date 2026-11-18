@@ -26,7 +26,7 @@ import BookingPayment from './_components/BookingPayment';
 import RoomGroupCarousel from './_components/RoomGroupCarousel';
 import { floorLabel, planSelection, slotLabel, toReservationDto } from './booking-flow';
 import { dayState, lastOpenDate, shiftMonth } from './calendar';
-import pageStyles from '@/app/css/user/ReservationPage.module.css';
+import pageStyles from '@/app/css/user/UserPage.module.css';
 import styles from '@/app/css/user/BookingContent.module.css';
 
 type BookingContentProps = {

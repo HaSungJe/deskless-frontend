@@ -22,3 +22,13 @@ export function firstQueryValue(value: string | Array<string> | undefined): stri
     const first = Array.isArray(value) ? value[0] : value;
     return first ? first : null;
 }
+
+/**
+ * 숫자만 남기기 — 붙여 넣은 번호의 하이픈 · 공백을 빼고 max 자리까지
+ *
+ * @param value 입력한 글자
+ * @param max 남길 자릿수
+ */
+export function digitsOnly(value: string, max: number): string {
+    return value.replace(/\D/g, '').slice(0, max);
+}

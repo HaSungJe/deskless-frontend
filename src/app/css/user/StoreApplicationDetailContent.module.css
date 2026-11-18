@@ -1,0 +1,56 @@
+/* 시안 user.html U11 상세(:1740-1881) */
+.summary {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface);
+}
+
+.summaryHead {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.storeName {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.meta {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.fieldLabel {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.urlBox {
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface-2);
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.5;
+    word-break: break-all;
+}
+
+.text {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+}
+
+.contentDl {
+    grid-template-columns: 112px minmax(0, 1fr);
+    line-height: 1.5;
+}

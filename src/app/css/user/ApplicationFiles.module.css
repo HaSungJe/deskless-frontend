@@ -1,0 +1,109 @@
+/* 시안 user.html U11 상세 파일(:1764-1786 · :1843) */
+.block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.blockHead {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+}
+
+.blockTitle {
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.count {
+    font-size: 13px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    padding: 16px;
+    border: 1px dashed var(--warn);
+    border-radius: var(--radius);
+}
+
+.emptyText {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+}
+
+.thumb {
+    position: relative;
+    overflow: hidden;
+    aspect-ratio: 1 / 1;
+    border-radius: var(--radius);
+    background: var(--neutral-bg);
+}
+
+.img {
+    object-fit: cover;
+}
+
+.remove {
+    position: absolute;
+    top: 4px;
+    right: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 0;
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--fg);
+    cursor: pointer;
+}
+
+.add {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    aspect-ratio: 1 / 1;
+    border: 1px dashed var(--line);
+    border-radius: var(--radius);
+    background: var(--surface-2);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+/* 파일 칸 — 라벨이 누름을 받고 칸은 보이지 않게(키보드 · 화면 읽기는 그대로) */
+.fileInput {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+}
+
+.disabled {
+    opacity: 0.5;
+    pointer-events: none;
+}
+
+.note {
+    margin: 0;
+    font-size: 13px;
+    color: var(--muted);
+}

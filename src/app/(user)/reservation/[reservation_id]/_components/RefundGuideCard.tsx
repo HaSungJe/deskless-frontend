@@ -1,4 +1,4 @@
-import pageStyles from '@/app/css/user/ReservationPage.module.css';
+import pageStyles from '@/app/css/user/UserPage.module.css';
 import styles from '@/app/css/user/ReservationDetailContent.module.css';
 import { RefundGuideType } from '../reservation-rules';
 

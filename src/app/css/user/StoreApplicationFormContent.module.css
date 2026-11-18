@@ -1,0 +1,55 @@
+/* 시안 user.html U11 작성(:1652-1739) */
+.body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    background: var(--surface);
+}
+
+.sectionTitle {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.optional {
+    margin-left: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.addressRow {
+    display: flex;
+    gap: 8px;
+}
+
+.addressRow > :first-child {
+    flex: 1;
+    min-width: 0;
+}
+
+.readonly {
+    background: var(--surface-2);
+}
+
+.count {
+    display: block;
+    text-align: right;
+}
+
+.note {
+    margin: 0;
+    padding: 0 16px 16px;
+    font-size: 13px;
+    line-height: 1.5;
+    color: var(--muted);
+}

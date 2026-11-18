@@ -168,3 +168,54 @@ export function formatTimeRange(startIso: string | null | undefined, endIso: str
     const end = days === 0 ? endTime : days === 1 ? `다음 날 ${endTime}` : `${toKst(endIso, 'M월 D일')} ${endTime}`;
     return `${toKst(startIso, 'HH:mm')} ~ ${end}`;
 }
+
+/**
+ * 전화번호 — 숫자만 있는 번호를 하이픈으로 나눈다(휴대폰 3-4-4 · 서울 02 · 지역 3자리 · 8자리 대표번호), 모양이 다르면 그대로
+ *
+ * @param value 숫자만 있는 번호(01012345678)
+ */
+export function formatPhone(value: string | null | undefined): string {
+    const digits = value ?? '';
+    if (!/^\d+$/.test(digits)) {
+        return digits;
+    }
+
+    if (digits.length === 8) {
+        return `${digits.slice(0, 4)}-${digits.slice(4)}`;
+    }
+
+    if (digits.startsWith('02') && (digits.length === 9 || digits.length === 10)) {
+        return `02-${digits.slice(2, digits.length - 4)}-${digits.slice(-4)}`;
+    }
+
+    if (digits.length === 10 || digits.length === 11) {
+        return `${digits.slice(0, 3)}-${digits.slice(3, digits.length - 4)}-${digits.slice(-4)}`;
+    }
+
+    return digits;
+}
+
+/**
+ * 사업자등록번호 — 10자리 숫자는 3-2-5, 모양이 다르면 그대로
+ *
+ * @param value 숫자 10자리(1234567890)
+ */
+export function formatBusinessNumber(value: string | null | undefined): string {
+    const digits = value ?? '';
+    return /^\d{10}$/.test(digits) ? `${digits.slice(0, 3)}-${digits.slice(3, 5)}-${digits.slice(5)}` : digits;
+}
+
+/**
+ * 날짜 → 'YYYY년 M월 D일' — 'YYYY-MM-DD'(이미 한국 날짜)는 그대로 읽고, ISO 시각은 한국 시각으로, 읽을 수 없으면 ''
+ *
+ * @param value 'YYYY-MM-DD' 또는 ISO 시각
+ */
+export function formatKoreanDate(value: string | null | undefined): string {
+    const ymd = /^\d{4}-\d{2}-\d{2}$/.test(value ?? '') ? (value ?? '') : toKst(value, 'YYYY-MM-DD');
+    if (!ymd) {
+        return '';
+    }
+
+    const [year, month, day] = ymd.split('-').map(Number);
+    return `${year}년 ${month}월 ${day}일`;
+}

@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { buttonClass } from '@/shared/components/ui/button/Button';
-import styles from '@/app/css/user/ReservationPage.module.css';
+import styles from '@/app/css/user/UserPage.module.css';
 
 type PaymentFailViewProps = {
     message: string;     // 사유

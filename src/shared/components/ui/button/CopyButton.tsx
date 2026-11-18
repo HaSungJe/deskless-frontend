@@ -4,9 +4,11 @@ import Button from './Button';
 import { showErrorPopup } from '@/shared/utils/error-popup';
 
 type CopyButtonProps = {
-    text: string;          // 복사할 글자 (예: 업체 로그인 주소)
-    label?: string;        // 기본 '복사'
+    text: string;                    // 복사할 글자 (예: 업체 로그인 주소)
+    label?: string;                  // 기본 '복사'
     size?: 'md' | 'sm' | 'lg';
+    variant?: 'default' | 'primary'; // 기본 'default'
+    full?: boolean;                  // 가로 꽉 채움
 };
 
 const COPIED_MS: number = 2000;
@@ -17,7 +19,7 @@ const COPIED_MS: number = 2000;
  * @param param0
  * @returns
  */
-export default function CopyButton({text, label = '복사', size = 'sm'}: CopyButtonProps): React.ReactNode {
+export default function CopyButton({text, label = '복사', size = 'sm', variant = 'default', full = false}: CopyButtonProps): React.ReactNode {
     // 변수
     const timerRef = useRef<ReturnType<typeof setTimeout> | null>(null); // "복사됨" 을 되돌리는 타이머
 
@@ -51,7 +53,7 @@ export default function CopyButton({text, label = '복사', size = 'sm'}: CopyBu
 
     return (
         // 복사 버튼 — 복사하면 잠깐 "복사됨"
-        <Button size={size} onClick={copy} aria-live="polite">
+        <Button size={size} variant={variant} full={full} onClick={copy} aria-live="polite">
             {copied ? '복사됨' : label}
         </Button>
     );

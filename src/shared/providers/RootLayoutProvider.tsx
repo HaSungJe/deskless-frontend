@@ -4,8 +4,8 @@ import { AuthType } from '@/shared/api/auth';
 
 /** 로그인 상태 — withAuth 에 넘기는 값 + 로그인 여부 · 로그아웃 */
 export type AuthContextType = AuthType & {
-    isLogin: boolean;            // 지금 영역에 로그인했는지
-    logout: () => Promise<void>; // 지금 영역 토큰을 지운다
+    isLogin: boolean;               // 지금 영역에 로그인했는지
+    logout: () => Promise<boolean>; // 지금 영역 토큰 쿠키를 지운다(지웠으면 true) — 로그인 상태는 그대로, 부른 화면이 replaceDocument 로 문서를 새로 연다
 };
 
 type RootLayoutProviderProps = {

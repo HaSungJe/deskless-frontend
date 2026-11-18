@@ -1,7 +1,7 @@
 import styles from '@/shared/css/ui/display/Band.module.css';
 
 type BandProps = {
-    tone?: 'info' | 'warn' | 'danger';
+    tone?: 'info' | 'warn' | 'danger' | 'ok'; // ok — 승인 · 완료(입점 승인)
     title?: string;
     children?: React.ReactNode;
 };

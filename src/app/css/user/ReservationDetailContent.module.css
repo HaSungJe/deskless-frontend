@@ -5,7 +5,7 @@
     flex-direction: column;
 }
 
-/* 상태 띠 — 색은 ReservationPage 의 .primary · .warn · .ok · .danger · .neutral */
+/* 상태 띠 — 색은 UserPage 의 .primary · .warn · .ok · .danger · .neutral */
 .band {
     display: flex;
     flex-direction: column;

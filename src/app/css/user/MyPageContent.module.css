@@ -1,0 +1,115 @@
+/* 시안 user.html U10(:1492-1600) */
+.profile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.avatar {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 999px;
+    background: var(--neutral-bg);
+    color: var(--neutral-fg);
+}
+
+.profileText {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 6px;
+    min-width: 0;
+}
+
+.nickname {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.infoDl {
+    grid-template-columns: 100px minmax(0, 1fr);
+    align-items: center;
+    line-height: 1.5;
+}
+
+.phone {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.menu {
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+}
+
+.menuRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 52px;
+    padding: 0 16px;
+    color: var(--fg);
+    font-size: 15px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.menuRow + .menuRow {
+    border-top: 1px solid var(--line);
+}
+
+.menuRow svg {
+    color: var(--muted);
+}
+
+/* 탈퇴 신청 — 밑줄 글자 버튼 */
+.leave {
+    align-self: center;
+    height: 44px;
+    padding: 0 12px;
+    border: 0;
+    background: transparent;
+    color: var(--danger);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: underline;
+    cursor: pointer;
+}
+
+/* 탈퇴 대기 띠 안 — 탈퇴 철회(띠 내용은 flex 가 아니라 block 으로 문장 아래에) */
+.withdraw {
+    display: block;
+    height: 40px;
+    margin-top: 4px;
+    padding: 0 16px;
+    border: 1px solid var(--warn);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--warn);
+    font: inherit;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
+.leave:disabled,
+.withdraw:disabled {
+    opacity: 0.5;
+    cursor: default;
+}

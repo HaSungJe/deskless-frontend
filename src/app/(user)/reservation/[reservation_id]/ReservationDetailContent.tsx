@@ -26,7 +26,7 @@ import RefundGuideCard from './_components/RefundGuideCard';
 import ReservationQr from './_components/ReservationQr';
 import ReservationSegments from './_components/ReservationSegments';
 import { PENDING_EXPIRED_MESSAGE, RESERVATION_NOT_FOUND_MESSAGE, cancelResultMessage, pendingSegment, refundGuide, reservationActions, screenSchedule } from './reservation-rules';
-import pageStyles from '@/app/css/user/ReservationPage.module.css';
+import pageStyles from '@/app/css/user/UserPage.module.css';
 import styles from '@/app/css/user/ReservationDetailContent.module.css';
 
 type ReservationDetailContentProps = {

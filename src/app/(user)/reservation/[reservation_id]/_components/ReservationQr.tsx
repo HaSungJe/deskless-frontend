@@ -1,7 +1,7 @@
 import { QRCodeSVG } from 'qrcode.react';
 import { ReservationQrResultDto } from '@/contracts/reservation/dto/reservation-qr.dto';
 import { formatDateTime } from '@/shared/utils/format';
-import pageStyles from '@/app/css/user/ReservationPage.module.css';
+import pageStyles from '@/app/css/user/UserPage.module.css';
 import styles from '@/app/css/user/ReservationDetailContent.module.css';
 
 type ReservationQrProps = {

@@ -1,7 +1,7 @@
 'use client';
 import PaymentFailView from '../_components/PaymentFailView';
 import { paymentReturnPath } from '../payment-result';
-import styles from '@/app/css/user/ReservationPage.module.css';
+import styles from '@/app/css/user/UserPage.module.css';
 
 type PaymentFailContentProps = {
     code: string | null;      // 토스 오류 코드(PAY_PROCESS_CANCELED — 사용자가 취소 등)

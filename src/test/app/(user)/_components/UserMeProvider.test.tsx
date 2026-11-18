@@ -1,18 +1,29 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, waitFor } from '@testing-library/react';
+import { act, fireEvent, render, screen, waitFor } from '@testing-library/react';
 import { useContext } from 'react';
 import UserMeProvider, { UserMeContext } from '@/app/(user)/_components/UserMeProvider';
+import { UserMeResultDto } from '@/contracts/user/dto/user-me.dto';
 import { API_BASE_URL } from '@/shared/api/request';
 import RootLayoutProvider, { AuthContextType } from '@/shared/providers/RootLayoutProvider';
 
 const fetchMock = vi.fn();
 
+/** 마지막 reloadMe 결과 — 부르기 전에는 undefined */
+let lastReload: UserMeResultDto | null | undefined;
+
 /**
- * 내 정보 닉네임을 그리는 소비자
+ * 내 정보 닉네임을 그리고 "다시 읽기"로 reloadMe 를 부르는 소비자
  */
 function MeNickname(): React.ReactNode {
-    const {me} = useContext(UserMeContext);
-    return <p>{me ? me.nickname : '-'}</p>;
+    const {me, reloadMe} = useContext(UserMeContext);
+    return (
+        <>
+            <p>{me ? me.nickname : '-'}</p>
+            <button type="button" onClick={async () => {
+                lastReload = await reloadMe();
+            }}>다시 읽기</button>
+        </>
+    );
 }
 
 /**
@@ -34,6 +45,7 @@ function renderMe(isLogin: boolean): void {
 beforeEach(() => {
     fetchMock.mockReset();
     vi.stubGlobal('fetch', fetchMock);
+    lastReload = undefined;
 });
 
 afterEach(() => {
@@ -50,6 +62,21 @@ describe('UserMeProvider', () => {
         expect(fetchMock).toHaveBeenCalledTimes(1);
         expect(fetchMock.mock.calls[0][0]).toBe(`${API_BASE_URL}/user-service/user/me`);
         expect(fetchMock.mock.calls[0][1].headers.Authorization).toBe('Bearer tok');
+    });
+
+    it('[FAIL:reload] 다시 읽기가 실패하면 null 을 돌려주고 이미 읽은 내 정보는 그대로 둔다', async () => {
+        fetchMock.mockResolvedValueOnce(new Response(JSON.stringify({nickname: '여행하는고양이', is_phone_verified: 1, state_id: 'ACTIVE'}), {status: 200}));
+        fetchMock.mockRejectedValueOnce(new TypeError('Failed to fetch'));
+
+        renderMe(true);
+        await waitFor(() => expect(screen.getByText('여행하는고양이')).toBeTruthy());
+        await act(async () => {
+            fireEvent.click(screen.getByRole('button', {name: '다시 읽기'}));
+        });
+
+        expect(fetchMock).toHaveBeenCalledTimes(2);
+        expect(lastReload).toBeNull();
+        expect(screen.getByText('여행하는고양이')).toBeTruthy();
     });
 
     it('[FAIL:logged-out] 로그인 안 했으면 부르지 않고 me 는 null', () => {

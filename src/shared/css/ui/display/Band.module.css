@@ -34,3 +34,8 @@
     background: var(--danger-soft);
     color: var(--danger);
 }
+
+.ok {
+    background: var(--ok-soft);
+    color: var(--ok);
+}

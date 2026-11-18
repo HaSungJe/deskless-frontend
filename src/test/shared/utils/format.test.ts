@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
-import { formatDateTimeRange, formatDays, formatTimeRange } from '@/shared/utils/format';
+import { formatBusinessNumber, formatDateTimeRange, formatDays, formatPhone, formatTimeRange } from '@/shared/utils/format';
 
 describe('formatDays', () => {
     it('[SUCCESS] 모든 요일은 매일, 요일이 없으면 빈 글자', () => {
@@ -46,5 +46,33 @@ describe('formatTimeRange — 구간 시간 글자', () => {
 
     it('[SUCCESS] 이틀 넘게 뒤면 끝에 날짜를 쓴다', () => {
         expect(formatTimeRange('2026-11-10T11:00:00.000Z', '2026-11-13T02:00:00.000Z')).toBe('20:00 ~ 11월 13일 11:00');
+    });
+});
+
+describe('formatPhone — 전화번호 글자', () => {
+    it('[SUCCESS] 휴대폰 11자리는 3 · 4 · 4로 나눈다', () => {
+        expect(formatPhone('01012345678')).toBe('010-1234-5678');
+    });
+
+    it('[SUCCESS] 서울 02 번호는 앞 두 자리를 지역번호로 둔다', () => {
+        expect(formatPhone('0212345678')).toBe('02-1234-5678');
+    });
+
+    it('[SUCCESS] 지역번호 3자리 10자리 번호는 3 · 3 · 4로 나눈다', () => {
+        expect(formatPhone('0311234567')).toBe('031-123-4567');
+    });
+
+    it('[SUCCESS] 8자리 대표번호는 4 · 4로 나눈다', () => {
+        expect(formatPhone('15771234')).toBe('1577-1234');
+    });
+});
+
+describe('formatBusinessNumber — 사업자등록번호 글자', () => {
+    it('[SUCCESS] 10자리 숫자는 3 · 2 · 5로 나눈다', () => {
+        expect(formatBusinessNumber('1234567890')).toBe('123-45-67890');
+    });
+
+    it('[FAIL:shape] 10자리가 아니면 받은 그대로 보여 준다', () => {
+        expect(formatBusinessNumber('12345')).toBe('12345');
     });
 });

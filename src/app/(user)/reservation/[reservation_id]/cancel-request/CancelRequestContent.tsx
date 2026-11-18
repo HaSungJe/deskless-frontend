@@ -14,7 +14,7 @@ import { showErrorPopup } from '@/shared/utils/error-popup';
 import { formatDateTime, formatPrice, toKst } from '@/shared/utils/format';
 import UserTopBar from '../../../_components/UserTopBar';
 import { canAnswerCancelRequest } from '../reservation-rules';
-import pageStyles from '@/app/css/user/ReservationPage.module.css';
+import pageStyles from '@/app/css/user/UserPage.module.css';
 import styles from '@/app/css/user/CancelRequestContent.module.css';
 
 type CancelRequestContentProps = {

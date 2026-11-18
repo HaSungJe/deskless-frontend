@@ -13,7 +13,7 @@ import { AuthContext } from '@/shared/providers/RootLayoutProvider';
 import { PaginationType } from '@/shared/types/pagination';
 import { formatDateTimeRange, formatPrice } from '@/shared/utils/format';
 import { reservationStateTone } from './reservation-state';
-import pageStyles from '@/app/css/user/ReservationPage.module.css';
+import pageStyles from '@/app/css/user/UserPage.module.css';
 import styles from '@/app/css/user/MyReservationContent.module.css';
 
 /** 한 쪽 예약 수 */

@@ -1,0 +1,109 @@
+/* 시안 user.html U11 목록(:1605-1651) */
+.introText {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+.sectionTitle {
+    margin: 8px 0 0;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    color: var(--fg);
+    text-decoration: none;
+}
+
+.head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.name {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--fg);
+    text-decoration: none;
+}
+
+.meta {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.reject {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    margin-top: 4px;
+    padding: 10px 12px;
+    border-radius: var(--radius);
+    background: var(--danger-soft);
+}
+
+.rejectLabel {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--danger);
+}
+
+.rejectText {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.approved {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 4px;
+    padding: 12px;
+    border-radius: var(--radius);
+    background: var(--ok-soft);
+}
+
+.approvedRow {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.approvedLabel {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--ok);
+}
+
+.code {
+    font-family: var(--mono);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.url {
+    font-family: var(--mono);
+    font-size: 12px;
+    word-break: break-all;
+}
+
+.approvedText {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+}

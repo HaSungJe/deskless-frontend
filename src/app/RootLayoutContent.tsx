@@ -80,9 +80,9 @@ export default function RootLayoutContent({children, modal}: RootLayoutContentPr
         router.replace(loginUrl(area, `${currentRef.current.pathname}${window.location.search}`));
     }
 
-    async function logout(): Promise<void> {
-        await deleteAreaTokens(area);
-        setAreaToken({area, path: pathname, token: null});
+    function logout(): Promise<boolean> {
+        // 로그아웃 — 토큰 쿠키만 지운다. 로그인 상태를 바꾸면 로그인 가드가 먼저 로그인 화면으로 보내므로, 부른 화면이 문서를 새로 연다
+        return deleteAreaTokens(area);
     }
 
     return (

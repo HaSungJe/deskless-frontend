@@ -1,6 +1,6 @@
 import Timer from '@/shared/components/Timer';
 import { toKst } from '@/shared/utils/format';
-import pageStyles from '@/app/css/user/ReservationPage.module.css';
+import pageStyles from '@/app/css/user/UserPage.module.css';
 import styles from '@/app/css/user/ReservationDetailContent.module.css';
 
 type QrLockedProps = {

@@ -14,7 +14,7 @@ import { AuthContext } from '@/shared/providers/RootLayoutProvider';
 import { reservationStateTone } from '../../reservation/reservation-state';
 import PaymentFailView from '../_components/PaymentFailView';
 import { paymentReturnPath } from '../payment-result';
-import styles from '@/app/css/user/ReservationPage.module.css';
+import styles from '@/app/css/user/UserPage.module.css';
 
 type PaymentSuccessContentProps = {
     paymentKey: string | null; // 토스 결제 키

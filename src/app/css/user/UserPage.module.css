@@ -1,4 +1,4 @@
-/* U3 결제 대기 · U4 · U7 · U8 · U9 공통(시안 user.html 카드 · 히어로 · dl · 합계 · 아래 영역) */
+/* 이용자 화면 공통 — 머리 · 카드 · 히어로 · dl · 합계 · 아래 영역(U3 결제 대기 · U4 · U6 ~ U11, 시안 user.html) */
 .page {
     display: flex;
     flex: 1;

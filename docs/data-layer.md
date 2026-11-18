@@ -40,6 +40,7 @@
 
 - 시각: `toKst(iso, format = 'YYYY-MM-DD HH:mm')` — dayjs `utc` · `timezone` 플러그인으로 `Asia/Seoul` 고정(서버 렌더링 · Docker UTC 에서도 같은 결과, 선택: 사용자). 빈 값 · 읽을 수 없는 값은 `''`. Z · 오프셋이 붙은 시각만 넘긴다 — 날짜 `YYYY-MM-DD` · 달 `YYYY-MM` · `HH:mm` 은 이미 한국 기준이라 그대로 보여 준다(오프셋 없는 문자열은 실행 환경 시간대로 읽혀 서버 · 브라우저 결과가 달라진다). 오늘 날짜(한국)는 `todayKst()`.
 - 이용 시간: `formatDateTime(iso)` → `11월 12일(목) 19:00`, `formatDateTimeRange(시작, 끝)` → `11월 10일(화) 14:30 ~ 17:30`(한국 날짜가 다르면 `11월 14일(토) 20:00 ~ 11월 15일(일) 11:00`), `formatTimeRange(시작, 끝)` → `14:30 ~ 17:30` · `20:00 ~ 다음 날 11:00` · 이틀 넘으면 `20:00 ~ 11월 13일 11:00`. 날짜 문자열의 요일은 `formatMonthDayWeek('2026-11-12')` → `11월 12일(목)`(`Date.UTC` — 실행 환경 시간대와 무관).
+- 번호 · 날짜: `formatPhone('01012345678')` → `010-1234-5678`, `formatPhone('0212345678')` → `02-1234-5678`, 8자리 대표번호 `1577-1234`(모양이 다르면 그대로), `formatBusinessNumber('1234567890')` → `123-45-67890`, `formatKoreanDate('1998-03-14')` → `1998년 3월 14일`(ISO 시각은 한국 날짜로). 입력은 `digitsOnly('010-1234 5678', 11)` → `01012345678`.
 - 금액: `formatPrice(12000)` → `12,000원`. 요일: `daysToBits([1, 3, 5])` → `42`, `bitsToDays(42)` → `[1, 3, 5]`, `formatDays(42)` → `월 · 수 · 금`, `formatDays(31)` → `일 ~ 목`(3일 이상 이어지면 범위 — 토 다음 일로 주를 넘어도, `formatDays(97)` → `금 ~ 일`), `formatDays(127)` → `매일` (0 일 ~ 6 토).
 - 상태 · 종류 이름: 응답 `*_name` 먼저, 없으면 `lookupName('reservation_state_id', 'CONFIRMED')` → `예약 확정` (모르는 값은 그대로).
 - 백엔드 수정 요청(`frontend/changes/`)이 오면 해당 파일을 새 코드로 통째로 바꾼다.
@@ -74,7 +75,7 @@
 
 ## 전역 상태
 
-- Context 2개 — `RootLayoutLoadingContext`(그 영역 토큰 확인 중) · `AuthContext`(`{area, token, isLogin, setToken, onExpired, logout}`) (`src/shared/providers/RootLayoutProvider.tsx:17-18`). 값은 `RootLayoutContent` 가 주소가 바뀔 때마다 그 영역 토큰을 확인해 채운다 — 영역이 바뀐 직후(새 영역 토큰을 확인하기 전)는 확인 중 · 로그인 안 됨, 로그인 안 된 상태는 주소마다 확인이 끝날 때까지 확인 중 (`src/app/RootLayoutContent.tsx:54-66`). 늦게 끝난 재발급 · 만료 처리는 그 사이 영역이 바뀌었으면 무시한다(`changeToken` · `expire`).
+- Context 2개 — `RootLayoutLoadingContext`(그 영역 토큰 확인 중) · `AuthContext`(`{area, token, isLogin, setToken, onExpired, logout}`) (`src/shared/providers/RootLayoutProvider.tsx:17-18`). 값은 `RootLayoutContent` 가 주소가 바뀔 때마다 그 영역 토큰을 확인해 채운다 — 영역이 바뀐 직후(새 영역 토큰을 확인하기 전)는 확인 중 · 로그인 안 됨, 로그인 안 된 상태는 주소마다 확인이 끝날 때까지 확인 중 (`src/app/RootLayoutContent.tsx:54-66`). 늦게 끝난 재발급 · 만료 처리는 그 사이 영역이 바뀌었으면 무시한다(`changeToken` · `expire`). `logout()` 은 그 영역 토큰 쿠키만 지우고 성공 여부를 돌려준다 — 로그인 상태(`token`)는 바꾸지 않고, 부른 화면이 `replaceDocument('/')` 로 문서를 새로 연다(상태를 바꾸면 `AuthGuard` 가 먼저 로그인 화면으로 보낸다).
 - 상태 관리 라이브러리 · 데이터 캐시 라이브러리는 없다. 화면 상태는 화면 컴포넌트의 `useState`.
 - 브라우저 저장소는 쓰지 않는다 — 로그인 뒤 돌아올 주소는 `?return_url=`(`src/shared/utils/area.ts`). 오류 팝업은 모듈 상태 저장소(`src/shared/utils/error-popup.ts`)를 `useSyncExternalStore` 로 읽는다.
 
