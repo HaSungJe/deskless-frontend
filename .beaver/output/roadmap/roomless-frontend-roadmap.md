@@ -15,7 +15,7 @@ flowchart LR
   P7["Phase 7 · 예약·결제 (2)"]:::done
   P8["Phase 8 · 내 예약 (4)"]:::done
   P9["Phase 9 · 마이페이지·입점 신청 (4)"]:::done
-  P10["Phase 10 · 콘솔 틀·매니저 로그인 (6)"]:::inprog
+  P10["Phase 10 · 콘솔 틀·매니저 로그인 (6)"]:::done
   P11["Phase 11 · 내 업체 설정 (6)"]:::todo
   P12["Phase 12 · 상품·객실 (4)"]:::todo
   P13["Phase 13 · 예약 현황 (1)"]:::todo
@@ -65,7 +65,7 @@ flowchart LR
 - Phase 7 — 예약·결제 · 유닛 2개 · 의존: Phase 5, Phase 6 · 푼다: Phase 8 · 파일 집합: src/app/(user)/stores/[store_id]/booking · payments, src/contracts/reservation · done
 - Phase 8 — 내 예약 · 유닛 4개 · 의존: Phase 7 · 푼다: Phase 13 · 파일 집합: src/app/(user)/reservation, src/contracts/reservation · done
 - Phase 9 — 마이페이지·입점 신청 · 유닛 4개 · 의존: Phase 5 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/(user)/me · store-applications, src/contracts/user, src/contracts/store · done
-- Phase 10 — 콘솔 틀·매니저 로그인 · 유닛 6개 · 의존: Phase 4 · 푼다: Phase 11, Phase 12, Phase 14, Phase 15 · 파일 집합: src/shared/components/console, src/app/manager, src/contracts/manager · in-progress
+- Phase 10 — 콘솔 틀·매니저 로그인 · 유닛 6개 · 의존: Phase 4 · 푼다: Phase 11, Phase 12, Phase 14, Phase 15 · 파일 집합: src/shared/components/console, src/app/manager, src/contracts/manager · done
 - Phase 11 — 내 업체 설정 · 유닛 6개 · 의존: Phase 10 · 푼다: Phase 16 · 파일 집합: src/app/manager/(console)/store, src/contracts/store · todo
 - Phase 12 — 상품·객실 · 유닛 4개 · 의존: Phase 10 · 푼다: Phase 13 · 파일 집합: src/app/manager/(console)/plans · room-groups · rooms, src/contracts/room · todo
 - Phase 13 — 예약 현황 · 유닛 1개 · 의존: Phase 12, Phase 8 · 푼다: — · 파일 집합: src/app/manager/(console)/reservations, src/contracts/reservation · todo
@@ -76,16 +76,12 @@ flowchart LR
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: Phase 10, Phase 14 진행 중 · Next up: Phase 10
+지금: Phase 14 진행 중 · Next up: Phase 14
 
 ## 지금 할 일
-Phase 10 콘솔 틀·매니저 로그인 시작하기
-- #31 콘솔 틀
-- #32 M1 업체 로그인
-- #33 M1 아이디 찾기
-- #34 M1 비밀번호 초기화
-- #35 M1 업체 로그인 주소 안내
-- #36 M1 비밀번호 변경
+Phase 14 대시보드·업체 관리자 — M2 대시보드(#48)는 Phase 10 과 함께 끝남, 남은 것 M8 업체 관리자
+- #49 M8 업체 관리자 목록
+- #50 M8 업체 관리자 상세 · 등록
 - ok → 다음
 
 ## Scope & Actors
@@ -267,12 +263,12 @@ Phase 10 콘솔 틀·매니저 로그인 시작하기
 ### Phase 10 — 콘솔 틀·매니저 로그인 (M1) · depends: Phase 4
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 31 | 콘솔 틀 | 왼쪽 메뉴 · 상단 업체 이름 / 계정 · 로그아웃 — 매니저 · 관리자 공통, 권한별 메뉴 숨김(HEAD_MANAGER 전용) | 메뉴 정의를 영역별 배열 + 권한 필터로 할지 | 2, 8 | in-progress |
-| 32 | M1 업체 로그인 | `/manager/[store_code]/login` 아이디 · 비밀번호 → 토큰 · `auth_id` · 업체코드 기억, 변경 필요면 `/manager/password` | — | 8 | in-progress |
-| 33 | M1 아이디 찾기 | `/manager/[store_code]/find-login-id` 번호 → 인증번호 → 아이디 | — | 11, 32 | in-progress |
-| 34 | M1 비밀번호 초기화 | `/manager/[store_code]/password-reset` 아이디 · 번호 → 인증번호 → 임시 비밀번호 SMS | — | 11, 32 | in-progress |
-| 35 | M1 업체 로그인 주소 안내 | `/manager/login` 기억한 업체코드로 보내기 / 업체코드 붙여 넣기(API 없음) | — | 32 | in-progress |
-| 36 | M1 비밀번호 변경 | `/manager/password` 현재 · 새 비밀번호(큐) | — | 31, 32 | in-progress |
+| 31 | 콘솔 틀 | 왼쪽 메뉴 · 상단 업체 이름 / 계정 · 로그아웃 — 매니저 · 관리자 공통, 권한별 메뉴 숨김(HEAD_MANAGER 전용) | 메뉴 정의를 영역별 배열 + 권한 필터로 할지 | 2, 8 | done(facc5f6) |
+| 32 | M1 업체 로그인 | `/manager/[store_code]/login` 아이디 · 비밀번호 → 토큰 · `auth_id` · 업체코드 기억, 변경 필요면 `/manager/password` | — | 8 | done(facc5f6) |
+| 33 | M1 아이디 찾기 | `/manager/[store_code]/find-login-id` 번호 → 인증번호 → 아이디 | — | 11, 32 | done(facc5f6) |
+| 34 | M1 비밀번호 초기화 | `/manager/[store_code]/password-reset` 아이디 · 번호 → 인증번호 → 임시 비밀번호 SMS | — | 11, 32 | done(facc5f6) |
+| 35 | M1 업체 로그인 주소 안내 | `/manager/login` 기억한 업체코드로 보내기 / 업체코드 붙여 넣기(API 없음) | — | 32 | done(facc5f6) |
+| 36 | M1 비밀번호 변경 | `/manager/password` 현재 · 새 비밀번호(큐) | — | 31, 32 | done(facc5f6) |
 
 **Expected pages**:
 
@@ -339,7 +335,7 @@ Phase 10 콘솔 틀·매니저 로그인 시작하기
 ### Phase 14 — 대시보드·업체 관리자 (M2 · M8) · depends: Phase 10
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 48 | M2 대시보드 | `/manager` 기간 · 결제 환경 · 합계 카드 · 월별 표 · 그래프, 영업중지 띠. 재사용: `src/shared/components/chart/` | 기간 · 환경 필터를 A2 와 같이 쓸 컴포넌트로 | 31 | in-progress |
+| 48 | M2 대시보드 | `/manager` 기간 · 결제 환경 · 합계 카드 · 월별 표 · 그래프, 영업중지 띠. 재사용: `src/shared/components/chart/` | 기간 · 환경 필터를 A2 와 같이 쓸 컴포넌트로 | 31 | done(facc5f6) |
 | 49 | M8 업체 관리자 목록 | `/manager/staff` 검색 · 표 · 등록 — 업체 총관리자만 | — | 31 | todo |
 | 50 | M8 업체 관리자 상세 · 등록 | `/manager/staff/[user_id]` 수정 · 비밀번호 초기화 · 정지 / 해제 · 삭제 | — | 49 | todo |
 
@@ -400,8 +396,8 @@ Phase 10 콘솔 틀·매니저 로그인 시작하기
 | #60 | `/admin/users` | A6 · `GET user` | 이용자 목록 |
 | #61 | `/admin/users/[user_id]` | A6 · `GET user/:id` · `/reservation` · `PATCH /state` | 이용 제한 |
 
-**Progress**: 30/61 units done (9/17 phases)
-**Next up**: Phase 10 콘솔 틀·매니저 로그인 — 의존(Phase 4) 모두 완료
+**Progress**: 37/61 units done (10/17 phases)
+**Next up**: Phase 14 대시보드·업체 관리자 — 진행 중
 
 ## Cross-Cutting Rules
 - 주소 · 화면 키 · 쓰는 API 는 `frontend/screens.md` 그대로. ★ 주소(`/reservation/[reservation_id]` · `…/cancel-request`)는 SMS 링크라 바꾸지 않는다.
