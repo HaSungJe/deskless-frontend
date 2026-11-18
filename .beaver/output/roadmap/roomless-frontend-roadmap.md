@@ -14,7 +14,7 @@ flowchart LR
   P6["Phase 6 · 업체 둘러보기 (2)"]:::done
   P7["Phase 7 · 예약·결제 (2)"]:::done
   P8["Phase 8 · 내 예약 (4)"]:::done
-  P9["Phase 9 · 마이페이지·입점 신청 (4)"]:::inprog
+  P9["Phase 9 · 마이페이지·입점 신청 (4)"]:::done
   P10["Phase 10 · 콘솔 틀·매니저 로그인 (6)"]:::todo
   P11["Phase 11 · 내 업체 설정 (6)"]:::todo
   P12["Phase 12 · 상품·객실 (4)"]:::todo
@@ -64,7 +64,7 @@ flowchart LR
 - Phase 6 — 업체 둘러보기 · 유닛 2개 · 의존: Phase 4 · 푼다: Phase 7 · 파일 집합: src/app/(user)/page · stores/[store_id], src/contracts/discovery · done
 - Phase 7 — 예약·결제 · 유닛 2개 · 의존: Phase 5, Phase 6 · 푼다: Phase 8 · 파일 집합: src/app/(user)/stores/[store_id]/booking · payments, src/contracts/reservation · done
 - Phase 8 — 내 예약 · 유닛 4개 · 의존: Phase 7 · 푼다: Phase 13 · 파일 집합: src/app/(user)/reservation, src/contracts/reservation · done
-- Phase 9 — 마이페이지·입점 신청 · 유닛 4개 · 의존: Phase 5 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/(user)/me · store-applications, src/contracts/user, src/contracts/store · in-progress
+- Phase 9 — 마이페이지·입점 신청 · 유닛 4개 · 의존: Phase 5 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/(user)/me · store-applications, src/contracts/user, src/contracts/store · done
 - Phase 10 — 콘솔 틀·매니저 로그인 · 유닛 6개 · 의존: Phase 4 · 푼다: Phase 11, Phase 12, Phase 14, Phase 15 · 파일 집합: src/shared/components/console, src/app/manager, src/contracts/manager · todo
 - Phase 11 — 내 업체 설정 · 유닛 6개 · 의존: Phase 10 · 푼다: Phase 16 · 파일 집합: src/app/manager/(console)/store, src/contracts/store · todo
 - Phase 12 — 상품·객실 · 유닛 4개 · 의존: Phase 10 · 푼다: Phase 13 · 파일 집합: src/app/manager/(console)/plans · room-groups · rooms, src/contracts/room · todo
@@ -76,14 +76,16 @@ flowchart LR
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: Phase 9 진행 중 · Next up: Phase 9
+지금: 진행 중 없음 · Next up: Phase 10
 
 ## 지금 할 일
-Phase 9 마이페이지·입점 신청 시작하기
-- #27 U10 마이페이지
-- #28 U11 입점 신청 목록
-- #29 U11 입점 신청 작성
-- #30 U11 입점 신청 상세 · 파일
+Phase 10 콘솔 틀·매니저 로그인 시작하기
+- #31 콘솔 틀
+- #32 M1 업체 로그인
+- #33 M1 아이디 찾기
+- #34 M1 비밀번호 초기화
+- #35 M1 업체 로그인 주소 안내
+- #36 M1 비밀번호 변경
 - ok → 다음
 
 ## Scope & Actors
@@ -246,10 +248,10 @@ Phase 9 마이페이지·입점 신청 시작하기
 ### Phase 9 — 마이페이지·입점 신청 (U10 · U11) · depends: Phase 5
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 27 | U10 마이페이지 | `/me` 내 정보 · 회원 상태 · 휴대폰 인증하기 · 로그아웃 · 탈퇴 신청 / 철회 | — | 15 | in-progress |
-| 28 | U11 입점 신청 목록 | `/store-applications` 신청 카드(상태 · 업체코드 · 반려 사유) | — | 15 | in-progress |
-| 29 | U11 입점 신청 작성 | `/store-applications/new` 업체 정보 · 주소 검색(좌표) · 총관리자 아이디 · 비밀번호 → 신청(큐) → 상세 | — | 10, 28 | in-progress |
-| 30 | U11 입점 신청 상세 · 파일 | `/store-applications/[store_application_id]` 신청 내용 · 사업자등록증 · 업체 사진 올리기 · 지우기 · 신청 취소, 승인되면 로그인 주소 복사 | — | 12, 29 | in-progress |
+| 27 | U10 마이페이지 | `/me` 내 정보 · 회원 상태 · 휴대폰 인증하기 · 로그아웃 · 탈퇴 신청 / 철회 | — | 15 | done(ab8acfa) |
+| 28 | U11 입점 신청 목록 | `/store-applications` 신청 카드(상태 · 업체코드 · 반려 사유) | — | 15 | done(ab8acfa) |
+| 29 | U11 입점 신청 작성 | `/store-applications/new` 업체 정보 · 주소 검색(좌표) · 총관리자 아이디 · 비밀번호 → 신청(큐) → 상세 | — | 10, 28 | done(ab8acfa) |
+| 30 | U11 입점 신청 상세 · 파일 | `/store-applications/[store_application_id]` 신청 내용 · 사업자등록증 · 업체 사진 올리기 · 지우기 · 신청 취소, 승인되면 로그인 주소 복사 | — | 12, 29 | done(ab8acfa) |
 
 **Expected pages**:
 
@@ -396,8 +398,8 @@ Phase 9 마이페이지·입점 신청 시작하기
 | #60 | `/admin/users` | A6 · `GET user` | 이용자 목록 |
 | #61 | `/admin/users/[user_id]` | A6 · `GET user/:id` · `/reservation` · `PATCH /state` | 이용 제한 |
 
-**Progress**: 26/61 units done (8/17 phases)
-**Next up**: Phase 9 마이페이지·입점 신청 — 의존(Phase 5) 모두 완료
+**Progress**: 30/61 units done (9/17 phases)
+**Next up**: Phase 10 콘솔 틀·매니저 로그인 — 의존(Phase 4) 모두 완료
 
 ## Cross-Cutting Rules
 - 주소 · 화면 키 · 쓰는 API 는 `frontend/screens.md` 그대로. ★ 주소(`/reservation/[reservation_id]` · `…/cancel-request`)는 SMS 링크라 바꾸지 않는다.
