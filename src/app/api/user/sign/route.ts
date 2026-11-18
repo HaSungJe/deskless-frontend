@@ -7,8 +7,8 @@ import { NETWORK_ERROR_MESSAGE } from '@/shared/api/error';
 import { QUEUE_PENDING_MESSAGE } from '@/shared/api/queue';
 import { ApiError } from '@/shared/api/request';
 import { setTokenCookies } from '../../cookie/token-cookie';
-import { isSameSiteJson, json } from '../../route-util';
-import { clearSnsSession, INVALID_REQUEST_MESSAGE, NO_SNS_CODE, readSnsAccount } from '../sns-session';
+import { INVALID_REQUEST_MESSAGE, isSameSiteJson, json } from '../../route-util';
+import { clearSnsSession, NO_SNS_CODE, readSnsAccount } from '../sns-session';
 
 /**
  * SNS 가입 — 가입 칸에 next-auth 세션의 SNS 계정을 붙여 백엔드 user/sign(큐) → 이용자 토큰 쿠키

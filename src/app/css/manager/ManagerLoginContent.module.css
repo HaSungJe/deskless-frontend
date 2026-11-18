@@ -1,0 +1,18 @@
+/* M1 업체 로그인 — 시안 manager.html .auth-card form · .links */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.links {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+}
+
+.links span {
+    color: var(--line);
+}

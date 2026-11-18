@@ -13,9 +13,6 @@ type CookieStoreType = Awaited<ReturnType<typeof cookies>>;
 /** SNS 세션이 없음(만료 · 직접 들어옴) — 가입 화면이 로그인으로 돌린다 */
 export const NO_SNS_CODE = 'NO_SNS';
 
-/** 같은 사이트 JSON 이 아닌 요청 */
-export const INVALID_REQUEST_MESSAGE = '잘못된 요청입니다.';
-
 /** next-auth 공급자 → 백엔드 SNS 유형 — 백엔드는 카카오 · 네이버만(Map 이라 'constructor' 같은 상속 이름에 속지 않는다) */
 const SNS_PROVIDERS = new Map<string, SnsAccountType['sns_id']>([['kakao', 'KAKAO'], ['naver', 'NAVER']]);
 

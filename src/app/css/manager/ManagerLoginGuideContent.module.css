@@ -1,0 +1,21 @@
+/* M1 업체 로그인 주소 안내 — 시안 manager.html M1-login-guide */
+.sample {
+    margin: 0;
+    padding: 12px 14px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface-2);
+    font-size: 13px;
+    color: var(--muted);
+    overflow-wrap: anywhere;
+}
+
+.sample b {
+    color: var(--fg);
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}

@@ -1,5 +1,8 @@
 import { ValidationErrorType } from '@/shared/utils/validation';
 
+/** 같은 사이트 JSON 이 아닌 요청 — 가입 · 매니저 로그인 route */
+export const INVALID_REQUEST_MESSAGE = '잘못된 요청입니다.';
+
 /** route handler 응답 본문 — 항상 200 */
 export type RouteBodyType = {
     success: boolean;
@@ -7,7 +10,8 @@ export type RouteBodyType = {
     retry?: boolean;                                       // 일시 실패 — 쿠키 · 결제를 그대로 두고 다시 시도
     message?: string;                                      // 화면에 보일 실패 문구
     code?: string;                                         // 외부 오류 코드(토스) · 화면이 갈래를 나눌 코드(NO_SNS)
-    validation_errors?: Array<ValidationErrorType> | null; // 백엔드 칸 오류 그대로(가입)
+    validation_errors?: Array<ValidationErrorType> | null; // 백엔드 칸 오류 그대로(가입 · 매니저 로그인)
+    block_comment?: string | null;                         // 정지 계정 로그인 — 정지 사유(매니저 로그인)
 };
 
 /**

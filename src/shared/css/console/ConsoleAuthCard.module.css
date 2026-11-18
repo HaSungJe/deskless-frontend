@@ -1,0 +1,39 @@
+/* 로그인 계열 카드 — 시안 manager.html .auth-card · .pt · .ps */
+.card {
+    width: 100%;
+    max-width: 420px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+}
+
+/* 업체 로그인 주소 안내 */
+.wide {
+    max-width: 460px;
+}
+
+/* 제목 위 작은 글자 — 업체명 · "업체 관리자 로그인" */
+.caption {
+    margin: 0 0 4px;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.description {
+    margin: 6px 0 0;
+    font-size: 14px;
+    line-height: 1.7;
+    color: var(--muted);
+}

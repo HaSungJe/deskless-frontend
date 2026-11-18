@@ -15,11 +15,11 @@ flowchart LR
   P7["Phase 7 · 예약·결제 (2)"]:::done
   P8["Phase 8 · 내 예약 (4)"]:::done
   P9["Phase 9 · 마이페이지·입점 신청 (4)"]:::done
-  P10["Phase 10 · 콘솔 틀·매니저 로그인 (6)"]:::todo
+  P10["Phase 10 · 콘솔 틀·매니저 로그인 (6)"]:::inprog
   P11["Phase 11 · 내 업체 설정 (6)"]:::todo
   P12["Phase 12 · 상품·객실 (4)"]:::todo
   P13["Phase 13 · 예약 현황 (1)"]:::todo
-  P14["Phase 14 · 대시보드·업체 관리자 (3)"]:::todo
+  P14["Phase 14 · 대시보드·업체 관리자 (3)"]:::inprog
   P15["Phase 15 · 관리자 로그인 (2)"]:::todo
   P16["Phase 16 · 입점 신청·업체 관리 (4)"]:::todo
   P17["Phase 17 · 통계·계정·이용자 (5)"]:::todo
@@ -65,18 +65,18 @@ flowchart LR
 - Phase 7 — 예약·결제 · 유닛 2개 · 의존: Phase 5, Phase 6 · 푼다: Phase 8 · 파일 집합: src/app/(user)/stores/[store_id]/booking · payments, src/contracts/reservation · done
 - Phase 8 — 내 예약 · 유닛 4개 · 의존: Phase 7 · 푼다: Phase 13 · 파일 집합: src/app/(user)/reservation, src/contracts/reservation · done
 - Phase 9 — 마이페이지·입점 신청 · 유닛 4개 · 의존: Phase 5 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/(user)/me · store-applications, src/contracts/user, src/contracts/store · done
-- Phase 10 — 콘솔 틀·매니저 로그인 · 유닛 6개 · 의존: Phase 4 · 푼다: Phase 11, Phase 12, Phase 14, Phase 15 · 파일 집합: src/shared/components/console, src/app/manager, src/contracts/manager · todo
+- Phase 10 — 콘솔 틀·매니저 로그인 · 유닛 6개 · 의존: Phase 4 · 푼다: Phase 11, Phase 12, Phase 14, Phase 15 · 파일 집합: src/shared/components/console, src/app/manager, src/contracts/manager · in-progress
 - Phase 11 — 내 업체 설정 · 유닛 6개 · 의존: Phase 10 · 푼다: Phase 16 · 파일 집합: src/app/manager/(console)/store, src/contracts/store · todo
 - Phase 12 — 상품·객실 · 유닛 4개 · 의존: Phase 10 · 푼다: Phase 13 · 파일 집합: src/app/manager/(console)/plans · room-groups · rooms, src/contracts/room · todo
 - Phase 13 — 예약 현황 · 유닛 1개 · 의존: Phase 12, Phase 8 · 푼다: — · 파일 집합: src/app/manager/(console)/reservations, src/contracts/reservation · todo
-- Phase 14 — 대시보드·업체 관리자 · 유닛 3개 · 의존: Phase 10 · 푼다: Phase 17 · 파일 집합: src/app/manager/(console)/page · staff, src/contracts/stats, src/contracts/manager · todo
+- Phase 14 — 대시보드·업체 관리자 · 유닛 3개 · 의존: Phase 10 · 푼다: Phase 17 · 파일 집합: src/app/manager/(console)/page · staff, src/contracts/stats, src/contracts/manager · in-progress
 - Phase 15 — 관리자 로그인 · 유닛 2개 · 의존: Phase 10 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/admin/login · (console)/layout · password, src/contracts/admin · todo
 - Phase 16 — 입점 신청·업체 관리 · 유닛 4개 · 의존: Phase 15, Phase 11, Phase 9 · 푼다: — · 파일 집합: src/app/admin/(console)/store-applications · stores, src/contracts/store · todo
 - Phase 17 — 통계·계정·이용자 · 유닛 5개 · 의존: Phase 15, Phase 14, Phase 9 · 푼다: — · 파일 집합: src/app/admin/(console)/page · managers · users, src/contracts/stats · manager · user · todo
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: 진행 중 없음 · Next up: Phase 10
+지금: Phase 10, Phase 14 진행 중 · Next up: Phase 10
 
 ## 지금 할 일
 Phase 10 콘솔 틀·매니저 로그인 시작하기
@@ -267,12 +267,12 @@ Phase 10 콘솔 틀·매니저 로그인 시작하기
 ### Phase 10 — 콘솔 틀·매니저 로그인 (M1) · depends: Phase 4
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 31 | 콘솔 틀 | 왼쪽 메뉴 · 상단 업체 이름 / 계정 · 로그아웃 — 매니저 · 관리자 공통, 권한별 메뉴 숨김(HEAD_MANAGER 전용) | 메뉴 정의를 영역별 배열 + 권한 필터로 할지 | 2, 8 | todo |
-| 32 | M1 업체 로그인 | `/manager/[store_code]/login` 아이디 · 비밀번호 → 토큰 · `auth_id` · 업체코드 기억, 변경 필요면 `/manager/password` | — | 8 | todo |
-| 33 | M1 아이디 찾기 | `/manager/[store_code]/find-login-id` 번호 → 인증번호 → 아이디 | — | 11, 32 | todo |
-| 34 | M1 비밀번호 초기화 | `/manager/[store_code]/password-reset` 아이디 · 번호 → 인증번호 → 임시 비밀번호 SMS | — | 11, 32 | todo |
-| 35 | M1 업체 로그인 주소 안내 | `/manager/login` 기억한 업체코드로 보내기 / 업체코드 붙여 넣기(API 없음) | — | 32 | todo |
-| 36 | M1 비밀번호 변경 | `/manager/password` 현재 · 새 비밀번호(큐) | — | 31, 32 | todo |
+| 31 | 콘솔 틀 | 왼쪽 메뉴 · 상단 업체 이름 / 계정 · 로그아웃 — 매니저 · 관리자 공통, 권한별 메뉴 숨김(HEAD_MANAGER 전용) | 메뉴 정의를 영역별 배열 + 권한 필터로 할지 | 2, 8 | in-progress |
+| 32 | M1 업체 로그인 | `/manager/[store_code]/login` 아이디 · 비밀번호 → 토큰 · `auth_id` · 업체코드 기억, 변경 필요면 `/manager/password` | — | 8 | in-progress |
+| 33 | M1 아이디 찾기 | `/manager/[store_code]/find-login-id` 번호 → 인증번호 → 아이디 | — | 11, 32 | in-progress |
+| 34 | M1 비밀번호 초기화 | `/manager/[store_code]/password-reset` 아이디 · 번호 → 인증번호 → 임시 비밀번호 SMS | — | 11, 32 | in-progress |
+| 35 | M1 업체 로그인 주소 안내 | `/manager/login` 기억한 업체코드로 보내기 / 업체코드 붙여 넣기(API 없음) | — | 32 | in-progress |
+| 36 | M1 비밀번호 변경 | `/manager/password` 현재 · 새 비밀번호(큐) | — | 31, 32 | in-progress |
 
 **Expected pages**:
 
@@ -284,6 +284,8 @@ Phase 10 콘솔 틀·매니저 로그인 시작하기
 | #34 | `/manager/[store_code]/password-reset` | M1 · `POST manager/password-reset` · `/confirm` | 비밀번호 초기화 |
 | #35 | `/manager/login` | M1 주소 안내 | 업체 주소로 보내기 |
 | #36 | `/manager/password` | M1 · `PATCH manager/password` | 비밀번호 변경 |
+
+> build 완료(2026-11-18) — report: `.beaver/output/report/manager/console-manager-login-report.md`. M2 대시보드(#48)를 함께 만듦(사용자 결정). 로그인은 서버 route(`/api/manager/login/`) · 계정 · 업체코드는 httpOnly 쿠키. 테스트는 `/beaver:test`, 화면은 `npm run dev` 후 `/manager/<업체코드>/login/`.
 
 ### Phase 11 — 내 업체 설정 (M7) · depends: Phase 10
 | # | Unit | Goal | Key decision | Depends | Status |
@@ -337,7 +339,7 @@ Phase 10 콘솔 틀·매니저 로그인 시작하기
 ### Phase 14 — 대시보드·업체 관리자 (M2 · M8) · depends: Phase 10
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 48 | M2 대시보드 | `/manager` 기간 · 결제 환경 · 합계 카드 · 월별 표 · 그래프, 영업중지 띠. 재사용: `src/shared/components/chart/` | 기간 · 환경 필터를 A2 와 같이 쓸 컴포넌트로 | 31 | todo |
+| 48 | M2 대시보드 | `/manager` 기간 · 결제 환경 · 합계 카드 · 월별 표 · 그래프, 영업중지 띠. 재사용: `src/shared/components/chart/` | 기간 · 환경 필터를 A2 와 같이 쓸 컴포넌트로 | 31 | in-progress |
 | 49 | M8 업체 관리자 목록 | `/manager/staff` 검색 · 표 · 등록 — 업체 총관리자만 | — | 31 | todo |
 | 50 | M8 업체 관리자 상세 · 등록 | `/manager/staff/[user_id]` 수정 · 비밀번호 초기화 · 정지 / 해제 · 삭제 | — | 49 | todo |
 

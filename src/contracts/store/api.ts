@@ -5,7 +5,30 @@ import { StoreApplicationFileUploadUrlDto, StoreApplicationFileUploadUrlResultDt
 import { StoreApplicationFileDto, StoreApplicationFileResultDto } from './dto/store-application-file.dto';
 import { StoreApplicationDto, StoreApplicationResultDto } from './dto/store-application.dto';
 import { StoreMyApplicationListDto, StoreMyApplicationListResultDto } from './dto/store-my-application-list.dto';
+import { StoreLoginStoreResultDto } from './dto/store-login-store.dto';
+import { StoreMineResultDto } from './dto/store-mine.dto';
 import { StoreMyApplicationResultDto } from './dto/store-my-application.dto';
+
+/**
+ * 매니저 로그인용 업체 확인 — 동기 · 공개 (GET /admin-service/store/login-store/:store_code)
+ * - 없음 · 탈퇴 · 모양이 틀린 업체코드는 404, 영업중지는 400 + suspend_comment(frontend/changes/2026-11-18-store-login-store.md)
+ *
+ * @param store_code 주소의 업체코드
+ * @param signal 화면을 떠날 때 취소
+ */
+export function getLoginStore(store_code: string, signal?: AbortSignal): Promise<StoreLoginStoreResultDto | null> {
+    return request<StoreLoginStoreResultDto>({path: `/admin-service/store/login-store/${encodeURIComponent(store_code)}`, signal});
+}
+
+/**
+ * 내 업체 상세 — 동기 · 매니저 (GET /admin-service/store/mine) — 콘솔 상단 바 · 영업중지 띠 · 내 업체 설정
+ *
+ * @param auth AuthContext 값(매니저)
+ * @param signal 화면을 떠날 때 취소
+ */
+export function getMyStore(auth: AuthType, signal?: AbortSignal): Promise<StoreMineResultDto | null> {
+    return withAuth(auth, (token) => request<StoreMineResultDto>({path: '/admin-service/store/mine', token, signal}));
+}
 
 /**
  * 내 입점 신청 주소 — /user-service/store/application/mine/<ID>

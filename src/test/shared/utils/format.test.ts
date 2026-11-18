@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
-import { formatBusinessNumber, formatDateTimeRange, formatDays, formatPhone, formatTimeRange } from '@/shared/utils/format';
+import { formatBusinessNumber, formatDateTimeRange, formatDays, formatManwon, formatPhone, formatTimeRange } from '@/shared/utils/format';
 
 describe('formatDays', () => {
     it('[SUCCESS] 모든 요일은 매일, 요일이 없으면 빈 글자', () => {
@@ -74,5 +74,19 @@ describe('formatBusinessNumber — 사업자등록번호 글자', () => {
 
     it('[FAIL:shape] 10자리가 아니면 받은 그대로 보여 준다', () => {
         expect(formatBusinessNumber('12345')).toBe('12345');
+    });
+});
+
+describe('formatManwon — 금액 "만" 글자', () => {
+    it('[SUCCESS] 만 단위로 줄여 "만"을 붙인다', () => {
+        expect(formatManwon(3420000)).toBe('342만');
+    });
+
+    it('[SUCCESS] 만 아래 자리는 반올림한다', () => {
+        expect(formatManwon(238000)).toBe('24만');
+    });
+
+    it('[SUCCESS] 1만 원 미만은 숫자 그대로 보인다', () => {
+        expect(formatManwon(5000)).toBe('5,000');
     });
 });

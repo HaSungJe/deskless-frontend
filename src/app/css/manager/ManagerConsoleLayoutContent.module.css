@@ -1,0 +1,11 @@
+/* 콘솔 틀 상단 바 왼쪽 — 시안 manager.html .top-l */
+.storeName {
+    font-size: 16px;
+}
+
+.storeCode {
+    font-size: 12px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+    word-break: break-all;
+}

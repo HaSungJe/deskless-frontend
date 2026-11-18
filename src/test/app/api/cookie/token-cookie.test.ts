@@ -171,6 +171,29 @@ describe('token-cookie', () => {
         expect(busy.set).not.toHaveBeenCalled();
     });
 
+    it('[SUCCESS] 계정 쿠키 — 재발급하면 새 refresh 만료로 다시 쓰고, 로그인이 끝나면(401) 토큰과 함께 지운다 · 업체코드 쿠키는 그대로', async () => {
+        const account = JSON.stringify({login_id: 'leaf_gangnam', auth_id: 'HEAD_MANAGER'});
+        const renewed = fakeCookieStore({manager_refresh_token: 'old-refresh', manager_account: account, manager_store_code: 'code'});
+        const expired = fakeCookieStore({manager_refresh_token: 'old-refresh', manager_account: account, manager_store_code: 'code'});
+        fetchMock.mockResolvedValueOnce(new Response(JSON.stringify(TOKENS), {status: 200}));
+        fetchMock.mockResolvedValueOnce(new Response(JSON.stringify({message: '로그인이 필요합니다.', validation_errors: null}), {status: 401}));
+
+        cookiesMock.mockResolvedValueOnce(renewed);
+        const ok = await GET(new Request('http://localhost/api/cookie/manager/'), context('manager'));
+        cookiesMock.mockResolvedValueOnce(expired);
+        const invalid = await GET(new Request('http://localhost/api/cookie/manager/'), context('manager'));
+
+        expect(await ok.json()).toEqual({success: true, data: 'new-access'});
+        const [accountValue, accountOptions] = setCall(renewed, 'manager_account');
+        expect(JSON.parse(accountValue)).toEqual({login_id: 'leaf_gangnam', auth_id: 'HEAD_MANAGER'});
+        expect(accountOptions.expires.getTime()).toBe(new Date(TOKENS.refresh_token_expires_at).getTime());
+        expect(accountOptions.httpOnly).toBe(true);
+        expect(await invalid.json()).toEqual({success: false});
+        expect(setCall(expired, 'manager_account')).toEqual(['', expect.objectContaining({maxAge: 0})]);
+        expect(renewed.set.mock.calls.some((args) => args[0] === 'manager_store_code')).toBe(false);
+        expect(expired.set.mock.calls.some((args) => args[0] === 'manager_store_code')).toBe(false);
+    });
+
     it('[FAIL:no-cookie] GET — 두 쿠키가 다 없거나 없는 영역이면 success false · 재발급 안 함', async () => {
         cookiesMock.mockResolvedValue(fakeCookieStore());
 
@@ -182,15 +205,17 @@ describe('token-cookie', () => {
         expect(fetchMock).not.toHaveBeenCalled();
     });
 
-    it('[SUCCESS] POST — JSON 으로 온 토큰 4개를 두 쿠키에 저장한다', async () => {
-        const store = fakeCookieStore();
+    it('[SUCCESS] POST — JSON 으로 온 토큰 4개를 두 쿠키에 저장하고, 계정 쿠키는 지운다(계정은 로그인 route 만 쓴다)', async () => {
+        const store = fakeCookieStore({manager_account: JSON.stringify({login_id: 'other', auth_id: 'HEAD_MANAGER'})});
         cookiesMock.mockResolvedValue(store);
 
-        const response = await POST(saveRequest(TOKENS), context('user'));
+        const response = await POST(saveRequest(TOKENS), context('manager'));
 
         expect(await response.json()).toEqual({success: true});
-        expect(store.set).toHaveBeenCalledTimes(2);
-        expect(setCall(store, 'user_access_token')[0]).toBe('new-access');
+        expect(store.set).toHaveBeenCalledTimes(3);
+        expect(setCall(store, 'manager_access_token')[0]).toBe('new-access');
+        expect(setCall(store, 'manager_refresh_token')[0]).toBe('new-refresh');
+        expect(setCall(store, 'manager_account')).toEqual(['', expect.objectContaining({maxAge: 0})]);
     });
 
     it('[FAIL:csrf] POST — JSON 이 아니거나 만료 시각을 읽을 수 없으면 저장하지 않는다', async () => {

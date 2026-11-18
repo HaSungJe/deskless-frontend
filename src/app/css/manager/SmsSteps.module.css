@@ -1,0 +1,54 @@
+/* 인증 단계 — 시안 manager.html .steps */
+.steps {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 13px;
+}
+
+.steps li {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+/* 지금 단계 */
+.steps li[aria-current] {
+    font-weight: 700;
+    color: var(--primary-strong);
+}
+
+.dot {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    background: var(--neutral-bg);
+    color: var(--neutral-fg);
+}
+
+.steps li[aria-current] .dot {
+    background: var(--primary);
+    color: var(--on-primary);
+}
+
+/* 끝난 단계 */
+.done .dot {
+    background: var(--ok-soft);
+    color: var(--ok);
+}
+
+.steps .line {
+    flex: 1;
+    height: 1px;
+    background: var(--line);
+}

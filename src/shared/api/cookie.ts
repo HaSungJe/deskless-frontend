@@ -17,6 +17,12 @@ export type AreaTokensType = {
     refresh_token_expires_at: string;
 };
 
+/** 로그인 때 기억한 계정 — route handler 의 AccountType 과 같은 모양(매니저 · 관리자 상단 바 · 메뉴 권한) */
+export type AreaAccountType = {
+    login_id: string; // 로그인 아이디
+    auth_id: string;  // 권한
+};
+
 /** 영역별 진행 중인 재발급 — 동시에 걸리면 하나를 나눈다 */
 const refreshing = new Map<AreaType, Promise<string | null>>();
 
@@ -54,6 +60,16 @@ async function callCookieRoute<T>(url: string, method: string = 'GET', body?: un
  */
 export async function getAreaToken(area: AreaType): Promise<string | null> {
     const result = await callCookieRoute<string>(withBasePath(`/api/cookie/${area}/`));
+    return result?.success ? result.data ?? null : null;
+}
+
+/**
+ * 그 영역 로그인 때 기억한 계정 — 없거나 못 읽으면 null
+ *
+ * @param area 영역
+ */
+export async function getAreaAccount(area: AreaType): Promise<AreaAccountType | null> {
+    const result = await callCookieRoute<AreaAccountType>(withBasePath(`/api/cookie/${area}/account/`));
     return result?.success ? result.data ?? null : null;
 }
 

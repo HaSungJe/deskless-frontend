@@ -1,6 +1,6 @@
 import { cookies } from 'next/headers';
 import { isSameSiteJson, json } from '../../route-util';
-import { accessCookieName, clearTokenCookies, isTokenSet, refreshAndStore, refreshResponse, setTokenCookies, toArea, TokenSetType } from '../token-cookie';
+import { accessCookieName, clearAccountCookie, clearTokenCookies, isTokenSet, refreshAndStore, refreshResponse, setTokenCookies, toArea, TokenSetType } from '../token-cookie';
 
 /**
  * 그 영역 access 토큰 — 없거나 곧 만료면 refresh 쿠키로 재발급
@@ -41,7 +41,10 @@ export async function POST(request: Request, context: RouteContext<'/api/cookie/
             return json({success: false});
         }
 
-        await setTokenCookies(await cookies(), area, tokens);
+        // 계정 쿠키(아이디 · 권한)는 로그인 route 만 쓴다 — 여기로 온 토큰에 이전 계정이 붙어 보이지 않게 지운다
+        const cookieStore = await cookies();
+        await setTokenCookies(cookieStore, area, tokens);
+        await clearAccountCookie(cookieStore, area);
         return json({success: true});
     } catch {
         return json({success: false});

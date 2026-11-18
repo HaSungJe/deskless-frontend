@@ -23,6 +23,7 @@ type SmsVerificationProps = {
     confirmPlacement?: SmsConfirmPlacementType;                              // 확인 버튼 자리(기본 below)
     confirmSlot?: HTMLElement | null;                                        // slot 일 때 버튼을 그릴 요소 — 아직 없으면(null) 그리지 않는다
     notice?: boolean;                                                        // 아래 안내(5분 · 횟수)를 보일지(기본 보임)
+    onPhoneChange?: () => void;                                              // 번호가 바뀌어 받은 인증을 비웠을 때 — 화면의 단계 표시를 되돌린다
     children?: React.ReactNode;                                              // 번호 위에 둘 칸(비밀번호 초기화의 아이디 등)
 };
 
@@ -43,7 +44,7 @@ const SMS_NOTICE = '인증번호는 받은 뒤 5분 동안 쓸 수 있어요. �
  * @param param0
  * @returns
  */
-export default function SmsVerification({onSend, onConfirm, confirmLabel = '인증하기', confirmPlacement = 'below', confirmSlot = null, notice = true, children}: SmsVerificationProps): React.ReactNode {
+export default function SmsVerification({onSend, onConfirm, confirmLabel = '인증하기', confirmPlacement = 'below', confirmSlot = null, notice = true, onPhoneChange, children}: SmsVerificationProps): React.ReactNode {
     // 변수
     const phoneId = useId(); // 번호 칸 id — 라벨이 가리킨다
     const codeId = useId();  // 인증번호 칸 id
@@ -66,6 +67,7 @@ export default function SmsVerification({onSend, onConfirm, confirmLabel = '인�
         setSent(null);
         setCode('');
         setExpired(false);
+        onPhoneChange?.();
     }
 
     function changeCode(event: ChangeEvent<HTMLInputElement>): void {

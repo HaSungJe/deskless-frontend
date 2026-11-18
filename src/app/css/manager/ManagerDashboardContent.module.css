@@ -1,0 +1,99 @@
+/* M2 대시보드 — 시안 manager.html .pt · .ps · .fb · .kpis · .kpi · .tbl .r */
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+}
+
+.title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.subtitle {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* 기간 · 결제 환경 */
+.filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 12px;
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+}
+
+.tilde {
+    height: var(--control-h);
+    display: flex;
+    align-items: center;
+    color: var(--muted);
+}
+
+.filterNote {
+    margin: 0 0 10px;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* 합계 카드 */
+.kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 16px;
+}
+
+.kpi {
+    padding: 18px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+}
+
+.kpiLabel {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.kpiValue {
+    font-size: 24px;
+    font-weight: 700;
+    font-variant-numeric: tabular-nums;
+}
+
+.kpiValue small {
+    margin-left: 2px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.profit {
+    color: var(--primary-strong);
+}
+
+/* 월별 표 숫자 칸 */
+.number {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+}
+
+.tableNote {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+}

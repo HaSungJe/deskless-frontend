@@ -219,3 +219,19 @@ export function formatKoreanDate(value: string | null | undefined): string {
     const [year, month, day] = ymd.split('-').map(Number);
     return `${year}년 ${month}월 ${day}일`;
 }
+
+/** 만 원 */
+const MANWON = 10000;
+
+/**
+ * 금액 "만" 글자 — 그래프 막대 값 · 눈금(342만). 만 아래 자리는 반올림, 1만 원 미만은 쉼표 숫자 그대로
+ *
+ * @param amount 원
+ */
+export function formatManwon(amount: number): string {
+    if (Math.abs(amount) < MANWON) {
+        return amount.toLocaleString('ko-KR');
+    }
+
+    return `${Math.round(amount / MANWON).toLocaleString('ko-KR')}만`;
+}

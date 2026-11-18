@@ -43,7 +43,7 @@
 - 번호 · 날짜: `formatPhone('01012345678')` → `010-1234-5678`, `formatPhone('0212345678')` → `02-1234-5678`, 8자리 대표번호 `1577-1234`(모양이 다르면 그대로), `formatBusinessNumber('1234567890')` → `123-45-67890`, `formatKoreanDate('1998-03-14')` → `1998년 3월 14일`(ISO 시각은 한국 날짜로). 입력은 `digitsOnly('010-1234 5678', 11)` → `01012345678`.
 - 금액: `formatPrice(12000)` → `12,000원`. 요일: `daysToBits([1, 3, 5])` → `42`, `bitsToDays(42)` → `[1, 3, 5]`, `formatDays(42)` → `월 · 수 · 금`, `formatDays(31)` → `일 ~ 목`(3일 이상 이어지면 범위 — 토 다음 일로 주를 넘어도, `formatDays(97)` → `금 ~ 일`), `formatDays(127)` → `매일` (0 일 ~ 6 토).
 - 상태 · 종류 이름: 응답 `*_name` 먼저, 없으면 `lookupName('reservation_state_id', 'CONFIRMED')` → `예약 확정` (모르는 값은 그대로).
-- 백엔드 수정 요청(`frontend/changes/`)이 오면 해당 파일을 새 코드로 통째로 바꾼다.
+- 백엔드 수정 요청(`frontend/changes/`)이 오면 해당 파일을 새 코드로 통째로 바꾼다. 반영한 문서 — `2026-11-18-store-login-store.md`(매니저 로그인용 업체 확인 `GET /admin-service/store/login-store/:store_code` — `src/contracts/store/dto/store-login-store.dto.ts` · `getLoginStore`, Phase 10 revision 261118-1).
 
 ## 토큰 쿠키 — route handler
 
@@ -53,25 +53,29 @@
 |---|---|---|
 | `<area>_access_token` | `POST /api/cookie/<area>/`(로그인 결과 저장), `GET` · `POST …/refresh/` 안의 재발급 (`token-cookie.ts:88`) | `httpOnly`, `path: "/"`, `domain: SERVER_DOMAIN`(빈 값이면 없음), `sameSite: SERVER_DOMAIN ? "lax" : "strict"`, `secure: 개발이면 false, 아니면 x-forwarded-proto 가 https`, 만료 = `access_token_expires_at` − 60초 |
 | `<area>_refresh_token` | 같은 곳 | 같은 옵션, 만료 = `refresh_token_expires_at` |
+| `<area>_account`(매니저 · 관리자) | 로그인 route 가 `{login_id, auth_id}` JSON 으로 씀(`setAccountCookie`), 재발급 때 새 refresh 만료로 다시 씀, `clearTokenCookies`(로그아웃 · 로그인 만료)가 토큰과 함께 지움, `POST /api/cookie/<area>/` 로 토큰만 저장해도 지움 | 같은 옵션, 만료 = `refresh_token_expires_at` |
+| `manager_store_code` | 매니저 로그인 route 가 씀(`setRememberCookie`), 업체 로그인 주소 안내 page(`src/app/manager/login/page.tsx`)가 읽어 그 업체 로그인으로 보냄 — 로그아웃이 지우지 않는다 | 같은 옵션, 만료 = 1년 |
 | `next-auth.session-token`(https 면 `__Secure-…`) | next-auth(`src/app/api/auth/[...nextauth]/route.ts`) — SNS 계정(`sns_id` · `sns_user_id`)만, `/api/user/sns-login/` · `/api/user/sign/` 가 `getToken` 으로 읽고 이용자 토큰을 심으면 지운다 | next-auth 기본(httpOnly · `NEXTAUTH_SECRET` 암호화), 10분 |
 
 | route handler | 하는 일 | 결과 |
 |---|---|---|
 | `GET /api/cookie/<area>/` | access 쿠키 값, 없으면(곧 만료 포함) refresh 쿠키로 그 영역 token-refresh → 두 쿠키 새로 | `{success, data: access}` / 로그인이 끝났으면(refresh 없음 · 4xx) 두 쿠키 삭제 · `{success: false}` / 일시 실패(네트워크 · 5xx)면 쿠키를 두고 `{success: false, retry: true}` |
-| `POST /api/cookie/<area>/` | 로그인 결과 토큰 4개 저장 — 같은 사이트 JSON 요청만(`Content-Type: application/json`, `Sec-Fetch-Site` 가 있으면 `same-origin`), 토큰 4개가 다 있고 만료 시각을 읽을 수 있을 때만 | `{success}` |
+| `POST /api/cookie/<area>/` | 로그인 결과 토큰 4개 저장 — 같은 사이트 JSON 요청만(`Content-Type: application/json`, `Sec-Fetch-Site` 가 있으면 `same-origin`), 토큰 4개가 다 있고 만료 시각을 읽을 수 있을 때만, 그 영역 계정 쿠키는 지운다(계정은 로그인 route 만 쓴다) — 지금 부르는 화면은 없다(매니저 · 관리자 로그인은 서버 route) | `{success}` |
 | `DELETE /api/cookie/<area>/` | 로그아웃 — 그 영역 두 쿠키만 삭제(로그아웃 API 없음) | `{success}` |
 | `POST /api/cookie/<area>/refresh/` | 401 뒤 강제 재발급 | `GET` 의 재발급과 같음 — 로그인이 끝났으면 두 쿠키 삭제, 일시 실패면 `retry: true` |
+| `GET /api/cookie/<area>/account/` | 로그인 때 기억한 계정 읽기(쓰기는 로그인 route 만) | `{success, data: {login_id, auth_id}}` / 없으면 `{success: false}` |
 
-이용자 로그인 · 가입 route(`src/app/api/user/` — 사용자 2026-11-16, SNS 계정을 브라우저에 내보내지 않으려고 서버가 백엔드까지 부른다):
+이용자 로그인 · 가입 route(`src/app/api/user/` — 사용자 2026-11-16, SNS 계정을 브라우저에 내보내지 않으려고 서버가 백엔드까지 부른다)와 매니저 로그인 route(`src/app/api/manager/login/` — 사용자 2026-11-18, 로그인 IP 와 재발급 IP 를 맞추려고):
 
 | route handler | 하는 일 | 결과 |
 |---|---|---|
 | `GET /api/user/sns-login/?return_url=` | next-auth callbackUrl — SNS 세션(`getToken`)으로 백엔드 `user/login` → 이용자 토큰 쿠키(`setTokenCookies`) · next-auth 쿠키 삭제 | 303 `afterLoginPath`(휴대폰 인증 전이면 `/phone-verification/`) / 가입 전(404) `/signup/?sns=…` / `/login/?error=sns · login · retry` |
+| `POST /api/manager/login/` | 같은 사이트 JSON `{store_code, login_id, login_pw}` → 백엔드 `manager/login`(동기) → 매니저 토큰 · 계정 · 업체코드 쿠키 | `{success, data: {is_password_change_required}}` / 거절(4xx) `{success: false, message, validation_errors, block_comment}`(쿠키 안 씀) / `{success: false, message, retry: true}` |
 | `POST /api/user/sign/` | 같은 사이트 JSON `{gender, birth, nickname}` + SNS 세션 → 백엔드 `user/sign`(큐, 결과 없이 끝나면 `user/login` 으로 한 번 다시 조회) → 토큰 쿠키 · next-auth 쿠키 삭제(https 의 `__Secure-` · `__Host-` 이름은 secure 로) | `{success, data: {is_phone_verified}}` / `{success: false, code: 'NO_SNS'}` / `{success: false, message, validation_errors}` / `{success: false, message, retry: true}` |
 
-- ⚠️ 백엔드 재발급은 지금 로그인 때 IP 와 재발급 요청 IP 가 다르면 401 이다 — 재발급은 Next 서버가 부르므로 배포 환경에서는 access 토큰이 끝날 때 로그인이 풀린다(로컬은 IP 가 같아 영향 없음). 백엔드에 IP 검사 완화를 요청했다(2026-11-16). 이용자는 로그인도 Next 서버(`/api/user/sns-login/`)가 부르므로 IP 가 같다 — 매니저 · 관리자 로그인(Phase 10 · 15)은 그 화면에서 정한다.
+- ⚠️ 백엔드 재발급은 지금 로그인 때 IP 와 재발급 요청 IP 가 다르면 401 이다 — 재발급은 Next 서버가 부르므로 배포 환경에서는 access 토큰이 끝날 때 로그인이 풀린다(로컬은 IP 가 같아 영향 없음). 백엔드에 IP 검사 완화를 요청했다(2026-11-16). 이용자(`/api/user/sns-login/`) · 매니저(`/api/manager/login/`)는 로그인도 Next 서버가 부르므로 IP 가 같다 — 관리자 로그인(Phase 15)도 같은 모양으로.
 - 영역별 재발급 API: 이용자 `/user-service/user/token-refresh` · 매니저 `/admin-service/manager/token-refresh` · 관리자 `/admin-service/admin/token-refresh` (`src/contracts/{user,manager,admin}/api.ts`, 본문 `{refresh_token}`).
-- 클라이언트는 쿠키를 직접 읽지 않고 `src/shared/api/cookie.ts` 로 route handler 를 부른다 — `getAreaToken` · `saveAreaTokens` · `deleteAreaTokens` · `refreshAreaToken`(같은 영역 동시 재발급은 진행 중인 하나를 나눈다 — refresh 토큰이 재발급마다 바뀌어서. 로그인이 끝났으면 `null`, `retry` · 응답 없음이면 `NetworkError`). 주소는 `trailingSlash` 에 맞춰 `/` 로 끝내고 앞에 basePath 를 붙인다(`withBasePath` — docs/architecture.md "basePath").
+- 클라이언트는 쿠키를 직접 읽지 않고 `src/shared/api/cookie.ts` 로 route handler 를 부른다 — `getAreaToken` · `saveAreaTokens` · `deleteAreaTokens` · `getAreaAccount`(로그인 때 기억한 아이디 · 권한) · `refreshAreaToken`(같은 영역 동시 재발급은 진행 중인 하나를 나눈다 — refresh 토큰이 재발급마다 바뀌어서. 로그인이 끝났으면 `null`, `retry` · 응답 없음이면 `NetworkError`). 주소는 `trailingSlash` 에 맞춰 `/` 로 끝내고 앞에 basePath 를 붙인다(`withBasePath` — docs/architecture.md "basePath").
 
 ## 전역 상태
 

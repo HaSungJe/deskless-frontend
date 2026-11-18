@@ -58,6 +58,7 @@
 - 공통 부품은 `src/shared/components/ui/<종류>/` 를 먼저 쓴다. 모습은 개발 전용 `/dev/ui` 에서 본다. 지도 · 인증번호 · 사진 · 결제 부품(`map/` · `sms/` · `upload/` · `payment/`)은 [integrations.md](integrations.md) — 미리보기 `/dev/infra`.
   - `button/` — `Button`(`buttonClass()` 로 `<Link>` 를 버튼 모양으로) · `CopyButton`(`variant` · `full` 로 버튼 모양)
   - `form/` — `Input` · `Textarea` · `Field`(라벨 + 오류 span + 도움말) · `Switch` · `Chip` · `Segmented`
+  - 콘솔(`src/shared/components/console/`) — `ConsoleShell`(왼쪽 메뉴 232px · 상단 바 · 본문 — 메뉴 · 글자는 영역 layout 이 넘긴다, `console-menu.ts` 의 `visibleMenu`(권한별) · `activeMenuHref`(지금 메뉴, `exact` 는 첫 화면만)) · `ConsoleAuthFrame` + `ConsoleAuthCard`(로그인 계열 — 메뉴 없는 바탕 + 가운데 카드)
   - `display/` — `Badge` · `Band`(상태 안내 띠 — `info` · `warn` · `danger` · `ok`) · `Card` · `Table` · `EmptyState`
   - `nav/` — `Tabs` · `Pagination`(`‹ 번호 ›`, 목록 응답의 `pagination` 을 그대로)
   - `modal/` — `Modal` · `ConfirmModal` · `ReasonModal` · `RouteModal` · `ErrorPopup`(루트에 하나 — `showErrorPopup` 으로 연다)
