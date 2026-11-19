@@ -70,3 +70,23 @@ export function afterManagerLoginPath(isPasswordChangeRequired: number, returnUr
 export function shortStoreCode(storeCode: string): string {
     return storeCode.length > STORE_CODE_SHORT_LENGTH ? `${storeCode.slice(0, STORE_CODE_SHORT_LENGTH)}…` : storeCode;
 }
+
+/**
+ * 업체 콘솔 로그인 주소 — <프론트 주소><하위 경로>/manager/<업체코드>/login/(지침서 U11 · M7 — 입점 신청 · 내 업체 설정이 함께 쓴다, trailingSlash)
+ *
+ * @param storeCode 업체코드
+ * @param serverUrl 프론트 주소(끝 '/' 는 떼고 붙인다)
+ * @param basePath 하위 경로('' 이거나 '/app' 처럼 '/' 로 시작)
+ */
+export function managerLoginUrl(storeCode: string, serverUrl: string, basePath: string): string {
+    return `${serverUrl.replace(/\/+$/, '')}${basePath}/manager/${encodeURIComponent(storeCode)}/login/`;
+}
+
+/**
+ * 이 배포의 업체 콘솔 로그인 주소 — 빌드 때 박히는 NEXT_PUBLIC_SERVER_URL · NEXT_PUBLIC_LOCAL_SERVER_PREFIX 로
+ *
+ * @param storeCode 업체코드
+ */
+export function storeConsoleLoginUrl(storeCode: string): string {
+    return managerLoginUrl(storeCode, process.env.NEXT_PUBLIC_SERVER_URL ?? '', process.env.NEXT_PUBLIC_LOCAL_SERVER_PREFIX ?? '');
+}

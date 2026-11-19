@@ -57,7 +57,8 @@
   - 간격(`gap` · `padding`)과 글자 크기는 토큰이 없어 시안 값을 그대로 쓴다.
 - 공통 부품은 `src/shared/components/ui/<종류>/` 를 먼저 쓴다. 모습은 개발 전용 `/dev/ui` 에서 본다. 지도 · 인증번호 · 사진 · 결제 부품(`map/` · `sms/` · `upload/` · `payment/`)은 [integrations.md](integrations.md) — 미리보기 `/dev/infra`.
   - `button/` — `Button`(`buttonClass()` 로 `<Link>` 를 버튼 모양으로) · `CopyButton`(`variant` · `full` 로 버튼 모양)
-  - `form/` — `Input` · `Textarea` · `Field`(라벨 + 오류 span + 도움말) · `Switch` · `Chip` · `Segmented`
+  - `form/` — `Input` · `Textarea` · `Field`(라벨 + 오류 span + 도움말) · `FieldError`(라벨 없는 표 · 줄 칸의 오류 span — `Field` 도 이걸 그린다) · `Switch` · `Chip` · `Segmented`
+  - 줄 단위 검사 — 같은 DTO 가 여러 줄이면 `validateActionRows(dtos, path)`(`src/shared/utils/validation.ts`): 줄마다 검사하고 칸 이름을 `<path>.<줄>.<필드>`(백엔드 점 경로 — `hours.3.close_time`)로 붙인다. 부모 DTO 를 `validateAction` 하면 중첩 오류는 칸에 붙지 않는다(`constraints` 가 없어 건너뛴다).
   - 콘솔(`src/shared/components/console/`) — `ConsoleShell`(왼쪽 메뉴 232px · 상단 바 · 본문 — 메뉴 · 글자는 영역 layout 이 넘긴다, `console-menu.ts` 의 `visibleMenu`(권한별) · `activeMenuHref`(지금 메뉴, `exact` 는 첫 화면만)) · `ConsoleAuthFrame` + `ConsoleAuthCard`(로그인 계열 — 메뉴 없는 바탕 + 가운데 카드)
   - `display/` — `Badge` · `Band`(상태 안내 띠 — `info` · `warn` · `danger` · `ok`) · `Card` · `Table` · `EmptyState`
   - `nav/` — `Tabs` · `Pagination`(`‹ 번호 ›`, 목록 응답의 `pagination` 을 그대로)

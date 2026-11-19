@@ -7,7 +7,7 @@
 | 카카오 지도 | `src/shared/components/map/StoreMap.tsx` · `src/shared/hooks/useMyLocation.ts` · `src/shared/utils/kakao-map.ts` | U1 · U2 |
 | 다음 우편번호 + 카카오 지오코더 | `src/shared/utils/address.ts` `searchAddressWithCoords` | U11 · A4 |
 | 인증번호(SMS) | `src/shared/components/sms/SmsVerification.tsx` | U5 · M1 |
-| 파일(S3 업로드 주소) | `src/shared/api/upload.ts` `uploadFile` · `src/shared/utils/file.ts` · `src/shared/components/upload/ImageUploader.tsx` | U11(신청 파일 칸은 화면 전용) · M5 · M7 |
+| 파일(S3 업로드 주소) | `src/shared/api/upload.ts` `uploadFile` · `src/shared/utils/file.ts` · `src/shared/components/upload/ImageUploader.tsx` | U11(신청 파일 칸은 화면 전용) · M7(내 업체 사진 — 공통 `ImageUploader`) · M5 |
 | 토스 결제위젯 | `src/shared/components/payment/TossPaymentWidget.tsx` · `src/shared/api/payment.ts` · `src/app/api/payments/confirm/` | U3 · U4 · U7 · U9 |
 
 ## 지도 · 주소
@@ -53,6 +53,7 @@ await uploadFile(file, {
 - `ImageUploader` — `images`(`{id, image_url, alt}`) 순서대로, 첫 장 "대표". `max` 장이면 올리기 칸을 숨긴다. `onReorder` 를 넘기면(사진 2장 이상 · `disabled` 아님) 손잡이로 끌기(@dnd-kit — 마우스 · 키보드), 놓으면 id 전부(순서 API 는 보낸 목록이 전부인 PUT). `images` 가 새 배열로 오면 보이는 순서를 그 순서로 맞춘다 — 화면은 순서 API 뒤(성공 · 실패 모두) 목록을 다시 조회하고(실패하면 저장된 순서로 돌아간다), `images` 는 데이터가 바뀔 때만 새 배열이 되게 둔다(React Compiler 가 매핑을 데이터 기준으로 기억한다). 삭제 확인 모달은 화면이 정한다.
 - 사진은 `next/image` `unoptimized`(원격 CDN · S3 주소). 비공개 파일(사업자등록증)의 열람 주소는 10분짜리라 화면을 열 때마다 새로 받는다.
 - 입점 신청(U11 상세)은 공통 `ImageUploader` 대신 화면 전용 `ApplicationFiles`(`src/app/(user)/store-applications/[store_application_id]/_components/ApplicationFiles.tsx`) — 신청 파일에는 대표 · 순서가 없어서(사용자 결정 2026-11-18). 사업자등록증 1장 · 업체 사진 5장까지, 올리기는 같은 `uploadFile`(용도 `BUSINESS_LICENSE` · `STORE_IMAGE` 를 발급 · 등록 둘 다에 넣는다), 끝나면 상세를 다시 부른다. 대기(`WAIT`) 신청만 올리고 지운다.
+- 내 업체 사진(M7 사진 탭 — `src/app/manager/(console)/store/_components/StorePhotosTab.tsx`)은 공통 `ImageUploader`(대표 · 끌어서 순서 · 삭제, 5장) + `uploadFile`(발급 `issueMyStoreFileUrl` · 등록 `registerMyStoreFile`), 순서는 사진 ID 전부를 `reorderMyStoreFiles`. `ImageUploader` 는 `onUpload` 가 던진 오류를 다시 던지므로 탭이 잡아 `handleApiError` 한다. 끝나면 콘솔 Context 의 `reloadStore`. 사업자등록증은 보기만(10분짜리 열람 주소 — 다시 들어오면 새 주소).
 
 ## 결제 — 토스 결제위젯
 

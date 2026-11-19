@@ -43,7 +43,7 @@ async function callCookieRoute<T>(url: string, method: string = 'GET', body?: un
 ## 화면 (Content) 패턴
 
 ```ts
-const dto = plainToInstance(StoreMineUpdateDto, values); // (Phase 5 부터 class-transformer)
+const dto = plainToInstance(StoreMineUpdateDto, values); // 값 → DTO 인스턴스(class-transformer)
 if (await validateAction(dto)) {                          // 1) 화면 검증 — 실패면 칸 옆에 표시하고 끝
     try {
         const store = await updateMyStore(auth, dto);     // contracts/store/api.ts → withAuth(auth, (token) => callQueue(…))

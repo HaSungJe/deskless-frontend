@@ -34,7 +34,7 @@
 - `frontend/dto/<도메인>.md` 의 `## <도메인>/dto/<파일>.dto.ts` 블록을 `src/contracts/<도메인>/dto/<파일>.dto.ts` 로 **그대로** 옮긴다. 공통은 `frontend/dto/common.md` → `src/contracts/common/<파일>` (지침서: frontend/dto/common.md:3).
 - 공통(`src/contracts/common/`): `pagination.dto.ts`(`PaginationDto` · `PAGINATION_DEFAULTS` · `PaginationResultDto`) · `fail-result.dto.ts`(`ApiFailResultDto` · `CommandFailedEventData`) · `roles.ts`(`AUTH_ID` · `LOGIN_SCOPE`) · `sse.ts`(`COMMAND_STREAM_EVENT`) · `reservation.constants.ts` — 지침서 사본 그대로. `lookup.ts`(`LOOKUP` · `lookupName`)는 지침서 "룩업 값" 표를 응답 필드 이름으로 묶은 것.
 - `shared` 는 `contracts` 를 가져올 수 없어, 실패 본문(`ApiFailBodyType` — `request.ts`) · 페이지(`PaginationType` — `src/shared/types/pagination.ts`) · 큐 이벤트 이름(`queue.ts`)은 `shared` 에 구조가 같은 타입 · 상수로 따로 둔다.
-- 지침서 DTO 는 `class-validator` · `class-transformer` 데코레이터를 쓴다 (지침서: frontend/dto/user.md:3) — `class-transformer` 는 쓰는 곳이 생기는 Phase 5(첫 입력 DTO — `validate(plainToInstance(XDto, 값))`)에서 넣는다.
+- 지침서 DTO 는 `class-validator` · `class-transformer` 데코레이터를 쓴다 (지침서: frontend/dto/user.md:3). `class-transformer` 의 `@Type`(줄 목록 DTO — `store-mine-hours` · `store-mine-breaks`)은 클래스를 읽을 때 `Reflect.getMetadata` 를 부르므로 `reflect-metadata` 가 먼저 붙어 있어야 한다 — 서버 `src/instrumentation.ts`(`register`), 브라우저 `src/instrumentation-client.ts`(하이드레이션 전), 테스트 `vitest.setup.ts` 가 불러온다. 없으면 그 DTO 를 가져오는 순간 `Reflect.getMetadata is not a function`.
 
 ## 표시 형식 — `src/shared/utils/format.ts`
 

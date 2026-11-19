@@ -28,7 +28,7 @@ roomless 이용자 · 업체 관리자 · 관리자 화면. 규칙의 근거는 
 ⚠️ 관리자 A1(Phase 15) 로그인 화면은 아직 없다 — 이용자 U5(카카오 · 네이버)는 `/login`(Phase 5), 매니저 M1 은 `/manager/<업체코드>/login`(Phase 10). 새 코드는 지침서대로 — 영역마다 토큰이 따로, 쓰기 API 는 SSE 큐, 키는 snake_case.
 
 ## Architecture
-Node 24.22.3 (`.nvmrc` · `package.json` engines · `Dockerfile:7`) · Next.js 16.4 App Router (`package.json:20`) · React 19.3 + React Compiler (`next.config.ts:37`) · TypeScript 5 · fetch(HTTP 라이브러리 없음) · class-validator · next-auth 4 · Vitest 5 + Testing Library (선택: 사용자) · CSS Modules (선택: 사용자).
+Node 24.22.3 (`.nvmrc` · `package.json` engines · `Dockerfile:7`) · Next.js 16.4 App Router (`package.json:21`) · React 19.3 + React Compiler (`next.config.ts:37`) · TypeScript 5 · fetch(HTTP 라이브러리 없음) · class-validator + class-transformer · reflect-metadata · next-auth 4 · Vitest 5 + Testing Library (선택: 사용자) · CSS Modules (선택: 사용자).
 
 ```
 src/
@@ -51,7 +51,7 @@ src/
 - 타입은 `type` 별칭 + `Type` 접미사 (`src/shared/types/pagination.ts:11`), Context 는 `<Name>Context` (`src/shared/providers/RootLayoutProvider.tsx:17-18`), 상수는 UPPER_SNAKE (`src/shared/api/request.ts:5`).
 - 백엔드와 주고받는 키는 snake_case 그대로 (`src/contracts/user/dto/user-token-refresh.dto.ts:6`).
 - 스타일은 css 폴더에 모은다 — 전역 토큰 `src/app/css/globals.css`, 화면 `src/app/css/<영역>/<화면>Content.module.css`, 공통 부품 `src/shared/css/<components 아래와 같은 경로>/<Name>.module.css`(예 `shared/components/ui/form/Input.tsx` ↔ `shared/css/ui/form/Input.module.css`). 색 · 크기는 토큰 `var(--…)` 만 — 색은 한 벌, 크기는 영역별(기본 이용자, `data-area="console"` 콘솔) (선택: 사용자).
-- 공통 부품은 `src/shared/components/ui/<종류>/` 를 먼저 쓴다 — `button/`(`Button` · `CopyButton`) · `form/`(`Input` · `Textarea` · `Field` · `Switch` · `Chip` · `Segmented`) · `display/`(`Badge` · `Band` · `Card` · `Table` · `EmptyState`) · `nav/`(`Tabs` · `Pagination`) · `modal/`(`Modal` · `ConfirmModal` · `ReasonModal` · `RouteModal` · `ErrorPopup` — 루트에 하나). 콘솔(매니저 · 관리자)은 `src/shared/components/console/` — `ConsoleShell`(왼쪽 메뉴 · 상단 바, 메뉴는 `console-menu.ts` 의 `visibleMenu` · `activeMenuHref`) · 로그인 계열 바탕 `ConsoleAuthFrame` + `ConsoleAuthCard`. 입력 칸은 `<Field name="<DTO 필드>">` — 오류 span 을 `Field` 가 그린다. 미리보기 `/dev/ui`(개발 전용). 지도 · 인증번호 · 사진 · 결제 부품은 "외부 연동"(`map/` · `sms/` · `upload/` · `payment/` — 미리보기 `/dev/infra`).
+- 공통 부품은 `src/shared/components/ui/<종류>/` 를 먼저 쓴다 — `button/`(`Button` · `CopyButton`) · `form/`(`Input` · `Textarea` · `Field` · `FieldError` · `Switch` · `Chip` · `Segmented`) · `display/`(`Badge` · `Band` · `Card` · `Table` · `EmptyState`) · `nav/`(`Tabs` · `Pagination`) · `modal/`(`Modal` · `ConfirmModal` · `ReasonModal` · `RouteModal` · `ErrorPopup` — 루트에 하나). 콘솔(매니저 · 관리자)은 `src/shared/components/console/` — `ConsoleShell`(왼쪽 메뉴 · 상단 바, 메뉴는 `console-menu.ts` 의 `visibleMenu` · `activeMenuHref`) · 로그인 계열 바탕 `ConsoleAuthFrame` + `ConsoleAuthCard`. 입력 칸은 `<Field name="<DTO 필드>">` — 오류 span 을 `Field` 가 그린다. 미리보기 `/dev/ui`(개발 전용). 지도 · 인증번호 · 사진 · 결제 부품은 "외부 연동"(`map/` · `sms/` · `upload/` · `payment/` — 미리보기 `/dev/infra`).
 - 표시 형식은 `src/shared/utils/format.ts` — `toKst`(ISO → 한국 시각, `Asia/Seoul` 고정) · `todayKst` · `formatPrice`(`12,000원`) · `formatDays`(요일 비트합 → `월 · 수 · 금`, 3일 이상 이어지면 `일 ~ 목`, 127 → `매일`) · `formatDateTime`(`11월 12일(목) 19:00`) · `formatDateTimeRange`(이용 시간 — `11월 10일(화) 14:30 ~ 17:30`) · `formatTimeRange`(구간 — `20:00 ~ 다음 날 11:00`) · `formatPhone`(`010-1234-5678` · `02-1234-5678`) · `formatBusinessNumber`(`123-45-67890`) · `formatKoreanDate`(`2026년 11월 8일` — `YYYY-MM-DD` 은 그대로 읽는다) · `formatManwon`(그래프 값 — `342만`, 1만 미만은 `5,000`). 번호 입력 칸은 `digitsOnly(value, max)`(`src/shared/utils/util.ts`). 상태 이름은 응답 `*_name` 먼저, 없으면 `lookupName(필드, 값)` (`src/contracts/common/lookup.ts`).
 - 컴포넌트 · 커스텀 훅 본문은 **변수 > 상태 > 계산 값 > 효과 > 함수 > JSX** — 영역 사이 빈 줄, 영역마다 한 줄 주석, 변수 · 상태 · 계산 값은 줄마다 오른쪽 역할 주석, JSX 는 덩어리마다 간략 주석. 새 코드와 고치는 파일부터 (선택: 사용자 2026-11-14) → [docs/conventions.md](docs/conventions.md) "컴포넌트 · 훅 안의 구조"
 
@@ -78,8 +78,8 @@ src/
 
 ## Validation
 - 입력 DTO 는 class-validator 데코레이터 + 한국어 `message` 필수 (`src/contracts/user/dto/user-token-refresh.dto.ts:5`).
-- 제출 전에 `validateAction(dto)` (`src/shared/utils/validation.ts:86`) → 오류는 칸 옆 `<span data-type="validation-alert" data-id="<필드>" />` 에 표시 — `<Field name>` 이 그린다(`src/shared/components/ui/form/Field.tsx`), 칸을 못 찾으면 오류 팝업. 중첩 DTO 는 `validateActionChildren(dto, key)` + `data-key` (`src/shared/utils/validation.ts:112` · 미적용).
-- 지침서 DTO 사본은 `contracts/` 에 그대로 두고 화면 검증에도 그대로 쓴다 (지침서: frontend/api.md:62).
+- 제출 전에 `validateAction(dto)` (`src/shared/utils/validation.ts:86`) → 오류는 칸 옆 `<span data-type="validation-alert" data-id="<필드>" />` 에 표시 — `<Field name>` 이 그린다(`src/shared/components/ui/form/Field.tsx`), 칸을 못 찾으면 오류 팝업. 같은 DTO 가 여러 줄(표 · 줄 목록 — 영업시간 · 브레이크)이면 `validateActionRows(dtos, path)` — 칸 이름은 백엔드 점 경로(`hours.3.close_time`)라 큐 failed 의 `validation_errors` 도 같은 칸에 붙고, 라벨 없는 표 칸은 `<FieldError name>`(`src/shared/components/ui/form/FieldError.tsx`). 중첩 DTO 하나는 `validateActionChildren(dto, key)` + `data-key` (`src/shared/utils/validation.ts:112` · 미적용).
+- 지침서 DTO 사본은 `contracts/` 에 그대로 두고 화면 검증에도 그대로 쓴다 (지침서: frontend/api.md:62). `@Type`(class-transformer)이 있는 DTO 는 `reflect-metadata` 가 먼저 붙어 있어야 한다 — `src/instrumentation.ts`(서버) · `src/instrumentation-client.ts`(브라우저) · `vitest.setup.ts` 가 불러온다.
 
 ## Error & Response
 - route handler 는 항상 200 + `{success: boolean, data?}` JSON (`src/app/api/route-util.ts:18` · `src/app/api/cookie/[area]/route.ts:14,20`). 클라이언트 쿠키 함수는 실패를 삼키고 `null` · `false` 를 돌려준다 (`src/shared/api/cookie.ts:29-46`).

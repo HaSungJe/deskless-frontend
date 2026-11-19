@@ -4,9 +4,21 @@ import { request } from '@/shared/api/request';
 import { StoreApplicationFileUploadUrlDto, StoreApplicationFileUploadUrlResultDto } from './dto/store-application-file-upload-url.dto';
 import { StoreApplicationFileDto, StoreApplicationFileResultDto } from './dto/store-application-file.dto';
 import { StoreApplicationDto, StoreApplicationResultDto } from './dto/store-application.dto';
-import { StoreMyApplicationListDto, StoreMyApplicationListResultDto } from './dto/store-my-application-list.dto';
 import { StoreLoginStoreResultDto } from './dto/store-login-store.dto';
+import { StoreMineBreaksDto } from './dto/store-mine-breaks.dto';
+import { StoreMineDoorSecretDto } from './dto/store-mine-door-secret.dto';
+import { StoreMineFileOrderDto } from './dto/store-mine-file-order.dto';
+import { StoreMineFileUploadUrlDto, StoreMineFileUploadUrlResultDto } from './dto/store-mine-file-upload-url.dto';
+import { StoreMineFileDto, StoreMineFileResultDto } from './dto/store-mine-file.dto';
+import { StoreMineHoursDto } from './dto/store-mine-hours.dto';
+import { StoreMineMaintenanceDto } from './dto/store-mine-maintenance.dto';
+import { StoreMineOpenDto } from './dto/store-mine-open.dto';
+import { StoreMineProfileDto } from './dto/store-mine-profile.dto';
+import { StoreMineReservationPolicyDto } from './dto/store-mine-reservation-policy.dto';
+import { StoreMineUnavailablePeriodListDto, StoreMineUnavailablePeriodListResultDto } from './dto/store-mine-unavailable-period-list.dto';
+import { StoreMineUnavailablePeriodDto, StoreMineUnavailablePeriodResultDto } from './dto/store-mine-unavailable-period.dto';
 import { StoreMineResultDto } from './dto/store-mine.dto';
+import { StoreMyApplicationListDto, StoreMyApplicationListResultDto } from './dto/store-my-application-list.dto';
 import { StoreMyApplicationResultDto } from './dto/store-my-application.dto';
 
 /**
@@ -112,4 +124,148 @@ export function registerStoreApplicationFile(auth: AuthType, store_application_i
  */
 export function deleteStoreApplicationFile(auth: AuthType, store_application_id: string, store_file_id: string): Promise<null> {
     return withAuth(auth, (token) => callQueue<null>({method: 'DELETE', path: `${myApplicationPath(store_application_id)}/file/${encodeURIComponent(store_file_id)}`, token}));
+}
+
+/** 내 업체 주소 — /admin-service/store/mine */
+const MY_STORE_PATH = '/admin-service/store/mine';
+
+/**
+ * 내 업체 소개 · 연락처 수정 — 큐 · 매니저 (PATCH /admin-service/store/mine/profile) — 결과 null
+ *
+ * @param auth AuthContext 값
+ * @param dto 소개 · 연락처
+ */
+export function updateMyStoreProfile(auth: AuthType, dto: StoreMineProfileDto): Promise<null> {
+    return withAuth(auth, (token) => callQueue<null>({method: 'PATCH', path: `${MY_STORE_PATH}/profile`, body: dto, token}));
+}
+
+/**
+ * 내 업체 사진 업로드 주소 — 동기 · 매니저 (POST /admin-service/store/mine/file/upload-url)
+ *
+ * @param auth AuthContext 값
+ * @param dto content_type
+ */
+export function issueMyStoreFileUrl(auth: AuthType, dto: StoreMineFileUploadUrlDto): Promise<StoreMineFileUploadUrlResultDto | null> {
+    return withAuth(auth, (token) => request<StoreMineFileUploadUrlResultDto>({method: 'POST', path: `${MY_STORE_PATH}/file/upload-url`, body: dto, token}));
+}
+
+/**
+ * 내 업체 사진 등록 — 큐 · 매니저 (POST /admin-service/store/mine/file) — 마지막 순서
+ *
+ * @param auth AuthContext 값
+ * @param dto file_key · file_name · content_type
+ */
+export function registerMyStoreFile(auth: AuthType, dto: StoreMineFileDto): Promise<StoreMineFileResultDto | null> {
+    return withAuth(auth, (token) => callQueue<StoreMineFileResultDto>({method: 'POST', path: `${MY_STORE_PATH}/file`, body: dto, token}));
+}
+
+/**
+ * 내 업체 사진 순서 — 큐 · 매니저 (PUT /admin-service/store/mine/file/order) — 사진 ID 전부, 결과 null
+ *
+ * @param auth AuthContext 값
+ * @param dto store_file_ids
+ */
+export function reorderMyStoreFiles(auth: AuthType, dto: StoreMineFileOrderDto): Promise<null> {
+    return withAuth(auth, (token) => callQueue<null>({method: 'PUT', path: `${MY_STORE_PATH}/file/order`, body: dto, token}));
+}
+
+/**
+ * 내 업체 사진 삭제 — 큐 · 매니저 (DELETE /admin-service/store/mine/file/:store_file_id) — 결과 null
+ *
+ * @param auth AuthContext 값
+ * @param store_file_id 업체 정보 파일 ID
+ */
+export function deleteMyStoreFile(auth: AuthType, store_file_id: string): Promise<null> {
+    return withAuth(auth, (token) => callQueue<null>({method: 'DELETE', path: `${MY_STORE_PATH}/file/${encodeURIComponent(store_file_id)}`, token}));
+}
+
+/**
+ * 내 업체 영업시간 — 큐 · 매니저 (PUT /admin-service/store/mine/hours) — 통째로 교체, 결과 null
+ *
+ * @param auth AuthContext 값
+ * @param dto is_always_open · hours
+ */
+export function updateMyStoreHours(auth: AuthType, dto: StoreMineHoursDto): Promise<null> {
+    return withAuth(auth, (token) => callQueue<null>({method: 'PUT', path: `${MY_STORE_PATH}/hours`, body: dto, token}));
+}
+
+/**
+ * 내 업체 브레이크타임 — 큐 · 매니저 (PUT /admin-service/store/mine/breaks) — 통째로 교체, 결과 null
+ *
+ * @param auth AuthContext 값
+ * @param dto breaks
+ */
+export function updateMyStoreBreaks(auth: AuthType, dto: StoreMineBreaksDto): Promise<null> {
+    return withAuth(auth, (token) => callQueue<null>({method: 'PUT', path: `${MY_STORE_PATH}/breaks`, body: dto, token}));
+}
+
+/**
+ * 내 업체 정비시간 — 큐 · 매니저 (PATCH /admin-service/store/mine/maintenance) — 결과 null
+ *
+ * @param auth AuthContext 값
+ * @param dto maintenance_minutes
+ */
+export function updateMyStoreMaintenance(auth: AuthType, dto: StoreMineMaintenanceDto): Promise<null> {
+    return withAuth(auth, (token) => callQueue<null>({method: 'PATCH', path: `${MY_STORE_PATH}/maintenance`, body: dto, token}));
+}
+
+/**
+ * 내 업체 영업중 — 큐 · 매니저 (PATCH /admin-service/store/mine/open) — 결과 null
+ *
+ * @param auth AuthContext 값
+ * @param dto is_open
+ */
+export function updateMyStoreOpen(auth: AuthType, dto: StoreMineOpenDto): Promise<null> {
+    return withAuth(auth, (token) => callQueue<null>({method: 'PATCH', path: `${MY_STORE_PATH}/open`, body: dto, token}));
+}
+
+/**
+ * 내 업체 예약 · 환불 규정 — 큐 · 매니저 (PATCH /admin-service/store/mine/reservation-policy) — 결과 null
+ *
+ * @param auth AuthContext 값
+ * @param dto booking_open_hours · refund_deadline_minutes · late_refund_percent
+ */
+export function updateMyStorePolicy(auth: AuthType, dto: StoreMineReservationPolicyDto): Promise<null> {
+    return withAuth(auth, (token) => callQueue<null>({method: 'PATCH', path: `${MY_STORE_PATH}/reservation-policy`, body: dto, token}));
+}
+
+/**
+ * 내 업체 일시 예약불가 목록 — 동기 · 매니저 (GET /admin-service/store/mine/unavailable-period) — 끝나지 않은 것만, 시작 순
+ *
+ * @param auth AuthContext 값
+ * @param query page · size
+ * @param signal 화면을 떠날 때 취소
+ */
+export function getMyUnavailablePeriods(auth: AuthType, query: StoreMineUnavailablePeriodListDto, signal?: AbortSignal): Promise<StoreMineUnavailablePeriodListResultDto | null> {
+    return withAuth(auth, (token) => request<StoreMineUnavailablePeriodListResultDto>({path: `${MY_STORE_PATH}/unavailable-period`, query: {page: query.page, size: query.size}, token, signal}));
+}
+
+/**
+ * 내 업체 일시 예약불가 등록 — 큐 · 매니저 (POST /admin-service/store/mine/unavailable-period) — 겹치면 400
+ *
+ * @param auth AuthContext 값
+ * @param dto starts_at · ends_at · memo
+ */
+export function createMyUnavailablePeriod(auth: AuthType, dto: StoreMineUnavailablePeriodDto): Promise<StoreMineUnavailablePeriodResultDto | null> {
+    return withAuth(auth, (token) => callQueue<StoreMineUnavailablePeriodResultDto>({method: 'POST', path: `${MY_STORE_PATH}/unavailable-period`, body: dto, token}));
+}
+
+/**
+ * 내 업체 일시 예약불가 삭제 — 큐 · 매니저 (DELETE /admin-service/store/mine/unavailable-period/:id) — 결과 null
+ *
+ * @param auth AuthContext 값
+ * @param store_unavailable_period_id 일시 예약불가 ID
+ */
+export function deleteMyUnavailablePeriod(auth: AuthType, store_unavailable_period_id: string): Promise<null> {
+    return withAuth(auth, (token) => callQueue<null>({method: 'DELETE', path: `${MY_STORE_PATH}/unavailable-period/${encodeURIComponent(store_unavailable_period_id)}`, token}));
+}
+
+/**
+ * 내 업체 문 소켓 시크릿 — 큐 · 매니저(업체 총관리자) (PATCH /admin-service/store/mine/door-secret) — 결과 null
+ *
+ * @param auth AuthContext 값
+ * @param dto door_secret
+ */
+export function updateMyDoorSecret(auth: AuthType, dto: StoreMineDoorSecretDto): Promise<null> {
+    return withAuth(auth, (token) => callQueue<null>({method: 'PATCH', path: `${MY_STORE_PATH}/door-secret`, body: dto, token}));
 }

@@ -1,0 +1,66 @@
+/* M7 운영 규정 탭 — 시안 M7-store-policy */
+/* 카드 두 줄 — 시안 .cols */
+.cols {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.cols > * {
+    flex: 1 1 420px;
+    min-width: 0;
+}
+
+.tab {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+}
+
+.hint {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+}
+
+/* 단위가 붙은 숫자 칸 — 시안 .unit */
+.unit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.unit input {
+    width: 120px;
+}
+
+.unit > span {
+    font-size: 14px;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+/* 예약 · 환불 규정 칸 — 시안 .fg */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+/* 지금 규정 한 문장 */
+.summary {
+    margin: 0;
+    padding: 12px 16px;
+    border-radius: var(--radius);
+    background: var(--surface-2);
+    font-size: 13px;
+    line-height: 1.7;
+}

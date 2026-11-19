@@ -1,0 +1,74 @@
+/* M7 영업시간 · 브레이크 탭 — 시안 M7-store-hours */
+/* 카드 두 줄 — 시안 .cols */
+.cols {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.cols > * {
+    flex: 1 1 420px;
+    min-width: 0;
+}
+
+.muted {
+    color: var(--muted);
+}
+
+.hint {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+}
+
+.footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+/* 24시간 연중무휴 한 줄 안내 */
+.alwaysOpen {
+    margin: 0;
+    padding: 16px;
+    border-radius: var(--radius);
+    background: var(--surface-2);
+    font-size: 14px;
+}
+
+/* 시각 칸 — 시안 .time */
+.time {
+    width: 120px;
+}
+
+/* 브레이크 줄 */
+.breaks {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.breakRow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    gap: 8px;
+}
+
+.breakRow > span {
+    line-height: var(--control-h);
+}
+
+/* 표 머리 빈 칸 이름(화면 읽기 프로그램만) */
+.srOnly {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}

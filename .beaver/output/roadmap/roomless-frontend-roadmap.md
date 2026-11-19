@@ -16,7 +16,7 @@ flowchart LR
   P8["Phase 8 · 내 예약 (4)"]:::done
   P9["Phase 9 · 마이페이지·입점 신청 (4)"]:::done
   P10["Phase 10 · 콘솔 틀·매니저 로그인 (6)"]:::done
-  P11["Phase 11 · 내 업체 설정 (6)"]:::todo
+  P11["Phase 11 · 내 업체 설정 (6)"]:::inprog
   P12["Phase 12 · 상품·객실 (4)"]:::todo
   P13["Phase 13 · 예약 현황 (1)"]:::todo
   P14["Phase 14 · 대시보드·업체 관리자 (3)"]:::inprog
@@ -66,7 +66,7 @@ flowchart LR
 - Phase 8 — 내 예약 · 유닛 4개 · 의존: Phase 7 · 푼다: Phase 13 · 파일 집합: src/app/(user)/reservation, src/contracts/reservation · done
 - Phase 9 — 마이페이지·입점 신청 · 유닛 4개 · 의존: Phase 5 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/(user)/me · store-applications, src/contracts/user, src/contracts/store · done
 - Phase 10 — 콘솔 틀·매니저 로그인 · 유닛 6개 · 의존: Phase 4 · 푼다: Phase 11, Phase 12, Phase 14, Phase 15 · 파일 집합: src/shared/components/console, src/app/manager, src/contracts/manager · done
-- Phase 11 — 내 업체 설정 · 유닛 6개 · 의존: Phase 10 · 푼다: Phase 16 · 파일 집합: src/app/manager/(console)/store, src/contracts/store · todo
+- Phase 11 — 내 업체 설정 · 유닛 6개 · 의존: Phase 10 · 푼다: Phase 16 · 파일 집합: src/app/manager/(console)/store, src/contracts/store · in-progress
 - Phase 12 — 상품·객실 · 유닛 4개 · 의존: Phase 10 · 푼다: Phase 13 · 파일 집합: src/app/manager/(console)/plans · room-groups · rooms, src/contracts/room · todo
 - Phase 13 — 예약 현황 · 유닛 1개 · 의존: Phase 12, Phase 8 · 푼다: — · 파일 집합: src/app/manager/(console)/reservations, src/contracts/reservation · todo
 - Phase 14 — 대시보드·업체 관리자 · 유닛 3개 · 의존: Phase 10 · 푼다: Phase 17 · 파일 집합: src/app/manager/(console)/page · staff, src/contracts/stats, src/contracts/manager · in-progress
@@ -76,12 +76,16 @@ flowchart LR
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: Phase 14 진행 중 · Next up: Phase 14
+지금: Phase 11, Phase 14 진행 중 · Next up: Phase 11
 
 ## 지금 할 일
-Phase 14 대시보드·업체 관리자 — M2 대시보드(#48)는 Phase 10 과 함께 끝남, 남은 것 M8 업체 관리자
-- #49 M8 업체 관리자 목록
-- #50 M8 업체 관리자 상세 · 등록
+Phase 11 내 업체 설정 — 만드는 중
+- #37 M7 기본 정보
+- #38 M7 사진
+- #39 M7 영업시간 · 브레이크
+- #40 M7 운영 규정
+- #41 M7 일시 예약불가
+- #42 M7 문 연동
 - ok → 다음
 
 ## Scope & Actors
@@ -286,12 +290,12 @@ Phase 14 대시보드·업체 관리자 — M2 대시보드(#48)는 Phase 10 과
 ### Phase 11 — 내 업체 설정 (M7) · depends: Phase 10
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 37 | M7 기본 정보 | 업체코드 · 로그인 주소 복사 · 상태 · 사업자 정보 보기, 소개 · 전화 수정 | — | 31 | todo |
-| 38 | M7 사진 | 업체 사진 올리기 · 순서 · 삭제, 사업자등록증 보기 | — | 12, 37 | todo |
-| 39 | M7 영업시간 · 브레이크 | 24시간 · 요일별 휴무 · 여는 / 닫는 시각, 브레이크 — 통째로 바꾸는 PUT | — | 37 | todo |
-| 40 | M7 운영 규정 | 영업중 · 정비시간 · 예약 가능 시작 · 환불 마감 · 마감 뒤 환불 비율 | — | 37 | todo |
-| 41 | M7 일시 예약불가 | 기간 목록 · 추가 · 삭제(겹치면 400) | — | 37 | todo |
-| 42 | M7 문 연동 | 시크릿 설정 여부 · 새 시크릿 — 업체 총관리자만(아니면 탭 숨김) | — | 37 | todo |
+| 37 | M7 기본 정보 | 업체코드 · 로그인 주소 복사 · 상태 · 사업자 정보 보기, 소개 · 전화 수정 | — | 31 | in-progress |
+| 38 | M7 사진 | 업체 사진 올리기 · 순서 · 삭제, 사업자등록증 보기 | — | 12, 37 | in-progress |
+| 39 | M7 영업시간 · 브레이크 | 24시간 · 요일별 휴무 · 여는 / 닫는 시각, 브레이크 — 통째로 바꾸는 PUT | — | 37 | in-progress |
+| 40 | M7 운영 규정 | 영업중 · 정비시간 · 예약 가능 시작 · 환불 마감 · 마감 뒤 환불 비율 | — | 37 | in-progress |
+| 41 | M7 일시 예약불가 | 기간 목록 · 추가 · 삭제(겹치면 400) | — | 37 | in-progress |
+| 42 | M7 문 연동 | 시크릿 설정 여부 · 새 시크릿 — 업체 총관리자만(아니면 탭 숨김) | — | 37 | in-progress |
 
 **Expected pages**:
 
@@ -303,6 +307,8 @@ Phase 14 대시보드·업체 관리자 — M2 대시보드(#48)는 Phase 10 과
 | #40 | `/manager/store` (운영 규정 탭) | M7 · `PATCH store/mine/maintenance` · `open` · `reservation-policy` | 운영 규정 |
 | #41 | `/manager/store` (일시 예약불가 탭) | M7 · `store/mine/unavailable-period` | 예약불가 기간 |
 | #42 | `/manager/store` (문 연동 탭) | M7 · `PATCH store/mine/door-secret` | 문 시크릿 |
+
+> build 완료(2026-11-18) — report: `.beaver/output/report/manager/store-settings-report.md`. 줄 단위 검사 `validateActionRows` · `FieldError` 를 더함. `@Type` DTO 를 위해 `class-transformer` · `reflect-metadata` 를 들임(`src/instrumentation.ts` · `instrumentation-client.ts`). 테스트 74파일 359건 · 타입 검사 통과.
 
 ### Phase 12 — 상품·객실 (M6 · M5 · M4) · depends: Phase 10
 | # | Unit | Goal | Key decision | Depends | Status |
@@ -397,7 +403,7 @@ Phase 14 대시보드·업체 관리자 — M2 대시보드(#48)는 Phase 10 과
 | #61 | `/admin/users/[user_id]` | A6 · `GET user/:id` · `/reservation` · `PATCH /state` | 이용 제한 |
 
 **Progress**: 37/61 units done (10/17 phases)
-**Next up**: Phase 14 대시보드·업체 관리자 — 진행 중
+**Next up**: Phase 11 내 업체 설정 — 진행 중
 
 ## Cross-Cutting Rules
 - 주소 · 화면 키 · 쓰는 API 는 `frontend/screens.md` 그대로. ★ 주소(`/reservation/[reservation_id]` · `…/cancel-request`)는 SMS 링크라 바꾸지 않는다.

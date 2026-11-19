@@ -1,4 +1,4 @@
-import { validateOrReject, ValidationError } from "class-validator";
+import { validate, validateOrReject, ValidationError } from "class-validator";
 import { showErrorPopup } from "@/shared/utils/error-popup";
 
 export type ValidationErrorType = {
@@ -121,4 +121,34 @@ export async function validateActionChildren(dto: object, key: string): Promise<
 
         return false;
     }
+}
+
+/**
+ * 줄마다 Validation 체크 — 칸 이름은 `<path>.<줄>.<필드>`(백엔드 점 경로와 같다 — hours.3.close_time)
+ * - 표 · 줄 목록(영업시간 · 브레이크)처럼 같은 DTO 가 여러 줄일 때. 맞는 칸이 없으면 첫 오류를 팝업으로
+ * - 부모 DTO 를 validateAction 하면 중첩 오류는 constraints 가 없어 칸에 붙지 않는다(toValidationErrors 가 건너뛴다)
+ *
+ * @param dtos 줄 DTO 들(순서 = 줄 번호)
+ * @param path 목록 칸 이름(hours · breaks)
+ * @param reset 기존 오류 표시를 지울지
+ */
+export async function validateActionRows(dtos: Array<object>, path: string, reset: boolean = true): Promise<boolean> {
+    if (reset) {
+        resetValidationError();
+    }
+
+    const errors: Array<ValidationErrorType> = [];
+    for (const [index, dto] of dtos.entries()) {
+        const found = toValidationErrors(await validate(dto));
+        errors.push(...found.map((error) => ({...error, property: `${path}.${index}.${error.property}`})));
+    }
+
+    if (errors.length === 0) {
+        return true;
+    }
+
+    if (showValidationErrors(errors) === 0) {
+        showErrorPopup(errors[0].message);
+    }
+    return false;
 }

@@ -1,0 +1,49 @@
+/* M7 사진 탭 — 시안 M7-store-photos */
+.tab {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+}
+
+.hint {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+}
+
+/* 사업자등록증 — 보기만 */
+.license {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    align-items: flex-start;
+}
+
+.licenseImage {
+    position: relative;
+    width: 140px;
+    aspect-ratio: 3 / 4;
+    flex: none;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--neutral-bg);
+}
+
+.img {
+    object-fit: cover;
+}
+
+.licenseText {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.open {
+    align-self: flex-start;
+    font-size: 14px;
+    font-weight: 500;
+}

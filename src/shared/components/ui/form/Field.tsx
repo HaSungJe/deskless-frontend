@@ -1,4 +1,5 @@
 import styles from '@/shared/css/ui/form/Field.module.css';
+import FieldError from './FieldError';
 
 type FieldProps = {
     label: string;
@@ -37,7 +38,7 @@ export default function Field({label, name, htmlFor, dataKey, hint, required = f
                 {children}
 
                 {/* 오류 span · 도움말 */}
-                <span className={styles.error} data-type="validation-alert" data-id={name} data-key={dataKey} />
+                <FieldError name={name} dataKey={dataKey} />
                 {hintLine}
             </fieldset>
         );
@@ -53,7 +54,7 @@ export default function Field({label, name, htmlFor, dataKey, hint, required = f
             {children}
 
             {/* 오류 span — validation.ts 가 채우고 지운다 · 도움말 */}
-            <span className={styles.error} data-type="validation-alert" data-id={name} data-key={dataKey} />
+            <FieldError name={name} dataKey={dataKey} />
             {hintLine}
         </div>
     );

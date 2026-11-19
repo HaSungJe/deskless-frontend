@@ -14,7 +14,7 @@ import Segmented, { SegmentedOptionType } from '@/shared/components/ui/form/Segm
 import { AuthContext } from '@/shared/providers/RootLayoutProvider';
 import { formatManwon } from '@/shared/utils/format';
 import { validateAction } from '@/shared/utils/validation';
-import { ManagerConsoleContext } from './manager-console-context';
+import { isStoreSuspended, ManagerConsoleContext } from './manager-console-context';
 import styles from '@/app/css/manager/ManagerDashboardContent.module.css';
 
 /** 결제 환경 */
@@ -31,9 +31,6 @@ const SUMMARY_ITEMS: Array<{key: keyof StatsMineSummaryResultDto; label: string;
 
 /** 결제 환경 고르기 */
 const ENVIRONMENT_OPTIONS: Array<SegmentedOptionType<EnvironmentType>> = [{value: 'LIVE', label: '실결제'}, {value: 'TEST', label: '테스트 결제'}];
-
-/** 영업중지 업체 상태 */
-const STORE_SUSPENDED = 'SUSPEND';
 
 /** 숫자 쉼표 */
 const NUMBER_FORMAT = new Intl.NumberFormat('ko-KR');
@@ -58,8 +55,8 @@ export default function ManagerDashboardContent(): React.ReactNode {
     const [stats, setStats] = useState<StatsMineResultDto | null>(null);        // 받은 통계
 
     // 계산 값
-    const suspended = store?.store_state_id === STORE_SUSPENDED; // ④ 영업중지
-    const months = stats?.monthly ?? [];                         // 월별(오래된 달부터)
+    const suspended = isStoreSuspended(store); // ④ 영업중지
+    const months = stats?.monthly ?? [];       // 월별(오래된 달부터)
     const chartSeries = [
         {name: '결제액', data: months.map((month) => month.paid_amount), colorVar: '--primary'},
         {name: '환불액', data: months.map((month) => month.refund_amount), colorVar: '--warn'},

@@ -1,0 +1,39 @@
+/* M7 일시 예약불가 탭 — 시안 M7-store-unavailable */
+.tab {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+}
+
+.hint {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+}
+
+.muted {
+    color: var(--muted);
+}
+
+/* 추가 줄 — 시안 .fb */
+.form {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.form > * {
+    flex: 1 1 220px;
+    max-width: 280px;
+}
+
+.form > button {
+    flex: none;
+}
+
+.number {
+    font-variant-numeric: tabular-nums;
+}

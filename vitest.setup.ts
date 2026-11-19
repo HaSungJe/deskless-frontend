@@ -1,3 +1,4 @@
+import 'reflect-metadata'; // 지침서 DTO 의 @Type(class-transformer)이 부른다 — 앱은 src/instrumentation.ts · instrumentation-client.ts 가 붙인다
 import { afterEach } from 'vitest';
 import { cleanup } from '@testing-library/react';
 
