@@ -17,7 +17,7 @@ flowchart LR
   P9["Phase 9 · 마이페이지·입점 신청 (4)"]:::done
   P10["Phase 10 · 콘솔 틀·매니저 로그인 (6)"]:::done
   P11["Phase 11 · 내 업체 설정 (6)"]:::done
-  P12["Phase 12 · 상품·객실 (4)"]:::todo
+  P12["Phase 12 · 상품·객실 (5)"]:::todo
   P13["Phase 13 · 예약 현황 (1)"]:::todo
   P14["Phase 14 · 대시보드·업체 관리자 (3)"]:::inprog
   P15["Phase 15 · 관리자 로그인 (2)"]:::todo
@@ -67,7 +67,7 @@ flowchart LR
 - Phase 9 — 마이페이지·입점 신청 · 유닛 4개 · 의존: Phase 5 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/(user)/me · store-applications, src/contracts/user, src/contracts/store · done
 - Phase 10 — 콘솔 틀·매니저 로그인 · 유닛 6개 · 의존: Phase 4 · 푼다: Phase 11, Phase 12, Phase 14, Phase 15 · 파일 집합: src/shared/components/console, src/app/manager, src/contracts/manager · done
 - Phase 11 — 내 업체 설정 · 유닛 6개 · 의존: Phase 10 · 푼다: Phase 16 · 파일 집합: src/app/manager/(console)/store, src/contracts/store · done
-- Phase 12 — 상품·객실 · 유닛 4개 · 의존: Phase 10 · 푼다: Phase 13 · 파일 집합: src/app/manager/(console)/plans · room-groups · rooms, src/contracts/room · todo
+- Phase 12 — 상품·객실 · 유닛 5개 · 의존: Phase 10 · 푼다: Phase 13 · 파일 집합: src/app/manager/(console)/plans · room-groups · rooms, src/contracts/room, src/contracts/common/lookup.ts(#62) · todo
 - Phase 13 — 예약 현황 · 유닛 1개 · 의존: Phase 12, Phase 8 · 푼다: — · 파일 집합: src/app/manager/(console)/reservations, src/contracts/reservation · todo
 - Phase 14 — 대시보드·업체 관리자 · 유닛 3개 · 의존: Phase 10 · 푼다: Phase 17 · 파일 집합: src/app/manager/(console)/page · staff, src/contracts/stats, src/contracts/manager · in-progress
 - Phase 15 — 관리자 로그인 · 유닛 2개 · 의존: Phase 10 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/admin/login · (console)/layout · password, src/contracts/admin · todo
@@ -313,6 +313,7 @@ Phase 14 대시보드·업체 관리자 — 만드는 중
 | 44 | M5 객실 그룹 목록 | `/manager/room-groups` 검색 · 그룹 카드 · 그룹 등록 | — | 31 | todo |
 | 45 | M5 객실 그룹 상세 | `/manager/room-groups/[room_group_id]` 기본 정보 · 편의시설 · 사진 · 그룹 상품(판매 · 가격) · 기간 가격 | — | 12, 44 | todo |
 | 46 | M4 호실 | `/manager/rooms` 거르기 · 표 · 등록 · 수정 · 상태 · 문 바로 열기 · 삭제 | — | 44 | todo |
+| 62 | M4 문 상태 없앰 반영 | 백엔드 수정 요청 `frontend/changes/2026-11-19-door-state-removed.md` — 호실 표의 문 상태 · 바뀐 시각 대신 "마지막으로 연 시각" `door_opened_at`(한국 시각 `yyyyMMddHHmmss`, 없으면 null → "-"), 바로 열기 응답 `{room_id, door_opened_at}` 로 그 줄을 바꿈, 룩업 `door_state` 지움, 반영 기록(docs/data-layer.md) | `yyyyMMddHHmmss` 표시 함수(시간대 변환 없이)를 `format.ts` 에 둘지 | 46 | todo |
 
 **Expected pages**:
 
@@ -322,6 +323,9 @@ Phase 14 대시보드·업체 관리자 — 만드는 중
 | #44 | `/manager/room-groups` | M5 · `GET` · `POST room/group` | 그룹 목록 |
 | #45 | `/manager/room-groups/[room_group_id]` | M5 · `room/group/:id` · `/image` · `/plan/:id` · `/price` | 그룹 상세 |
 | #46 | `/manager/rooms` | M4 · `room` · `room/:id/state` · `/door-open` | 호실 |
+| #62 | `/manager/rooms` | M4 · `GET room`(`door_opened_at`) · `POST room/:id/door-open`(`{room_id, door_opened_at}`) | 마지막으로 연 시각 |
+
+> 백엔드 수정 요청 `2026-11-19-door-state-removed.md` — 지침서(`dto/room.md` · `screens.md` M4 · `dto/common.md` 룩업)와 시안 M4 의 문 상태 칸은 옛 모양이라 이 문서가 우선, DTO 사본도 이 문서에서. 백엔드와 같이 배포 — 지금은 호실 화면이 없어 백엔드가 먼저 나가도 깨지는 곳은 없다.
 
 ### Phase 13 — 예약 현황 (M3) · depends: Phase 12, Phase 8
 | # | Unit | Goal | Key decision | Depends | Status |
@@ -398,7 +402,7 @@ Phase 14 대시보드·업체 관리자 — 만드는 중
 | #60 | `/admin/users` | A6 · `GET user` | 이용자 목록 |
 | #61 | `/admin/users/[user_id]` | A6 · `GET user/:id` · `/reservation` · `PATCH /state` | 이용 제한 |
 
-**Progress**: 43/61 units done (11/17 phases)
+**Progress**: 43/62 units done (11/17 phases)
 **Next up**: Phase 14 대시보드·업체 관리자 — 진행 중
 
 ## Cross-Cutting Rules
