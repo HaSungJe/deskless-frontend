@@ -1,0 +1,53 @@
+/* M5 그룹 칸 — 등록 대화상자 · 상세 기본 정보 카드(시안 M5-room-group-detail 기본 정보 · .fg · .unit) */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}
+
+/* 단위가 붙은 숫자 칸 */
+.unit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.unit input {
+    width: 120px;
+}
+
+.unit > span {
+    font-size: 14px;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+/* 편의시설 */
+.amenities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.legend {
+    margin-bottom: 8px;
+    padding: 0;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* 기본 정보 카드 저장 줄 */
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+}

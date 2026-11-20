@@ -1,0 +1,53 @@
+/* M5 객실 그룹 상세 — 머리(시안 .phd · .crumb · .pt · .ps) · 기본 정보 · 사진 두 칸(.cols) */
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+}
+
+.head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.crumb {
+    margin: 0 0 6px;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.subtitle {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.cols {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.cols > * {
+    flex: 1 1 420px;
+    min-width: 0;
+}
+
+/* 사진 카드 안내 */
+.hint {
+    margin: 0 0 12px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+}

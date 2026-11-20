@@ -17,8 +17,9 @@ export const UNKNOWN_ERROR_MESSAGE = '처리 중 문제가 생겼습니다. 잠�
  *
  * @param error catch 로 받은 값
  * @param isReset 전에 보여 준 칸 오류를 지울지
+ * @param key 칸 오류 키 — 같은 이름의 칸이 여럿인 화면에서 그 카드 · 줄(Field dataKey)에만 붙인다. 없으면 이름만으로 찾는다
  */
-export function handleApiError(error: unknown, isReset: boolean = true): void {
+export function handleApiError(error: unknown, isReset: boolean = true, key?: string): void {
     if (isAbortError(error) || error instanceof LoginRequiredError) {
         return;
     }
@@ -40,7 +41,7 @@ export function handleApiError(error: unknown, isReset: boolean = true): void {
             resetValidationError();
         }
 
-        if (showValidationErrors(validation_errors) === 0) {
+        if (showValidationErrors(validation_errors, key) === 0) {
             showErrorPopup(message);
         }
         return;

@@ -13,8 +13,9 @@ import Field from '@/shared/components/ui/form/Field';
 import Input from '@/shared/components/ui/form/Input';
 import Switch from '@/shared/components/ui/form/Switch';
 import { AuthContext } from '@/shared/providers/RootLayoutProvider';
+import { numberOf } from '@/shared/utils/util';
 import { validateAction } from '@/shared/utils/validation';
-import { numberOf, policySummary } from '../store-settings-format';
+import { policySummary } from '../store-settings-format';
 import styles from '@/app/css/manager/StorePolicyTab.module.css';
 
 type StorePolicyTabProps = {

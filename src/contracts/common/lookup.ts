@@ -11,7 +11,6 @@ export const LOOKUP = {
     store_application_state_id: {WAIT: '대기', APPROVED: '승인', REJECTED: '반려'},
     store_file_purpose_id: {BUSINESS_LICENSE: '사업자등록증', STORE_IMAGE: '업체 사진'},
     room_state_id: {AVAILABLE: '예약가능', RESERVED: '예약완료', IN_USE: '사용중', MAINTENANCE: '정비중', DISABLED: '사용중지'},
-    door_state: {open: '열림', close: '닫힘'},
     room_plan_type_id: {HOURLY: '시간 이용', NIGHT: '1박', LONG: '연박'},
     reservation_state_id: {PENDING: '결제 대기', CONFIRMED: '예약 확정', CHECKED_IN: '이용 중', COMPLETED: '이용 완료', CANCELED: '취소', EXPIRED: '결제 대기 만료'},
     reservation_detail_type_id: {BASE: '기본', EXTENSION: '연장'},

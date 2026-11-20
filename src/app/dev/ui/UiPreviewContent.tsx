@@ -13,6 +13,7 @@ import Field from '@/shared/components/ui/form/Field';
 import Input from '@/shared/components/ui/form/Input';
 import ReasonModal from '@/shared/components/ui/modal/ReasonModal';
 import Segmented, { SegmentedOptionType } from '@/shared/components/ui/form/Segmented';
+import Select from '@/shared/components/ui/form/Select';
 import Switch from '@/shared/components/ui/form/Switch';
 import Table from '@/shared/components/ui/display/Table';
 import Pagination from '@/shared/components/ui/nav/Pagination';
@@ -182,6 +183,13 @@ function Gallery({area, title}: GalleryProps): React.ReactNode {
                 </Field>
                 <Field label="소개" name={`${area}_introduction`} htmlFor={`${area}_introduction_input`}>
                     <Textarea id={`${area}_introduction_input`} placeholder="업체 소개" />
+                </Field>
+                <Field label="객실 그룹" name={`${area}_room_group_id`} htmlFor={`${area}_room_group_id_input`}>
+                    <Select id={`${area}_room_group_id_input`} defaultValue="">
+                        <option value="">전체</option>
+                        <option value="standard">스탠다드 더블</option>
+                        <option value="deluxe">디럭스 트윈</option>
+                    </Select>
                 </Field>
                 <div className={styles.row}>
                     <Button size="sm" onClick={showError}>오류 표시</Button>

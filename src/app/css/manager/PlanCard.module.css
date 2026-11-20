@@ -1,0 +1,66 @@
+/* M6 상품 카드 — 시안 M6-plans(.days · .unit · .fg · .kv · .sep) */
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* 요일 칩 */
+.days {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* 입실 · 퇴실 · 박수 */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 16px;
+}
+
+/* 단위가 붙은 숫자 칸 */
+.unit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.unit input {
+    width: 120px;
+}
+
+.unit > span {
+    font-size: 14px;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+/* 연장 */
+.sep {
+    height: 1px;
+    margin: 0;
+    border: 0;
+    background: var(--line);
+}
+
+.kv {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+/* 저장 줄 */
+.actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 12px;
+}
+
+.saved {
+    font-size: 13px;
+    color: var(--ok);
+}

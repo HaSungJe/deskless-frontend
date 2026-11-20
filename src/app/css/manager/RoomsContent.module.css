@@ -1,0 +1,99 @@
+/* M4 호실 — 머리(시안 .phd · .pt · .ps) · 거르기(.fb — 층 140px · 그룹 220px) · 표 · 대화상자 */
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+}
+
+.head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.subtitle {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* 거르기 */
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 12px;
+}
+
+.floorFilter {
+    width: 140px;
+}
+
+.groupFilter {
+    width: 220px;
+    max-width: 100%;
+}
+
+.label {
+    display: block;
+    margin-bottom: 6px;
+    font-size: 13px;
+    font-weight: 700;
+}
+
+/* 표 */
+.number {
+    font-variant-numeric: tabular-nums;
+}
+
+.acts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* 등록 · 수정 대화상자 */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.unit {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.unit input {
+    width: 120px;
+}
+
+.unit > span {
+    font-size: 14px;
+    color: var(--muted);
+    white-space: nowrap;
+}
+
+/* 상태 대화상자 */
+.stateActions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.hint {
+    margin: 12px 0 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+}

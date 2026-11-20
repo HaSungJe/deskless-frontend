@@ -12,8 +12,9 @@ import FieldError from '@/shared/components/ui/form/FieldError';
 import Input from '@/shared/components/ui/form/Input';
 import Switch from '@/shared/components/ui/form/Switch';
 import { AuthContext } from '@/shared/providers/RootLayoutProvider';
+import { DAY_NAMES } from '@/shared/utils/format';
 import { validateActionRows } from '@/shared/utils/validation';
-import { BREAK_MAX, BreakRowType, DAY_NAMES, HourRowType, hourRowsOf, overnightLabel, toHoursDto } from '../store-settings-format';
+import { BREAK_MAX, BreakRowType, HourRowType, hourRowsOf, overnightLabel, toHoursDto } from '../store-settings-format';
 import styles from '@/app/css/manager/StoreHoursTab.module.css';
 
 type StoreHoursTabProps = {

@@ -32,3 +32,12 @@ export function firstQueryValue(value: string | Array<string> | undefined): stri
 export function digitsOnly(value: string, max: number): string {
     return value.replace(/\D/g, '').slice(0, max);
 }
+
+/**
+ * 숫자 칸 값 → DTO 숫자 — 비었으면 undefined(IsNotEmpty 문구), 숫자가 아니면 NaN(IsInt 문구)
+ *
+ * @param value 칸 값
+ */
+export function numberOf(value: string): number | undefined {
+    return value.trim() === '' ? undefined : Number(value);
+}

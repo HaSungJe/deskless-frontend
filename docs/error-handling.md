@@ -57,7 +57,7 @@ if (await validateAction(dto)) {                          // 1) 화면 검증 �
     }
 }
 ```
-`handleApiError(error, isReset = true)` (`src/shared/api/error.ts:21`) — `await` 하지 않는 동기 함수(선택: 사용자 2026-11-15).
+`handleApiError(error, isReset = true, key?)` (`src/shared/api/error.ts:22`) — `await` 하지 않는 동기 함수(선택: 사용자 2026-11-15). `key` 는 같은 이름의 칸이 한 화면에 여럿일 때 그 카드 · 줄(`Field dataKey`)에만 붙이는 칸 오류 키 — 없으면 이름만으로 찾는다(상품 카드 · 그룹 상품 줄 · 기간 가격 대화상자 — [conventions.md](conventions.md) "키로 나누는 검사").
 
 | 받은 오류 | 보여 주는 것 |
 |---|---|
@@ -76,6 +76,7 @@ if (await validateAction(dto)) {                          // 1) 화면 검증 �
 | 업무 규칙 · 서버 오류 (`validation_errors: null`) | ❌ `message` 팝업 | `src/shared/api/error.ts` |
 | 응답이 없는 실패 · 본문이 JSON 이 아님 | ❌ 네트워크 문구 팝업 · "서버 응답을 읽을 수 없습니다." 팝업 | `error.ts` · `request.ts` |
 | 칸 이름에 점 경로(`hours.0.open_time`) | ✅ 선택자 escape 로 그대로 찾는다 | `validation.ts:17-24` |
+| 같은 이름의 칸이 여럿(카드 · 줄마다 저장) | ✅ 키(`data-key`)가 맞는 칸에만 — `validateActionChildren(dto, key)` · `handleApiError(error, true, key)` | `validation.ts:17-24` · `error.ts` |
 
 ## Response Wrapper / Status Codes
 

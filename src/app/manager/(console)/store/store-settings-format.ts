@@ -1,6 +1,7 @@
 import { StoreMineHourDto, StoreMineHoursDto } from '@/contracts/store/dto/store-mine-hours.dto';
 import { StoreMineHourItemResultDto } from '@/contracts/store/dto/store-mine.dto';
 import { TabItemType } from '@/shared/components/ui/nav/Tabs';
+import { DAY_NAMES } from '@/shared/utils/format';
 
 /** 내 업체 설정 탭 */
 export type StoreTabType = 'profile' | 'photos' | 'hours' | 'policy' | 'unavailable' | 'door';
@@ -14,9 +15,6 @@ export const STORE_TABS: Array<TabItemType<StoreTabType>> = [
     {value: 'unavailable', label: '일시 예약불가'},
     {value: 'door', label: '문 연동'},
 ];
-
-/** 요일 이름 — 0 일 ~ 6 토 */
-export const DAY_NAMES = ['일', '월', '화', '수', '목', '금', '토'] as const;
 
 /** 업체 정보 파일 용도 */
 export const STORE_FILE_PURPOSE = {LICENSE: 'BUSINESS_LICENSE', IMAGE: 'STORE_IMAGE'} as const;
@@ -103,13 +101,4 @@ export function policySummary(bookingOpenHours: number, refundDeadlineMinutes: n
     const days = bookingOpenHours % 24 === 0 ? `(${(bookingOpenHours / 24).toLocaleString('ko-KR')}일)` : '';
     const late = lateRefundPercent === 0 ? '그 뒤 시작 전까지 취소하면 환불 없이 취소됩니다.' : `그 뒤 시작 전까지 취소하면 ${lateRefundPercent}%를 환불합니다.`;
     return `이용 시작 ${bookingOpenHours.toLocaleString('ko-KR')}시간${days} 전부터 예약을 받고, 시작 ${refundDeadlineMinutes.toLocaleString('ko-KR')}분 전까지 취소하면 전액, ${late}`;
-}
-
-/**
- * 숫자 칸 값 → DTO 숫자 — 비었으면 undefined(IsNotEmpty 문구), 숫자가 아니면 NaN(IsInt 문구)
- *
- * @param value 칸 값
- */
-export function numberOf(value: string): number | undefined {
-    return value.trim() === '' ? undefined : Number(value);
 }
