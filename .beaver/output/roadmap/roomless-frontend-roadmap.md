@@ -17,7 +17,7 @@ flowchart LR
   P9["Phase 9 · 마이페이지·입점 신청 (4)"]:::done
   P10["Phase 10 · 콘솔 틀·매니저 로그인 (6)"]:::done
   P11["Phase 11 · 내 업체 설정 (6)"]:::done
-  P12["Phase 12 · 상품·객실 (5)"]:::inprog
+  P12["Phase 12 · 상품·객실 (5)"]:::done
   P13["Phase 13 · 예약 현황 (1)"]:::todo
   P14["Phase 14 · 대시보드·업체 관리자 (3)"]:::inprog
   P15["Phase 15 · 관리자 로그인 (2)"]:::todo
@@ -67,7 +67,7 @@ flowchart LR
 - Phase 9 — 마이페이지·입점 신청 · 유닛 4개 · 의존: Phase 5 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/(user)/me · store-applications, src/contracts/user, src/contracts/store · done
 - Phase 10 — 콘솔 틀·매니저 로그인 · 유닛 6개 · 의존: Phase 4 · 푼다: Phase 11, Phase 12, Phase 14, Phase 15 · 파일 집합: src/shared/components/console, src/app/manager, src/contracts/manager · done
 - Phase 11 — 내 업체 설정 · 유닛 6개 · 의존: Phase 10 · 푼다: Phase 16 · 파일 집합: src/app/manager/(console)/store, src/contracts/store · done
-- Phase 12 — 상품·객실 · 유닛 5개 · 의존: Phase 10 · 푼다: Phase 13 · 파일 집합: src/app/manager/(console)/plans · room-groups · rooms, src/contracts/room, src/contracts/common/lookup.ts(#62) · in-progress
+- Phase 12 — 상품·객실 · 유닛 5개 · 의존: Phase 10 · 푼다: Phase 13 · 파일 집합: src/app/manager/(console)/plans · room-groups · rooms, src/contracts/room, src/contracts/common/lookup.ts(#62) · done
 - Phase 13 — 예약 현황 · 유닛 1개 · 의존: Phase 12, Phase 8 · 푼다: — · 파일 집합: src/app/manager/(console)/reservations, src/contracts/reservation · todo
 - Phase 14 — 대시보드·업체 관리자 · 유닛 3개 · 의존: Phase 10 · 푼다: Phase 17 · 파일 집합: src/app/manager/(console)/page · staff, src/contracts/stats, src/contracts/manager · in-progress
 - Phase 15 — 관리자 로그인 · 유닛 2개 · 의존: Phase 10 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/admin/login · (console)/layout · password, src/contracts/admin · todo
@@ -76,15 +76,12 @@ flowchart LR
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: Phase 12, Phase 14 진행 중 · Next up: Phase 12
+지금: Phase 14 진행 중 · Next up: Phase 14
 
 ## 지금 할 일
-Phase 12 상품·객실 — 만드는 중
-- #43 M6 업체 상품 설정
-- #44 M5 객실 그룹 목록
-- #45 M5 객실 그룹 상세
-- #46 M4 호실
-- #62 M4 문 상태 없앰 반영
+Phase 14 대시보드·업체 관리자 — 만드는 중
+- #49 M8 업체 관리자 목록
+- #50 M8 업체 관리자 상세 · 등록
 - ok → 다음
 
 ## Scope & Actors
@@ -312,11 +309,11 @@ Phase 12 상품·객실 — 만드는 중
 ### Phase 12 — 상품·객실 (M6 · M5 · M4) · depends: Phase 10
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 43 | M6 업체 상품 설정 | `/manager/plans` 시간 이용 · 1박 · 연박 카드 — 판매 · 요일(비트합) · 시간 · 박수 · 연장 | — | 31 | in-progress |
-| 44 | M5 객실 그룹 목록 | `/manager/room-groups` 검색 · 그룹 카드 · 그룹 등록 | — | 31 | in-progress |
-| 45 | M5 객실 그룹 상세 | `/manager/room-groups/[room_group_id]` 기본 정보 · 편의시설 · 사진 · 그룹 상품(판매 · 가격) · 기간 가격 | — | 12, 44 | in-progress |
-| 46 | M4 호실 | `/manager/rooms` 거르기 · 표 · 등록 · 수정 · 상태 · 문 바로 열기 · 삭제 | — | 44 | in-progress |
-| 62 | M4 문 상태 없앰 반영 | 백엔드 수정 요청 `frontend/changes/2026-11-19-door-state-removed.md` — 호실 표의 문 상태 · 바뀐 시각 대신 "마지막으로 연 시각" `door_opened_at`(한국 시각 `yyyyMMddHHmmss`, 없으면 null → "-"), 바로 열기 응답 `{room_id, door_opened_at}` 로 그 줄을 바꿈, 룩업 `door_state` 지움, 반영 기록(docs/data-layer.md) | `yyyyMMddHHmmss` 표시 함수(시간대 변환 없이)를 `format.ts` 에 둘지 | 46 | in-progress |
+| 43 | M6 업체 상품 설정 | `/manager/plans` 시간 이용 · 1박 · 연박 카드 — 판매 · 요일(비트합) · 시간 · 박수 · 연장 | — | 31 | done(1c1f34f) |
+| 44 | M5 객실 그룹 목록 | `/manager/room-groups` 검색 · 그룹 카드 · 그룹 등록 | — | 31 | done(1c1f34f) |
+| 45 | M5 객실 그룹 상세 | `/manager/room-groups/[room_group_id]` 기본 정보 · 편의시설 · 사진 · 그룹 상품(판매 · 가격) · 기간 가격 | — | 12, 44 | done(1c1f34f) |
+| 46 | M4 호실 | `/manager/rooms` 거르기 · 표 · 등록 · 수정 · 상태 · 문 바로 열기 · 삭제 | — | 44 | done(1c1f34f) |
+| 62 | M4 문 상태 없앰 반영 | 백엔드 수정 요청 `frontend/changes/2026-11-19-door-state-removed.md` — 호실 표의 문 상태 · 바뀐 시각 대신 "마지막으로 연 시각" `door_opened_at`(한국 시각 `yyyyMMddHHmmss`, 없으면 null → "-"), 바로 열기 응답 `{room_id, door_opened_at}` 로 그 줄을 바꿈, 룩업 `door_state` 지움, 반영 기록(docs/data-layer.md) | `yyyyMMddHHmmss` 표시 함수(시간대 변환 없이)를 `format.ts` 에 둘지 | 46 | done(1c1f34f) |
 
 **Expected pages**:
 
@@ -407,8 +404,8 @@ Phase 12 상품·객실 — 만드는 중
 | #60 | `/admin/users` | A6 · `GET user` | 이용자 목록 |
 | #61 | `/admin/users/[user_id]` | A6 · `GET user/:id` · `/reservation` · `PATCH /state` | 이용 제한 |
 
-**Progress**: 43/62 units done (11/17 phases)
-**Next up**: Phase 12 상품·객실 — 진행 중
+**Progress**: 48/62 units done (12/17 phases)
+**Next up**: Phase 14 대시보드·업체 관리자 — 진행 중
 
 ## Cross-Cutting Rules
 - 주소 · 화면 키 · 쓰는 API 는 `frontend/screens.md` 그대로. ★ 주소(`/reservation/[reservation_id]` · `…/cancel-request`)는 SMS 링크라 바꾸지 않는다.
