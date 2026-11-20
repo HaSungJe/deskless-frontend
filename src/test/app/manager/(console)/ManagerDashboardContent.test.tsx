@@ -44,7 +44,7 @@ describe('ManagerDashboardContent', () => {
         await act(async () => {
             render(
                 <RootLayoutProvider rootLayoutLoading={false} auth={AUTH}>
-                    <ManagerConsoleContext.Provider value={{store: ACTIVE_STORE, account: null, reloadStore: vi.fn()}}>
+                    <ManagerConsoleContext.Provider value={{store: ACTIVE_STORE, account: null, accountLoaded: true, reloadStore: vi.fn()}}>
                         <ManagerDashboardContent />
                     </ManagerConsoleContext.Provider>
                 </RootLayoutProvider>,

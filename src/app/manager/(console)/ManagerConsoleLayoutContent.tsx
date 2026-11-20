@@ -42,6 +42,7 @@ export default function ManagerConsoleLayoutContent({children}: ManagerConsoleLa
     // 상태
     const [store, setStore] = useState<StoreMineResultDto | null>(null);  // 내 업체 상세
     const [account, setAccount] = useState<AreaAccountType | null>(null); // 기억한 계정
+    const [accountLoaded, setAccountLoaded] = useState<boolean>(false);   // 계정 쿠키를 다 읽었나 — 업체 총관리자 전용 화면이 기다린다
     const [loggingOut, setLoggingOut] = useState<boolean>(false);         // 로그아웃 중 — 두 번 누름 막기
 
     // 계산 값
@@ -64,6 +65,7 @@ export default function ManagerConsoleLayoutContent({children}: ManagerConsoleLa
         getAreaAccount('manager').then((next) => {
             if (!controller.signal.aborted) {
                 setAccount(next);
+                setAccountLoaded(true);
             }
         });
 
@@ -98,7 +100,7 @@ export default function ManagerConsoleLayoutContent({children}: ManagerConsoleLa
 
     return (
         // 콘솔 Context + 틀
-        <ManagerConsoleContext.Provider value={{store, account, reloadStore}}>
+        <ManagerConsoleContext.Provider value={{store, account, accountLoaded, reloadStore}}>
             <ConsoleShell
                 areaName="업체 관리자 콘솔"
                 menu={menu}

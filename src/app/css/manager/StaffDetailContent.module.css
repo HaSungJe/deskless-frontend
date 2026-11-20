@@ -1,0 +1,98 @@
+/* M8 업체 관리자 상세 — 머리(시안 .crumb · .pt) · 두 칸(.cols) · 계정 정보(.dl) · 계정 관리 줄(.kv · .row) */
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+}
+
+.crumb {
+    margin: 0 0 6px;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.title {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.cols {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.cols > * {
+    flex: 1 1 420px;
+    min-width: 0;
+}
+
+/* 계정 정보 — 읽기만 */
+.dl {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 100px 1fr;
+    gap: 10px 16px;
+    font-size: 14px;
+}
+
+.dl dt {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.dl dd {
+    margin: 0;
+}
+
+.number {
+    font-variant-numeric: tabular-nums;
+}
+
+.sep {
+    height: 1px;
+    margin: 16px 0;
+    border: 0;
+    background: var(--line);
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 16px;
+}
+
+/* 계정 관리 */
+.rows {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.inline {
+    display: flex;
+    gap: 8px;
+}
+
+.hint {
+    margin: 4px 0 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+}

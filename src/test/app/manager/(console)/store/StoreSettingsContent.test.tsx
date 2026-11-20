@@ -9,7 +9,7 @@ vi.mock('@/contracts/store/api', () => ({updateMyStoreProfile: vi.fn()}));
 describe('StoreSettingsContent', () => {
     it('[SUCCESS] 업체 관리자가 연다 → 문 연동 탭이 없다(탭 5개), 기본 정보 탭 · 머리(상태 · 영업중)', () => {
         renderWithManager(
-            <ManagerConsoleContext.Provider value={{store: storeMine(), account: {login_id: 'leaf_front01', auth_id: 'MANAGER'}, reloadStore: vi.fn()}}>
+            <ManagerConsoleContext.Provider value={{store: storeMine(), account: {login_id: 'leaf_front01', auth_id: 'MANAGER'}, accountLoaded: true, reloadStore: vi.fn()}}>
                 <StoreSettingsContent />
             </ManagerConsoleContext.Provider>,
         );

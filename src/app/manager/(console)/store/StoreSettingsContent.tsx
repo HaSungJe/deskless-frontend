@@ -1,7 +1,6 @@
 'use client';
 import { useContext, useState } from 'react';
 import { lookupName } from '@/contracts/common/lookup';
-import { AUTH_ID } from '@/contracts/common/roles';
 import Button from '@/shared/components/ui/button/Button';
 import Badge from '@/shared/components/ui/display/Badge';
 import Band from '@/shared/components/ui/display/Band';
@@ -9,7 +8,7 @@ import EmptyState from '@/shared/components/ui/display/EmptyState';
 import Tabs from '@/shared/components/ui/nav/Tabs';
 import { showErrorPopup } from '@/shared/utils/error-popup';
 import { toKst } from '@/shared/utils/format';
-import { isStoreSuspended, ManagerConsoleContext } from '../manager-console-context';
+import { isHeadManager, isStoreSuspended, ManagerConsoleContext } from '../manager-console-context';
 import StoreDoorTab from './_components/StoreDoorTab';
 import StoreHoursTab from './_components/StoreHoursTab';
 import StorePhotosTab from './_components/StorePhotosTab';
@@ -37,10 +36,10 @@ export default function StoreSettingsContent(): React.ReactNode {
     const [reloading, setReloading] = useState<boolean>(false); // 다시 불러오는 중
 
     // 계산 값
-    const isHeadManager = account?.auth_id === AUTH_ID.HEAD_MANAGER;                  // ⑥ 문 연동 탭 — 업체 총관리자만(모르면 숨김)
-    const tabs = STORE_TABS.filter((item) => item.value !== 'door' || isHeadManager); // 보일 탭
-    const activeTab = tabs.some((item) => item.value === tab) ? tab : 'profile';      // 숨긴 탭이면 기본 정보
-    const suspended = isStoreSuspended(store);                                        // 영업중지 — 띠 · 상태 배지 색
+    const headManager = isHeadManager(account);                                     // ⑥ 문 연동 탭 — 업체 총관리자만(모르면 숨김)
+    const tabs = STORE_TABS.filter((item) => item.value !== 'door' || headManager); // 보일 탭
+    const activeTab = tabs.some((item) => item.value === tab) ? tab : 'profile';    // 숨긴 탭이면 기본 정보
+    const suspended = isStoreSuspended(store);                                      // 영업중지 — 띠 · 상태 배지 색
 
     // 함수
     async function onSaved(): Promise<void> {

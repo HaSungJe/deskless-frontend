@@ -1,0 +1,6 @@
+/* M8 업체 관리자 칸 — 두 줄(시안 .fg) */
+.grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+}

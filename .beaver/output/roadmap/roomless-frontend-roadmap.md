@@ -344,8 +344,8 @@ Phase 14 대시보드·업체 관리자 — 만드는 중
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
 | 48 | M2 대시보드 | `/manager` 기간 · 결제 환경 · 합계 카드 · 월별 표 · 그래프, 영업중지 띠. 재사용: `src/shared/components/chart/` | 기간 · 환경 필터를 A2 와 같이 쓸 컴포넌트로 | 31 | done(facc5f6) |
-| 49 | M8 업체 관리자 목록 | `/manager/staff` 검색 · 표 · 등록 — 업체 총관리자만 | — | 31 | todo |
-| 50 | M8 업체 관리자 상세 · 등록 | `/manager/staff/[user_id]` 수정 · 비밀번호 초기화 · 정지 / 해제 · 삭제 | — | 49 | todo |
+| 49 | M8 업체 관리자 목록 | `/manager/staff` 검색 · 표 · 등록 — 업체 총관리자만 | — | 31 | in-progress |
+| 50 | M8 업체 관리자 상세 · 등록 | `/manager/staff/[user_id]` 수정 · 비밀번호 초기화 · 정지 / 해제 · 삭제 | — | 49 | in-progress |
 
 **Expected pages**:
 
@@ -354,6 +354,8 @@ Phase 14 대시보드·업체 관리자 — 만드는 중
 | #48 | `/manager` | M2 · `GET stats/mine` | 내 업체 통계 |
 | #49 | `/manager/staff` | M8 · `GET` · `POST manager/staff` | 직원 목록 |
 | #50 | `/manager/staff/[user_id]` | M8 · `manager/staff/:id` · `/password-reset` · `/state` | 직원 상세 |
+
+> build 완료(2026-11-20) — report: `.beaver/output/report/manager/staff-manage-report.md`. 업체 총관리자 판단을 `isHeadManager` 하나로(문 연동 탭도), 콘솔 Context `accountLoaded`. 테스트 83파일 391건 · 타입 검사 통과.
 
 ### Phase 15 — 관리자 로그인 (A1) · depends: Phase 10
 | # | Unit | Goal | Key decision | Depends | Status |
