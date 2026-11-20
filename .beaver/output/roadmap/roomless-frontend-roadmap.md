@@ -19,7 +19,7 @@ flowchart LR
   P11["Phase 11 · 내 업체 설정 (6)"]:::done
   P12["Phase 12 · 상품·객실 (5)"]:::done
   P13["Phase 13 · 예약 현황 (1)"]:::todo
-  P14["Phase 14 · 대시보드·업체 관리자 (3)"]:::inprog
+  P14["Phase 14 · 대시보드·업체 관리자 (3)"]:::done
   P15["Phase 15 · 관리자 로그인 (2)"]:::todo
   P16["Phase 16 · 입점 신청·업체 관리 (4)"]:::todo
   P17["Phase 17 · 통계·계정·이용자 (5)"]:::todo
@@ -69,19 +69,18 @@ flowchart LR
 - Phase 11 — 내 업체 설정 · 유닛 6개 · 의존: Phase 10 · 푼다: Phase 16 · 파일 집합: src/app/manager/(console)/store, src/contracts/store · done
 - Phase 12 — 상품·객실 · 유닛 5개 · 의존: Phase 10 · 푼다: Phase 13 · 파일 집합: src/app/manager/(console)/plans · room-groups · rooms, src/contracts/room, src/contracts/common/lookup.ts(#62) · done
 - Phase 13 — 예약 현황 · 유닛 1개 · 의존: Phase 12, Phase 8 · 푼다: — · 파일 집합: src/app/manager/(console)/reservations, src/contracts/reservation · todo
-- Phase 14 — 대시보드·업체 관리자 · 유닛 3개 · 의존: Phase 10 · 푼다: Phase 17 · 파일 집합: src/app/manager/(console)/page · staff, src/contracts/stats, src/contracts/manager · in-progress
+- Phase 14 — 대시보드·업체 관리자 · 유닛 3개 · 의존: Phase 10 · 푼다: Phase 17 · 파일 집합: src/app/manager/(console)/page · staff, src/contracts/stats, src/contracts/manager · done
 - Phase 15 — 관리자 로그인 · 유닛 2개 · 의존: Phase 10 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/admin/login · (console)/layout · password, src/contracts/admin · todo
 - Phase 16 — 입점 신청·업체 관리 · 유닛 4개 · 의존: Phase 15, Phase 11, Phase 9 · 푼다: — · 파일 집합: src/app/admin/(console)/store-applications · stores, src/contracts/store · todo
 - Phase 17 — 통계·계정·이용자 · 유닛 5개 · 의존: Phase 15, Phase 14, Phase 9 · 푼다: — · 파일 집합: src/app/admin/(console)/page · managers · users, src/contracts/stats · manager · user · todo
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: Phase 14 진행 중 · Next up: Phase 14
+지금: 진행 중 없음 · Next up: Phase 13
 
 ## 지금 할 일
-Phase 14 대시보드·업체 관리자 — 만드는 중
-- #49 M8 업체 관리자 목록
-- #50 M8 업체 관리자 상세 · 등록
+Phase 13 예약 현황 시작하기
+- #47 M3 예약 현황
 - ok → 다음
 
 ## Scope & Actors
@@ -344,8 +343,8 @@ Phase 14 대시보드·업체 관리자 — 만드는 중
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
 | 48 | M2 대시보드 | `/manager` 기간 · 결제 환경 · 합계 카드 · 월별 표 · 그래프, 영업중지 띠. 재사용: `src/shared/components/chart/` | 기간 · 환경 필터를 A2 와 같이 쓸 컴포넌트로 | 31 | done(facc5f6) |
-| 49 | M8 업체 관리자 목록 | `/manager/staff` 검색 · 표 · 등록 — 업체 총관리자만 | — | 31 | in-progress |
-| 50 | M8 업체 관리자 상세 · 등록 | `/manager/staff/[user_id]` 수정 · 비밀번호 초기화 · 정지 / 해제 · 삭제 | — | 49 | in-progress |
+| 49 | M8 업체 관리자 목록 | `/manager/staff` 검색 · 표 · 등록 — 업체 총관리자만 | — | 31 | done(f69cda4) |
+| 50 | M8 업체 관리자 상세 · 등록 | `/manager/staff/[user_id]` 수정 · 비밀번호 초기화 · 정지 / 해제 · 삭제 | — | 49 | done(f69cda4) |
 
 **Expected pages**:
 
@@ -406,8 +405,8 @@ Phase 14 대시보드·업체 관리자 — 만드는 중
 | #60 | `/admin/users` | A6 · `GET user` | 이용자 목록 |
 | #61 | `/admin/users/[user_id]` | A6 · `GET user/:id` · `/reservation` · `PATCH /state` | 이용 제한 |
 
-**Progress**: 48/62 units done (12/17 phases)
-**Next up**: Phase 14 대시보드·업체 관리자 — 진행 중
+**Progress**: 50/62 units done (13/17 phases)
+**Next up**: Phase 13 예약 현황 — 의존(Phase 12, Phase 8) 모두 완료
 
 ## Cross-Cutting Rules
 - 주소 · 화면 키 · 쓰는 API 는 `frontend/screens.md` 그대로. ★ 주소(`/reservation/[reservation_id]` · `…/cancel-request`)는 SMS 링크라 바꾸지 않는다.
