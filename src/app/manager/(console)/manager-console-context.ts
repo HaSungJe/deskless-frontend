@@ -1,6 +1,7 @@
 'use client';
 import { createContext } from 'react';
 import { AUTH_ID } from '@/contracts/common/roles';
+import { STORE_STATE } from '@/contracts/common/store.constants';
 import { StoreMineResultDto } from '@/contracts/store/dto/store-mine.dto';
 import { AreaAccountType } from '@/shared/api/cookie';
 
@@ -14,9 +15,6 @@ export type ManagerConsoleContextType = {
 
 export const ManagerConsoleContext = createContext<ManagerConsoleContextType>({store: null, account: null, accountLoaded: false, reloadStore: async () => null});
 
-/** 영업중지 업체 상태 — store_state_id */
-const STORE_SUSPENDED = 'SUSPEND';
-
 /**
  * 내 업체가 영업중지인가 — 대시보드 띠 · 내 업체 설정 띠 · 상태 배지 색
  *
@@ -24,7 +22,7 @@ const STORE_SUSPENDED = 'SUSPEND';
  * @returns
  */
 export function isStoreSuspended(store: StoreMineResultDto | null): boolean {
-    return store?.store_state_id === STORE_SUSPENDED;
+    return store?.store_state_id === STORE_STATE.SUSPEND;
 }
 
 /**

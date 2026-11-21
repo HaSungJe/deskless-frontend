@@ -1,9 +1,15 @@
 import { AuthType, withAuth } from '@/shared/api/auth';
 import { callQueue } from '@/shared/api/queue';
 import { request } from '@/shared/api/request';
+import { StoreApplicationApproveResultDto } from './dto/store-application-approve.dto';
+import { StoreApplicationDetailResultDto } from './dto/store-application-detail.dto';
 import { StoreApplicationFileUploadUrlDto, StoreApplicationFileUploadUrlResultDto } from './dto/store-application-file-upload-url.dto';
 import { StoreApplicationFileDto, StoreApplicationFileResultDto } from './dto/store-application-file.dto';
+import { StoreApplicationListDto, StoreApplicationListResultDto } from './dto/store-application-list.dto';
+import { StoreApplicationRejectDto } from './dto/store-application-reject.dto';
 import { StoreApplicationDto, StoreApplicationResultDto } from './dto/store-application.dto';
+import { StoreDetailResultDto } from './dto/store-detail.dto';
+import { StoreListDto, StoreListResultDto } from './dto/store-list.dto';
 import { StoreLoginStoreResultDto } from './dto/store-login-store.dto';
 import { StoreMineBreaksDto } from './dto/store-mine-breaks.dto';
 import { StoreMineDoorSecretDto } from './dto/store-mine-door-secret.dto';
@@ -20,6 +26,9 @@ import { StoreMineUnavailablePeriodDto, StoreMineUnavailablePeriodResultDto } fr
 import { StoreMineResultDto } from './dto/store-mine.dto';
 import { StoreMyApplicationListDto, StoreMyApplicationListResultDto } from './dto/store-my-application-list.dto';
 import { StoreMyApplicationResultDto } from './dto/store-my-application.dto';
+import { StoreOpenDto } from './dto/store-open.dto';
+import { StoreStateDto } from './dto/store-state.dto';
+import { StoreUpdateDto } from './dto/store-update.dto';
 
 /**
  * 매니저 로그인용 업체 확인 — 동기 · 공개 (GET /admin-service/store/login-store/:store_code)
@@ -268,4 +277,128 @@ export function deleteMyUnavailablePeriod(auth: AuthType, store_unavailable_peri
  */
 export function updateMyDoorSecret(auth: AuthType, dto: StoreMineDoorSecretDto): Promise<null> {
     return withAuth(auth, (token) => callQueue<null>({method: 'PATCH', path: `${MY_STORE_PATH}/door-secret`, body: dto, token}));
+}
+
+// ── 입점 신청 · 업체 관리 (A3 · A4 — 관리자) ──
+
+/** 관리자 — 업체 경로 */
+const ADMIN_STORE_PATH = '/admin-service/store';
+
+/** 관리자 — 입점 신청 경로 */
+const ADMIN_APPLICATION_PATH = '/admin-service/store/application';
+
+/**
+ * 업체 하나의 경로 — /admin-service/store/<ID>
+ *
+ * @param store_id 업체 ID
+ */
+function adminStorePath(store_id: string): string {
+    return `${ADMIN_STORE_PATH}/${encodeURIComponent(store_id)}`;
+}
+
+/**
+ * 입점 신청 하나의 경로 — /admin-service/store/application/<ID>
+ *
+ * @param store_application_id 입점 신청 ID
+ */
+function adminApplicationPath(store_application_id: string): string {
+    return `${ADMIN_APPLICATION_PATH}/${encodeURIComponent(store_application_id)}`;
+}
+
+/**
+ * 입점 신청 목록 — 동기 · 관리자 (GET /admin-service/store/application) — 신청일 최신순
+ *
+ * @param auth AuthContext 값
+ * @param query 상태 · 검색어 · 페이지
+ * @param signal 거르기를 바꾸거나 화면을 떠날 때 취소
+ */
+export function getStoreApplications(auth: AuthType, query: StoreApplicationListDto, signal?: AbortSignal): Promise<StoreApplicationListResultDto | null> {
+    return withAuth(auth, (token) => request<StoreApplicationListResultDto>({path: ADMIN_APPLICATION_PATH, query: {store_application_state_id: query.store_application_state_id, keyword: query.keyword, page: query.page, size: query.size}, token, signal}));
+}
+
+/**
+ * 입점 신청 상세 — 동기 · 관리자 (GET /admin-service/store/application/:store_application_id) — 사업자등록증 열람 주소는 10분짜리라 열 때마다 새로
+ *
+ * @param auth AuthContext 값
+ * @param store_application_id 입점 신청 ID
+ * @param signal 화면을 떠날 때 취소
+ */
+export function getStoreApplication(auth: AuthType, store_application_id: string, signal?: AbortSignal): Promise<StoreApplicationDetailResultDto | null> {
+    return withAuth(auth, (token) => request<StoreApplicationDetailResultDto>({path: adminApplicationPath(store_application_id), token, signal}));
+}
+
+/**
+ * 입점 승인 — 큐 · 관리자 (PATCH /admin-service/store/application/:store_application_id/approve) — done 이면 만든 업체 ID · 업체코드
+ *
+ * @param auth AuthContext 값
+ * @param store_application_id 입점 신청 ID
+ */
+export function approveStoreApplication(auth: AuthType, store_application_id: string): Promise<StoreApplicationApproveResultDto | null> {
+    return withAuth(auth, (token) => callQueue<StoreApplicationApproveResultDto>({method: 'PATCH', path: `${adminApplicationPath(store_application_id)}/approve`, token}));
+}
+
+/**
+ * 입점 반려 — 큐 · 관리자 (PATCH /admin-service/store/application/:store_application_id/reject) — 결과 null
+ *
+ * @param auth AuthContext 값
+ * @param store_application_id 입점 신청 ID
+ * @param dto reject_comment
+ */
+export function rejectStoreApplication(auth: AuthType, store_application_id: string, dto: StoreApplicationRejectDto): Promise<null> {
+    return withAuth(auth, (token) => callQueue<null>({method: 'PATCH', path: `${adminApplicationPath(store_application_id)}/reject`, body: dto, token}));
+}
+
+/**
+ * 업체 목록 — 동기 · 관리자 (GET /admin-service/store) — 등록일 최신순
+ *
+ * @param auth AuthContext 값
+ * @param query 상태 · 검색어 · 페이지
+ * @param signal 거르기를 바꾸거나 화면을 떠날 때 취소
+ */
+export function getStores(auth: AuthType, query: StoreListDto, signal?: AbortSignal): Promise<StoreListResultDto | null> {
+    return withAuth(auth, (token) => request<StoreListResultDto>({path: ADMIN_STORE_PATH, query: {store_state_id: query.store_state_id, keyword: query.keyword, page: query.page, size: query.size}, token, signal}));
+}
+
+/**
+ * 업체 상세 — 동기 · 관리자 (GET /admin-service/store/:store_id)
+ *
+ * @param auth AuthContext 값
+ * @param store_id 업체 ID
+ * @param signal 화면을 떠날 때 취소
+ */
+export function getStore(auth: AuthType, store_id: string, signal?: AbortSignal): Promise<StoreDetailResultDto | null> {
+    return withAuth(auth, (token) => request<StoreDetailResultDto>({path: adminStorePath(store_id), token, signal}));
+}
+
+/**
+ * 업체 정보 수정 — 큐 · 관리자 (PATCH /admin-service/store/:store_id) — 상호명 · 대표자 · 연락처 · 주소 · 좌표, 결과 null
+ *
+ * @param auth AuthContext 값
+ * @param store_id 업체 ID
+ * @param dto 업체 정보
+ */
+export function updateStore(auth: AuthType, store_id: string, dto: StoreUpdateDto): Promise<null> {
+    return withAuth(auth, (token) => callQueue<null>({method: 'PATCH', path: adminStorePath(store_id), body: dto, token}));
+}
+
+/**
+ * 업체 상태 변경 — 큐 · 관리자 (PATCH /admin-service/store/:store_id/state) — 탈퇴는 되돌릴 수 없다, 결과 null
+ *
+ * @param auth AuthContext 값
+ * @param store_id 업체 ID
+ * @param dto store_state_id · suspend_comment
+ */
+export function updateStoreState(auth: AuthType, store_id: string, dto: StoreStateDto): Promise<null> {
+    return withAuth(auth, (token) => callQueue<null>({method: 'PATCH', path: `${adminStorePath(store_id)}/state`, body: dto, token}));
+}
+
+/**
+ * 업체 영업중 여부 변경 — 큐 · 관리자 (PATCH /admin-service/store/:store_id/open) — 결과 null
+ *
+ * @param auth AuthContext 값
+ * @param store_id 업체 ID
+ * @param dto is_open
+ */
+export function updateStoreOpen(auth: AuthType, store_id: string, dto: StoreOpenDto): Promise<null> {
+    return withAuth(auth, (token) => callQueue<null>({method: 'PATCH', path: `${adminStorePath(store_id)}/open`, body: dto, token}));
 }

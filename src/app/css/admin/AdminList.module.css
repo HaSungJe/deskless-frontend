@@ -1,0 +1,35 @@
+/* 관리자 목록(A3 입점 신청 · A4 업체) — 머리(시안 .pt · .ps) · 표 칸 */
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+}
+
+.title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.subtitle {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* 표 */
+.number {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.mono {
+    font-family: var(--mono);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.muted {
+    color: var(--muted);
+}

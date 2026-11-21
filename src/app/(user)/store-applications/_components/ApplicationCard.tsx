@@ -1,11 +1,11 @@
 import Link from 'next/link';
 import { lookupName } from '@/contracts/common/lookup';
+import { applicationStateTone } from '@/contracts/common/store.constants';
 import { StoreMyApplicationItemResultDto } from '@/contracts/store/dto/store-my-application-list.dto';
 import CopyButton from '@/shared/components/ui/button/CopyButton';
 import Badge from '@/shared/components/ui/display/Badge';
 import { formatBusinessNumber, formatKoreanDate } from '@/shared/utils/format';
 import { storeConsoleLoginUrl } from '@/app/manager/manager-auth';
-import { applicationStateTone } from '../store-application-format';
 import styles from '@/app/css/user/StoreApplicationListContent.module.css';
 
 type ApplicationCardProps = {

@@ -25,7 +25,7 @@ deskless(서비스 이름 바로방) 이용자 · 업체 관리자 · 관리자 
 - [frontend/dto/](frontend/dto/) — DTO 사본 → `src/contracts/` 로 옮겨 쓴다
 - [frontend/changes/](frontend/changes/README.md) — 이후 백엔드 수정 요청. 위에서부터 차례로 반영하고 어디까지 반영했는지 이 저장소에 기록한다
 - [frontend/design/](frontend/design/) — 시안 원본 HTML(색 토큰 · 간격 값)
-로그인 화면 — 이용자 U5(카카오 · 네이버)는 `/login`(Phase 5), 매니저 M1 은 `/manager/<업체코드>/login`(Phase 10), 관리자 A1 은 `/admin/login`(Phase 15 — 관리자 콘솔 메뉴 중 대시보드 · 입점 신청 · 업체 · 업체 관리자 · 이용자 화면은 Phase 16 · 17). 새 코드는 지침서대로 — 영역마다 토큰이 따로, 쓰기 API 는 SSE 큐, 키는 snake_case.
+로그인 화면 — 이용자 U5(카카오 · 네이버)는 `/login`(Phase 5), 매니저 M1 은 `/manager/<업체코드>/login`(Phase 10), 관리자 A1 은 `/admin/login`(Phase 15). 관리자 콘솔은 입점 신청(A3) · 업체(A4)까지 있고(Phase 16 — 주소는 `src/app/admin/(console)/admin-paths.ts`), 대시보드 · 업체 관리자 · 이용자 화면은 Phase 17. 입점 신청 · 업체 상태 · 파일 용도 값은 이용자 · 업체 관리자 · 관리자가 함께 `src/contracts/common/store.constants.ts`. 새 코드는 지침서대로 — 영역마다 토큰이 따로, 쓰기 API 는 SSE 큐, 키는 snake_case.
 
 ## Architecture
 Node 24.22.3 (`.nvmrc` · `package.json` engines · `Dockerfile:7`) · Next.js 16.4 App Router (`package.json:21`) · React 19.3 + React Compiler (`next.config.ts:37`) · TypeScript 5 · fetch(HTTP 라이브러리 없음) · class-validator + class-transformer · reflect-metadata · next-auth 4 · Vitest 5 + Testing Library (선택: 사용자) · CSS Modules (선택: 사용자).

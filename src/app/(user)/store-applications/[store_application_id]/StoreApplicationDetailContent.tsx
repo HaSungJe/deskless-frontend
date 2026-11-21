@@ -2,6 +2,7 @@
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useEffectEvent, useState } from 'react';
 import { lookupName } from '@/contracts/common/lookup';
+import { applicationStateTone, STORE_APPLICATION_STATE, STORE_FILE_PURPOSE } from '@/contracts/common/store.constants';
 import { cancelStoreApplication, deleteStoreApplicationFile, getMyStoreApplication, issueStoreApplicationFileUrl, registerStoreApplicationFile } from '@/contracts/store/api';
 import { StoreApplicationFileUploadUrlDto } from '@/contracts/store/dto/store-application-file-upload-url.dto';
 import { StoreApplicationFileDto, StoreApplicationFileResultDto } from '@/contracts/store/dto/store-application-file.dto';
@@ -20,7 +21,6 @@ import { showErrorPopup } from '@/shared/utils/error-popup';
 import { formatBusinessNumber, formatKoreanDate, formatPhone } from '@/shared/utils/format';
 import UserTopBar from '../../_components/UserTopBar';
 import { storeConsoleLoginUrl } from '@/app/manager/manager-auth';
-import { APPLICATION_STATE, applicationStateTone, FILE_PURPOSE } from '../store-application-format';
 import ApplicationFiles from './_components/ApplicationFiles';
 import pageStyles from '@/app/css/user/UserPage.module.css';
 import styles from '@/app/css/user/StoreApplicationDetailContent.module.css';
@@ -86,10 +86,10 @@ export default function StoreApplicationDetailContent({applicationId}: StoreAppl
 
     // 계산 값
     const state = detail?.store_application_state_id ?? '';                                                      // 신청 상태
-    const editable = state === APPLICATION_STATE.WAIT;                                                           // 대기 — 파일 · 취소
+    const editable = state === STORE_APPLICATION_STATE.WAIT;                                                           // 대기 — 파일 · 취소
     const files = detail?.files ?? [];                                                                           // 업체 정보 파일
-    const licenses = files.filter((file) => file.store_file_purpose_id === FILE_PURPOSE.LICENSE);               // 사업자등록증
-    const images = files.filter((file) => file.store_file_purpose_id === FILE_PURPOSE.IMAGE);                   // 업체 사진
+    const licenses = files.filter((file) => file.store_file_purpose_id === STORE_FILE_PURPOSE.LICENSE);               // 사업자등록증
+    const images = files.filter((file) => file.store_file_purpose_id === STORE_FILE_PURPOSE.IMAGE);                   // 업체 사진
     const consoleUrl = detail?.store_code ? storeConsoleLoginUrl(detail.store_code) : '';                        // 업체 콘솔 로그인 주소(승인)
     const summaryMeta = editable ? `신청일 ${formatKoreanDate(detail?.created_at)} · 관리자가 확인하고 있어요` : `신청일 ${formatKoreanDate(detail?.created_at)} · 처리일 ${formatKoreanDate(detail?.reviewed_at)}`; // 요약 둘째 줄
 
@@ -226,7 +226,7 @@ export default function StoreApplicationDetailContent({applicationId}: StoreAppl
 
                     {/* ② 상태 띠 — 대기 · 사업자등록증 없음 / 반려 사유 / 승인 */}
                     {editable && licenses.length === 0 ? <Band tone="warn" title="사업자등록증 사진이 아직 없어요.">사진이 있어야 관리자가 승인할 수 있어요.</Band> : null}
-                    {state === APPLICATION_STATE.REJECTED ? <Band tone="danger" title="반려된 신청이에요">{detail.reject_comment ?? '반려 사유가 없어요.'}</Band> : null}
+                    {state === STORE_APPLICATION_STATE.REJECTED ? <Band tone="danger" title="반려된 신청이에요">{detail.reject_comment ?? '반려 사유가 없어요.'}</Band> : null}
                     {detail.store_code ? <Band tone="ok" title="입점이 승인되었어요.">아래 주소에서 업체 관리자 콘솔에 로그인할 수 있어요.</Band> : null}
 
                     <div className={pageStyles.body}>

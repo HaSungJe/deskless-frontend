@@ -1,8 +1,9 @@
 import Image from 'next/image';
 import { ChangeEvent } from 'react';
+import { STORE_FILE_PURPOSE } from '@/contracts/common/store.constants';
 import { StoreMyApplicationFileResultDto } from '@/contracts/store/dto/store-my-application.dto';
 import { buttonClass } from '@/shared/components/ui/button/Button';
-import { FILE_MAX, FILE_PURPOSE } from '../../store-application-format';
+import { FILE_MAX } from '../../store-application-format';
 import pageStyles from '@/app/css/user/UserPage.module.css';
 import styles from '@/app/css/user/ApplicationFiles.module.css';
 
@@ -47,12 +48,12 @@ export default function ApplicationFiles({licenses, images, editable, busy, onUp
 
     function pickLicense(event: ChangeEvent<HTMLInputElement>): void {
         // 사업자등록증
-        pick(FILE_PURPOSE.LICENSE, event);
+        pick(STORE_FILE_PURPOSE.LICENSE, event);
     }
 
     function pickImage(event: ChangeEvent<HTMLInputElement>): void {
         // 업체 사진
-        pick(FILE_PURPOSE.IMAGE, event);
+        pick(STORE_FILE_PURPOSE.IMAGE, event);
     }
 
     return (

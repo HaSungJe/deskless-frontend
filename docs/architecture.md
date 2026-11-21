@@ -23,7 +23,7 @@ src/
 │  │  ├─ [store_code]/login · find-login-id · password-reset   M1 업체별 로그인 · 아이디 찾기 · 비밀번호 초기화(로그인 전)
 │  │  ├─ login/ · password/          M1 업체 로그인 주소 안내(서버가 업체코드 쿠키로 보냄) · 비밀번호 변경(AuthGuard)
 │  │  └─ (console)/                  콘솔 layout + 매니저 AuthGuard · 메뉴 · 콘솔 Context(내 업체 · 계정) — M2 대시보드 ~ M8
-│  ├─ admin/                         관리자 `/admin` · PC 콘솔 — layout.tsx(data-area="console") · admin-auth.ts(로그인 뒤 주소 · 권한 배지) · login/ · (console)/(layout · 메뉴 · 첫 화면 · password/)
+│  ├─ admin/                         관리자 `/admin` · PC 콘솔 — layout.tsx(data-area="console") · admin-auth.ts(로그인 뒤 주소 · 권한 배지) · login/ · (console)/(layout · 메뉴 · 첫 화면 · password/ · store-applications/ · stores/ · _components/(ListFilter · StoreFilesCard) · admin-paths.ts(관리자 화면 주소))
 │  │  └─ (console)/                  콘솔 layout + 관리자 AuthGuard — A2~A6
 │  └─ api/                           route handler — cookie/[area] · cookie/[area]/refresh (영역 토큰 쿠키) · cookie/token-cookie.ts · auth/[...nextauth] (SNS OAuth) · cookie/[area]/account (기억한 계정 읽기) · user/sns-login · user/sign (이용자 로그인 · 가입 — 백엔드까지) · manager/login · admin/login (매니저 · 관리자 로그인 — 백엔드까지) · payments/confirm (토스 결제 승인) · route-util.ts(json · isSameSiteJson · 로그인 공통 backendLogin)
 ├─ contracts/                        백엔드 계약 — 지침서 frontend/dto/*.md 의 사본 (첫 API 를 만들 때 생김)

@@ -21,7 +21,7 @@ flowchart LR
   P13["Phase 13 · 예약 현황 (1)"]:::done
   P14["Phase 14 · 대시보드·업체 관리자 (3)"]:::done
   P15["Phase 15 · 관리자 로그인 (2)"]:::done
-  P16["Phase 16 · 입점 신청·업체 관리 (4)"]:::todo
+  P16["Phase 16 · 입점 신청·업체 관리 (4)"]:::inprog
   P17["Phase 17 · 통계·계정·이용자 (5)"]:::todo
   P2 --> P3
   P1 --> P4
@@ -71,12 +71,12 @@ flowchart LR
 - Phase 13 — 예약 현황 · 유닛 1개 · 의존: Phase 12, Phase 8 · 푼다: — · 파일 집합: src/app/manager/(console)/reservations, src/contracts/reservation · done
 - Phase 14 — 대시보드·업체 관리자 · 유닛 3개 · 의존: Phase 10 · 푼다: Phase 17 · 파일 집합: src/app/manager/(console)/page · staff, src/contracts/stats, src/contracts/manager · done
 - Phase 15 — 관리자 로그인 · 유닛 2개 · 의존: Phase 10 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/admin/login · (console)/layout · password, src/contracts/admin · done
-- Phase 16 — 입점 신청·업체 관리 · 유닛 4개 · 의존: Phase 15, Phase 11, Phase 9 · 푼다: — · 파일 집합: src/app/admin/(console)/store-applications · stores, src/contracts/store · todo
+- Phase 16 — 입점 신청·업체 관리 · 유닛 4개 · 의존: Phase 15, Phase 11, Phase 9 · 푼다: — · 파일 집합: src/app/admin/(console)/store-applications · stores, src/contracts/store · in-progress
 - Phase 17 — 통계·계정·이용자 · 유닛 5개 · 의존: Phase 15, Phase 14, Phase 9 · 푼다: — · 파일 집합: src/app/admin/(console)/page · managers · users, src/contracts/stats · manager · user · todo
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: 진행 중 없음 · Next up: Phase 16
+지금: Phase 16 진행 중 · Next up: Phase 16
 
 ## 지금 할 일
 Phase 16 입점 신청·업체 관리 시작하기
@@ -381,10 +381,10 @@ Phase 16 입점 신청·업체 관리 시작하기
 ### Phase 16 — 입점 신청·업체 관리 (A3 · A4) · depends: Phase 15, Phase 11, Phase 9
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 53 | A3 입점 신청 목록 | `/admin/store-applications` 상태 거르기 · 검색 · 표 | — | 51 | todo |
-| 54 | A3 입점 신청 상세 | `/admin/store-applications/[store_application_id]` 신청 · 신청자 · 파일(열 때마다 새 주소) · 승인(업체코드 · 로그인 주소 복사) · 반려 | — | 53 | todo |
-| 55 | A4 업체 목록 | `/admin/stores` 상태 거르기 · 검색 · 표 | — | 51 | todo |
-| 56 | A4 업체 상세 | `/admin/stores/[store_id]` 정보 수정(주소 · 좌표) · 상태(영업중지 사유) · 영업중 · 파일 · 업체 관리자로 | — | 10, 55 | todo |
+| 53 | A3 입점 신청 목록 | `/admin/store-applications` 상태 거르기 · 검색 · 표 | — | 51 | in-progress |
+| 54 | A3 입점 신청 상세 | `/admin/store-applications/[store_application_id]` 신청 · 신청자 · 파일(열 때마다 새 주소) · 승인(업체코드 · 로그인 주소 복사) · 반려 | — | 53 | in-progress |
+| 55 | A4 업체 목록 | `/admin/stores` 상태 거르기 · 검색 · 표 | — | 51 | in-progress |
+| 56 | A4 업체 상세 | `/admin/stores/[store_id]` 정보 수정(주소 · 좌표) · 상태(영업중지 사유) · 영업중 · 파일 · 업체 관리자로 | — | 10, 55 | in-progress |
 
 **Expected pages**:
 
@@ -394,6 +394,9 @@ Phase 16 입점 신청·업체 관리 시작하기
 | #54 | `/admin/store-applications/[store_application_id]` | A3 · `GET …/:id` · `PATCH /approve` · `/reject` | 승인 · 반려 |
 | #55 | `/admin/stores` | A4 · `GET store` | 업체 목록 |
 | #56 | `/admin/stores/[store_id]` | A4 · `GET` · `PATCH store/:id` · `/state` · `/open` | 업체 상세 |
+
+> 결정거리 — 업체 주소는 주소 검색으로 좌표까지(사용자 2026-11-22), 승인 판단 계산 테스트 4건. spec: `.beaver/output/spec/admin/store-manage-spec.md` · plan: `.beaver/output/plan/admin/store-manage-plan.md`.
+> build 완료(2026-11-22) — report: `.beaver/output/report/admin/store-manage-report.md`. 입점 신청 · 업체 상태 값을 `contracts/common/store.constants.ts` 로 함께 씀, 관리자 주소 모음 `admin-paths.ts`. 테스트 95파일 434건 통과.
 
 ### Phase 17 — 통계·계정·이용자 (A2 · A5 · A6) · depends: Phase 15, Phase 14, Phase 9
 | # | Unit | Goal | Key decision | Depends | Status |

@@ -1,0 +1,164 @@
+/* 관리자 상세(A3 입점 신청 · A4 업체) — 머리(시안 .crumb · .pt · 오른쪽 버튼) · 두 칸 · dl · 정보 칸 · 상태 라디오 */
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+}
+
+.head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.crumb {
+    margin: 0 0 6px;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.sub {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+}
+
+/* 업체코드 · 로그인 주소 줄 */
+.copyRow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    font-size: 13px;
+}
+
+/* 두 칸 — 좁으면 한 칸 */
+.cols {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.cols > * {
+    flex: 1 1 420px;
+    min-width: 0;
+}
+
+.stack {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.dl {
+    display: grid;
+    grid-template-columns: 140px minmax(0, 1fr);
+    gap: 10px 16px;
+    margin: 0;
+    font-size: 14px;
+}
+
+.dl dt {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.dl dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.mono {
+    font-family: var(--mono);
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.muted {
+    margin: 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* 승인 결과 띠 안 */
+.bandDl {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    gap: 4px 12px;
+    margin: 6px 0 0;
+}
+
+.bandDl dd {
+    margin: 0;
+}
+
+.bandActions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+/* 업체 정보 칸 — 두 칸 */
+.formGrid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 16px;
+}
+
+.addressRow {
+    display: flex;
+    gap: 8px;
+}
+
+.addressRow > :first-child {
+    flex: 1;
+    min-width: 0;
+}
+
+/* 상태 라디오 */
+.radios {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.radio {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.radio > span {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    font-size: 14px;
+}
+
+.cardActions {
+    display: flex;
+    justify-content: flex-end;
+}
