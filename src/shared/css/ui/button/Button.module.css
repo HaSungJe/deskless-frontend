@@ -45,6 +45,32 @@
     color: var(--danger);
 }
 
+/* 회색 채움 — 로그아웃처럼 눈에 덜 띄게 */
+.neutral {
+    background: var(--line);
+    border-color: var(--line);
+    color: var(--neutral-fg);
+}
+
+.neutral:hover {
+    background: var(--neutral-strong);
+    border-color: var(--neutral-strong);
+    color: var(--fg);
+}
+
+/* 위험 채움 — 탈퇴 신청처럼 되돌리기 어려운 일 */
+.dangerSolid {
+    background: var(--danger);
+    border-color: var(--danger);
+    color: var(--on-primary);
+}
+
+.dangerSolid:hover {
+    background: var(--danger-strong);
+    border-color: var(--danger-strong);
+    color: var(--on-primary);
+}
+
 .button:disabled,
 .button:disabled:hover {
     background: var(--line);

@@ -163,6 +163,8 @@ function Gallery({area, title}: GalleryProps): React.ReactNode {
                     <Button variant="primary">예약하기</Button>
                     <Button>취소</Button>
                     <Button variant="danger">삭제</Button>
+                    <Button variant="neutral">로그아웃</Button>
+                    <Button variant="dangerSolid">탈퇴 신청</Button>
                     <Button disabled>비활성</Button>
                 </div>
                 <div className={styles.row}>

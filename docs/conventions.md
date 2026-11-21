@@ -44,7 +44,7 @@
 ## 스타일
 
 - 토큰은 `src/app/css/globals.css` 한 곳 (선택: 사용자 · plan: `.beaver/output/plan/ui/design-foundation-plan.md`).
-  - **색은 한 벌** — 세 시안(`frontend/design/*.html`)의 같은 값을 콘솔 시안 이름으로: `--bg` · `--surface` · `--surface-2` · `--line` · `--fg` · `--muted` · `--faint` · `--primary`(`-strong` · `-soft`) · `--on-primary` · `--ok` · `--warn` · `--danger`(각 `-soft`) · `--neutral-fg` · `--neutral-bg` · `--scrim` · `--shadow`. 이용자 전용 `--map-*` · `--primary-halo`(지도 현재 위치 점 테두리) · `--frame-shadow`(시안의 모바일 틀 그림자) · `--kakao` · `--naver`. 밝은 화면 한 벌.
+  - **색은 한 벌** — 세 시안(`frontend/design/*.html`)의 같은 값을 콘솔 시안 이름으로: `--bg` · `--surface` · `--surface-2` · `--line` · `--fg` · `--muted` · `--faint` · `--primary`(`-strong` · `-soft`) · `--on-primary` · `--ok` · `--warn` · `--danger`(각 `-soft`, `--danger-strong` 위험 채움 hover) · `--neutral-fg` · `--neutral-bg` · `--neutral-strong`(회색 채움 hover) · `--scrim` · `--shadow`. 이용자 전용 `--map-*` · `--primary-halo`(지도 현재 위치 점 테두리) · `--frame-shadow`(시안의 모바일 틀 그림자) · `--kakao` · `--naver`. 밝은 화면 한 벌.
   - **크기는 영역별** — 기본(이용자) 글자 15px · 컨트롤 48px, `[data-area="console"]` 글자 14px · 컨트롤 40px. 변수 `--font-size-base` · `--control-h`(`-sm` · `-lg`) · `--control-font` · `--control-weight` · `--control-px` · `--badge-h`. 영역 layout 이 감싸는 요소에 `data-area` 를 붙인다.
   - 모서리 `--radius`(8px) · `--radius-lg`(12px). 글꼴 `--font` = Noto Sans KR(`next/font/google`, `src/app/layout.tsx`) · 고정폭 `--mono`.
 - css 는 css 폴더에 모은다 (선택: 사용자 2026-11-14).
@@ -56,7 +56,7 @@
   - 예외 — 영역(이용자 / 콘솔)에 따라 바뀌지 않는 **부품 고유 치수**는 시안 값을 그 부품 `module.css` 에 그대로 쓴다: 탭 높이 44px(`frontend/design/manager.html` `.tabs a`) · 스위치 40×24(손잡이 18) · 모달 닫기 32×32 · 모달 최대 너비 520px · 칩 최소 너비 40px · 선택 버튼 묶음 안쪽 모서리 6px · 알약 모양 모서리 999px · 페이지 탭 32×32(시안 `.pager a`) (`Tabs` · `Switch` · `Modal` · `Chip` · `Segmented` · `Badge` · `Pagination` `.module.css`). 영역 따라 바뀌는 높이(버튼 · 입력 · 배지)는 토큰.
   - 간격(`gap` · `padding`)과 글자 크기는 토큰이 없어 시안 값을 그대로 쓴다.
 - 공통 부품은 `src/shared/components/ui/<종류>/` 를 먼저 쓴다. 모습은 개발 전용 `/dev/ui` 에서 본다. 지도 · 인증번호 · 사진 · 결제 부품(`map/` · `sms/` · `upload/` · `payment/`)은 [integrations.md](integrations.md) — 미리보기 `/dev/infra`.
-  - `button/` — `Button`(`buttonClass()` 로 `<Link>` 를 버튼 모양으로) · `CopyButton`(`variant` · `full` 로 버튼 모양)
+  - `button/` — `Button`(모양 `variant` — 기본 · `primary` · `danger`(빨간 테두리) · `neutral`(회색 채움 — 로그아웃) · `dangerSolid`(빨간 채움 — 탈퇴 신청), `buttonClass()` 로 `<Link>` 를 버튼 모양으로) · `CopyButton`(`variant` · `full` 로 버튼 모양)
   - `form/` — `Input` · `Textarea` · `Select`(고르기 상자 — `Input` 과 같은 모양, `Input.module.css` 를 함께 쓴다) · `Field`(라벨 + 오류 span + 도움말) · `FieldError`(라벨 없는 표 · 줄 칸의 오류 span — `Field` 도 이걸 그린다) · `Switch` · `Chip` · `Segmented`
   - 줄 단위 검사 — 같은 DTO 가 여러 줄을 한 번에 보내면 `validateActionRows(dtos, path)`(`src/shared/utils/validation.ts`): 줄마다 검사하고 칸 이름을 `<path>.<줄>.<필드>`(백엔드 점 경로 — `hours.3.close_time`)로 붙인다. 부모 DTO 를 `validateAction` 하면 중첩 오류는 칸에 붙지 않는다(`constraints` 가 없어 건너뛴다).
   - 키로 나누는 검사 — 같은 이름의 칸이 한 화면에 여럿이고 카드 · 줄마다 따로 저장하면(상품 카드 3개 · 그룹 상품 줄 3개 · 기간 가격 대화상자의 `price` 와 그룹 상품 줄의 `price`), 또는 중첩 DTO 하나(`room_group_detail`)면 키로 나눈다. 칸은 `<Field dataKey={key}>` · `<FieldError dataKey={key}>`, 검사는 `resetValidationError()` 뒤 `validateActionChildren(dto, key)`(지우지 않으므로 먼저 지운다), 받은 오류는 `handleApiError(error, true, key)` — 키가 없으면 이름만으로 찾아 같은 이름의 첫 칸에 붙는다. 중첩 DTO 는 부모를 `validateAction`(그룹명 · 설명) + 안쪽을 `validateActionChildren`(방 개수)으로 둘 다 본다(`src/app/manager/(console)/room-groups/room-group-format.ts` `validateRoomGroup`).

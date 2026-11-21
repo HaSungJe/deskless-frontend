@@ -2,7 +2,7 @@ import type { ComponentProps } from 'react';
 import styles from '@/shared/css/ui/button/Button.module.css';
 
 type ButtonStyleType = {
-    variant?: 'default' | 'primary' | 'danger';
+    variant?: 'default' | 'primary' | 'danger' | 'neutral' | 'dangerSolid'; // neutral 회색 채움 · dangerSolid 빨간 채움(danger 는 빨간 테두리)
     size?: 'md' | 'sm' | 'lg';
     icon?: boolean; // 정사각 아이콘 버튼 — aria-label 을 붙인다
     full?: boolean; // 가로 꽉 채움
@@ -27,7 +27,7 @@ export function buttonClass({variant = 'default', size = 'md', icon = false, ful
 }
 
 /**
- * 버튼 — 기본 · 강조(primary) · 위험(danger), 크기 sm · md · lg
+ * 버튼 — 기본 · 강조(primary) · 위험(danger — 테두리) · 회색 채움(neutral) · 위험 채움(dangerSolid), 크기 sm · md · lg
  *
  * @param param0
  * @returns

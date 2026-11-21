@@ -5,11 +5,11 @@ type UserTabBarProps = {
     pathname: string; // 지금 주소 — 고른 탭 표시
 };
 
-/** 하단 탭 — 시안 화면 규칙(지도 · 내 예약 · 마이). 내 예약 · 마이 화면은 Phase 8 · 9 */
+/** 하단 탭 — 시안 화면 규칙(지도 · 내 예약 · 내 정보 — 시안의 "마이"를 사용자 2026-11-22 에 바꿈) */
 const MAIN_TABS = [
     {href: '/', label: '지도', icon: <><path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2z" /><path d="M9 4v14" /><path d="M15 6v14" /></>},
     {href: '/reservation/', label: '내 예약', icon: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M3 10h18" /><path d="M8 3v4" /><path d="M16 3v4" /></>},
-    {href: '/me/', label: '마이', icon: <><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" /></>},
+    {href: '/me/', label: '내 정보', icon: <><circle cx="12" cy="8" r="4" /><path d="M4 21c0-4 3.6-6 8-6s8 2 8 6" /></>},
 ];
 
 /**

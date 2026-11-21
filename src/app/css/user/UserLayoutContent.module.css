@@ -9,6 +9,13 @@
     background: var(--surface);
 }
 
+/* 창이 480px 보다 넓으면 가운데 기둥 양옆에 선 — 내용 바탕과 바깥 바탕이 같은 색이라 상단 바 · 하단 탭만 좁아 보였다(x축 맞춤) */
+@media (min-width: 481px) {
+    .frame {
+        border-inline: 1px solid var(--line);
+    }
+}
+
 .body {
     display: flex;
     flex: 1;

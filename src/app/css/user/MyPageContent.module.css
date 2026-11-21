@@ -77,21 +77,6 @@
     color: var(--muted);
 }
 
-/* 탈퇴 신청 — 밑줄 글자 버튼 */
-.leave {
-    align-self: center;
-    height: 44px;
-    padding: 0 12px;
-    border: 0;
-    background: transparent;
-    color: var(--danger);
-    font: inherit;
-    font-size: 14px;
-    font-weight: 500;
-    text-decoration: underline;
-    cursor: pointer;
-}
-
 /* 탈퇴 대기 띠 안 — 탈퇴 철회(띠 내용은 flex 가 아니라 block 으로 문장 아래에) */
 .withdraw {
     display: block;
@@ -108,7 +93,6 @@
     cursor: pointer;
 }
 
-.leave:disabled,
 .withdraw:disabled {
     opacity: 0.5;
     cursor: default;

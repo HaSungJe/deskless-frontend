@@ -19,7 +19,7 @@ export default function UserLayoutContent({children}: UserLayoutContentProps): R
     const pathname = usePathname(); // 지금 주소 — 하단 탭을 보일지
 
     // 계산 값
-    const showTabBar = isMainTabPath(pathname); // 주 탭 화면(지도 · 내 예약 · 마이)인지
+    const showTabBar = isMainTabPath(pathname); // 주 탭 화면(지도 · 내 예약 · 내 정보)인지
 
     return (
         // 이용자 틀

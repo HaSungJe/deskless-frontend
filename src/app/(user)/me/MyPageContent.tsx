@@ -47,7 +47,7 @@ const PERSON_ICON = <svg width="28" height="28" viewBox="0 0 24 24" fill="none" 
 const CHEVRON_ICON = <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M9 6l6 6-6 6" /></svg>;
 
 /**
- * U10 마이페이지 — 내 정보 · 회원 상태 · 메뉴 · 로그아웃 · 탈퇴 신청 / 철회
+ * U10 내 정보(시안의 "마이페이지" — 화면 이름은 사용자 2026-11-22 에 바꿈) — 내 정보 · 회원 상태 · 메뉴 · 로그아웃 · 탈퇴 신청 / 철회
  *
  * @returns
  */
@@ -167,10 +167,10 @@ export default function MyPageContent(): React.ReactNode {
     }
 
     return (
-        // 마이페이지
+        // 내 정보
         <div className={pageStyles.page}>
             {/* 머리 */}
-            <header className={pageStyles.plainHeader}><h1 className={pageStyles.plainTitle}>마이</h1></header>
+            <header className={pageStyles.plainHeader}><h1 className={pageStyles.plainTitle}>내 정보</h1></header>
 
             {/* ③ 회원 상태 — 이용 제한 사유 · 탈퇴 대기(철회 버튼) */}
             <MemberStateBand me={me} action={<button type="button" className={styles.withdraw} disabled={busy} onClick={withdraw}>탈퇴 철회</button>} />
@@ -204,7 +204,7 @@ export default function MyPageContent(): React.ReactNode {
                         </section>
 
                         {/* ② 메뉴 */}
-                        <nav className={styles.menu} aria-label="마이 메뉴">
+                        <nav className={styles.menu} aria-label="내 정보 메뉴">
                             <Link href="/reservation/" className={styles.menuRow}>내 예약{CHEVRON_ICON}</Link>
                             <Link href="/store-applications/" className={styles.menuRow}>입점 신청{CHEVRON_ICON}</Link>
                         </nav>
@@ -214,9 +214,9 @@ export default function MyPageContent(): React.ReactNode {
                 {/* 내 정보를 못 읽음 — 다시 불러오기(로그아웃은 아래에 그대로) */}
                 {unloaded ? <EmptyState title="내 정보를 불러오지 못했어요" description="잠시 뒤 다시 불러와 주세요." action={<Button size="sm" disabled={busy} onClick={retry}>다시 불러오기</Button>} /> : null}
 
-                {/* ⑤ 로그아웃(내 정보가 없어도) · ④ 탈퇴 신청(내 정보가 있고 탈퇴 대기가 아닐 때) */}
-                <Button full disabled={busy} onClick={logout}>로그아웃</Button>
-                {me && !leaving ? <button type="button" className={styles.leave} disabled={busy} onClick={() => setLeaveOpen(true)}>탈퇴 신청</button> : null}
+                {/* ⑤ 로그아웃(내 정보가 없어도 — 회색) · ④ 탈퇴 신청(내 정보가 있고 탈퇴 대기가 아닐 때 — 빨강) */}
+                <Button variant="neutral" full disabled={busy} onClick={logout}>로그아웃</Button>
+                {me && !leaving ? <Button variant="dangerSolid" full disabled={busy} onClick={() => setLeaveOpen(true)}>탈퇴 신청</Button> : null}
             </div>
 
             {/* 탈퇴 사유 */}
