@@ -39,7 +39,7 @@ src/
    ├─ hooks/                         useInput · useInputNumber · useInputFloat · useInputDate · useInputTime · useCheckboxGroup · useMyLocation · useConsoleLogout
    ├─ providers/                     RootLayoutProvider (RootLayoutLoadingContext · AuthContext)
    ├─ types/                         pagination.ts · map.ts
-   └─ utils/                         validation.ts · address.ts(우편번호 · 주소 → 좌표) · kakao-map.ts(카카오 SDK) · file.ts(사진 형식) · util.ts · format.ts(한국 시각 · 금액 · 요일) · area.ts(영역 · 로그인 주소) · error-popup.ts(오류 팝업 저장소)
+   └─ utils/                         validation.ts · address.ts(우편번호 · 주소 → 좌표) · kakao-map.ts(카카오 SDK) · file.ts(사진 형식) · util.ts · site.ts(서비스 이름 SITE_NAME — 바로방) · format.ts(한국 시각 · 금액 · 요일) · area.ts(영역 · 로그인 주소) · error-popup.ts(오류 팝업 저장소)
 └─ test/                             테스트 — src 와 같은 경로 (shared/api/request.test.ts …)
 ```
 

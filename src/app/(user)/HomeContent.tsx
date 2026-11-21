@@ -16,6 +16,7 @@ import { AuthContext } from '@/shared/providers/RootLayoutProvider';
 import { MapMarkerType, MapPointType } from '@/shared/types/map';
 import { loginUrl } from '@/shared/utils/area';
 import { formatPrice } from '@/shared/utils/format';
+import { SITE_NAME } from '@/shared/utils/site';
 import { formatDistance } from './distance';
 import styles from '@/app/css/user/HomeContent.module.css';
 
@@ -123,9 +124,9 @@ export default function HomeContent(): React.ReactNode {
     return (
         // 지도 · 주변 업체
         <div className={styles.home}>
-            {/* 머리 — deskless · 로그인 / 내 예약 */}
+            {/* 머리 — 서비스 이름 · 로그인 / 내 예약 */}
             <header className={styles.header}>
-                <strong className={styles.brand}>deskless</strong>
+                <strong className={styles.brand}>{SITE_NAME}</strong>
                 {auth.isLogin
                     ? <Link href="/reservation/" className={styles.headerLink}>내 예약</Link>
                     : <Link href={loginUrl('user', '/')} className={styles.headerLink}>로그인</Link>}

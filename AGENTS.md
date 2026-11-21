@@ -1,6 +1,6 @@
 # AGENTS.md
 
-deskless 이용자 · 업체 관리자 · 관리자 화면. 규칙의 근거는 `경로:줄`(측정), `(선택: 사용자)`, `(표준: Next.js 권장)`, `(지침서: frontend/…)` 로 표시한다.
+deskless(서비스 이름 바로방) 이용자 · 업체 관리자 · 관리자 화면. 규칙의 근거는 `경로:줄`(측정), `(선택: 사용자)`, `(표준: Next.js 권장)`, `(지침서: frontend/…)` 로 표시한다.
 
 ## ⚠️ 주의사항
 - `npm run dev` · `npm run build` · `npm run start` · `npm run lint`, `docker compose` 는 **사용자만 실행** (Claude 실행 금지) (선택: 사용자).
@@ -52,6 +52,7 @@ src/
 - 백엔드와 주고받는 키는 snake_case 그대로 (`src/contracts/user/dto/user-token-refresh.dto.ts:6`).
 - 스타일은 css 폴더에 모은다 — 전역 토큰 `src/app/css/globals.css`, 화면 `src/app/css/<영역>/<화면>Content.module.css`, 공통 부품 `src/shared/css/<components 아래와 같은 경로>/<Name>.module.css`(예 `shared/components/ui/form/Input.tsx` ↔ `shared/css/ui/form/Input.module.css`). 색 · 크기는 토큰 `var(--…)` 만 — 색은 한 벌, 크기는 영역별(기본 이용자, `data-area="console"` 콘솔) (선택: 사용자).
 - 공통 부품은 `src/shared/components/ui/<종류>/` 를 먼저 쓴다 — `button/`(`Button` · `CopyButton`) · `form/`(`Input` · `Textarea` · `Select` · `Field` · `FieldError` · `Switch` · `Chip` · `Segmented`) · `display/`(`Badge` · `Band` · `Card` · `Table` · `EmptyState`) · `nav/`(`Tabs` · `Pagination`) · `modal/`(`Modal` · `ConfirmModal` · `ReasonModal` · `RouteModal` · `ErrorPopup` — 루트에 하나). 콘솔(매니저 · 관리자)은 `src/shared/components/console/` — `ConsoleShell`(왼쪽 메뉴 · 상단 바, 메뉴는 `console-menu.ts` 의 `visibleMenu` · `activeMenuHref`, 비밀번호 변경 화면이면 상단 바 링크 강조 `isCurrentPath`) · 로그인 계열 바탕 `ConsoleAuthFrame` + `ConsoleAuthCard` · 로그아웃 `useConsoleLogout()`(`src/shared/hooks/` — 그 영역 쿠키 삭제 → 그 영역 로그인 주소 문서). 입력 칸은 `<Field name="<DTO 필드>">` — 오류 span 을 `Field` 가 그린다. 미리보기 `/dev/ui`(개발 전용). 지도 · 인증번호 · 사진 · 결제 부품은 "외부 연동"(`map/` · `sms/` · `upload/` · `payment/` — 미리보기 `/dev/infra`).
+- 화면에 보이는 사이트 · 앱 이름(로고 · 탭 제목 · 공유 제목)은 `SITE_NAME`(`src/shared/utils/site.ts` — 바로방) 하나로 쓰고 글자로 직접 쓰지 않는다. 프로젝트 · 저장소 · 패키지 이름은 영어 deskless (선택: 사용자 2026-11-22).
 - 표시 형식은 `src/shared/utils/format.ts` — `toKst`(ISO → 한국 시각, `Asia/Seoul` 고정) · `todayKst` · `formatPrice`(`12,000원`) · `formatDays`(요일 비트합 → `월 · 수 · 금`, 3일 이상 이어지면 `일 ~ 목`, 127 → `매일`) · `formatDateTime`(`11월 12일(목) 19:00`) · `formatDateTimeRange`(이용 시간 — `11월 10일(화) 14:30 ~ 17:30`) · `formatTimeRange`(구간 — `20:00 ~ 다음 날 11:00`) · `formatPhone`(`010-1234-5678` · `02-1234-5678`) · `formatBusinessNumber`(`123-45-67890`) · `formatKoreanDate`(`2026년 11월 8일` — `YYYY-MM-DD` 은 그대로 읽는다) · `formatManwon`(그래프 값 — `342만`, 1만 미만은 `5,000`). 번호 입력 칸은 `digitsOnly(value, max)`, 숫자 칸 → DTO 숫자는 `numberOf(value)`(빈 칸 undefined)(`src/shared/utils/util.ts`). 상태 이름은 응답 `*_name` 먼저, 없으면 `lookupName(필드, 값)` (`src/contracts/common/lookup.ts`).
 - 컴포넌트 · 커스텀 훅 본문은 **변수 > 상태 > 계산 값 > 효과 > 함수 > JSX** — 영역 사이 빈 줄, 영역마다 한 줄 주석, 변수 · 상태 · 계산 값은 줄마다 오른쪽 역할 주석, JSX 는 덩어리마다 간략 주석. 새 코드와 고치는 파일부터 (선택: 사용자 2026-11-14) → [docs/conventions.md](docs/conventions.md) "컴포넌트 · 훅 안의 구조"
 

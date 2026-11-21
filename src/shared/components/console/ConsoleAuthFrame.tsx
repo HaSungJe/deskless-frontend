@@ -1,3 +1,4 @@
+import { SITE_NAME } from '@/shared/utils/site';
 import styles from '@/shared/css/console/ConsoleAuthFrame.module.css';
 
 type ConsoleAuthFrameProps = {
@@ -19,7 +20,7 @@ export default function ConsoleAuthFrame({areaName, children}: ConsoleAuthFrameP
         // 바탕
         <div className={styles.frame}>
             {/* 로고 */}
-            <div className={styles.logo}>{LOGO}<div><b>deskless</b><small>{areaName}</small></div></div>
+            <div className={styles.logo}>{LOGO}<div><b>{SITE_NAME}</b><small>{areaName}</small></div></div>
 
             {/* 카드 */}
             {children}

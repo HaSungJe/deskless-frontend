@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import Button from '@/shared/components/ui/button/Button';
+import { SITE_NAME } from '@/shared/utils/site';
 import { activeMenuHref, ConsoleMenuItemType, isCurrentPath } from './console-menu';
 import styles from '@/shared/css/console/ConsoleShell.module.css';
 
@@ -36,7 +37,7 @@ export default function ConsoleShell({areaName, menu, pathname, heading, account
         <div className={styles.console}>
             {/* 왼쪽 메뉴 */}
             <aside className={styles.side} aria-label="메뉴">
-                <div className={styles.logo}>{LOGO}<div><b>deskless</b><small>{areaName}</small></div></div>
+                <div className={styles.logo}>{LOGO}<div><b>{SITE_NAME}</b><small>{areaName}</small></div></div>
                 <nav className={styles.nav} aria-label={`${areaName} 메뉴`}>
                     {menu.map((item) => (
                         <Link key={item.href} href={item.href} aria-current={item.href === activeHref ? 'page' : undefined}>

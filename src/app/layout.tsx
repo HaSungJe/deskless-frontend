@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Noto_Sans_KR } from 'next/font/google';
 import { withBasePath } from '@/shared/utils/base-path';
+import { SITE_NAME } from '@/shared/utils/site';
 import RootLayoutContent from './RootLayoutContent';
 import './css/globals.css';
 
@@ -12,7 +13,6 @@ const notoSansKr = Noto_Sans_KR({
 });
 
 const serverUrl = process.env.NEXT_PUBLIC_SERVER_URL;
-const serverName = process.env.NEXT_PUBLIC_SERVER_NAME;
 const adsensePublisherId = process.env.NEXT_PUBLIC_ADSENSE_PUBLISHER_ID;
 
 export const viewport: Viewport = {
@@ -25,15 +25,15 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
     metadataBase: serverUrl ? new URL(serverUrl) : undefined,
-    title: serverName,
-    description: serverName,
+    title: SITE_NAME, // 탭 제목 — 서비스 이름(바로방)
+    description: SITE_NAME,
     icons: {
         icon: withBasePath('/favicon.ico'), // 메타데이터 주소에는 Next 가 basePath 를 붙이지 않는다
     },
     openGraph: {
         type: 'website',
-        title: serverName,
-        description: serverName,
+        title: SITE_NAME,
+        description: SITE_NAME,
         images: [
             {
                 url: withBasePath('/og.jpg'),

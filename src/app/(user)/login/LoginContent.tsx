@@ -7,6 +7,7 @@ import { AuthContext } from '@/shared/providers/RootLayoutProvider';
 import { loginUrl, safeReturnPath } from '@/shared/utils/area';
 import { withBasePath } from '@/shared/utils/base-path';
 import { showErrorPopup } from '@/shared/utils/error-popup';
+import { SITE_NAME } from '@/shared/utils/site';
 import UserTopBar from '../_components/UserTopBar';
 import { FIND_LOGIN_ID_PATH, loginErrorMessage, snsLoginCallbackUrl, withReturnUrl } from './login-flow';
 import { TEST_LOGIN_ROUTE } from './test-login';
@@ -68,7 +69,7 @@ export default function LoginContent({returnUrl, error, testLogin = false}: Logi
                 <div className={styles.body}>
                     {/* 브랜드 */}
                     <div className={styles.brand}>
-                        <strong className={styles.logo}>deskless</strong>
+                        <strong className={styles.logo}>{SITE_NAME}</strong>
                         <p className={styles.tagline}>가까운 무인 객실을 지도에서 찾고<br />바로 예약해요</p>
                     </div>
 
