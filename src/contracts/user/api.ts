@@ -1,8 +1,7 @@
 import { AuthType, withAuth } from '@/shared/api/auth';
 import { callQueue } from '@/shared/api/queue';
-import { ApiError, NetworkError, request, sendRequest } from '@/shared/api/request';
-import { withBasePath } from '@/shared/utils/base-path';
-import { ValidationErrorType } from '@/shared/utils/validation';
+import { request } from '@/shared/api/request';
+import { postRoute, routeFailure } from '@/shared/api/route';
 import { UserFindLoginIdConfirmDto, UserFindLoginIdConfirmResultDto } from './dto/user-find-login-id-confirm.dto';
 import { UserFindLoginIdDto, UserFindLoginIdResultDto } from './dto/user-find-login-id.dto';
 import { UserLeaveDto } from './dto/user-leave.dto';
@@ -18,16 +17,6 @@ export type UserSignFormType = Pick<UserSignDto, 'gender' | 'birth' | 'nickname'
 
 /** 가입 route 결과 — ok: 가입 · 로그인 완료 / no-sns: SNS 세션이 없거나 만료(다시 로그인) */
 export type SignWithSnsResultType = {state: 'ok'; is_phone_verified: number} | {state: 'no-sns'};
-
-/** 가입 route 본문(src/app/api/user/sign/route.ts) */
-type SignRouteBodyType = {
-    success: boolean;
-    data?: {is_phone_verified: number};
-    code?: string;
-    message?: string;
-    validation_errors?: Array<ValidationErrorType> | null;
-    retry?: boolean;
-};
 
 /** SNS 세션이 없음 — src/app/api/user/sns-session.ts NO_SNS_CODE 와 같은 값(contracts 는 app 을 가져오지 않는다) */
 const NO_SNS_CODE = 'NO_SNS';
@@ -135,20 +124,7 @@ export function confirmFindLoginId(dto: UserFindLoginIdConfirmDto): Promise<User
  * @param form 성별 · 생년월일 · 닉네임
  */
 export async function signWithSns(form: UserSignFormType): Promise<SignWithSnsResultType> {
-    const response = await sendRequest(withBasePath('/api/user/sign/'), {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({gender: form.gender, birth: form.birth, nickname: form.nickname}),
-    });
-    if (!response.ok) {
-        throw new NetworkError(new Error(`sign route ${response.status}`));
-    }
-
-    const result = (await response.json().catch((): null => null)) as SignRouteBodyType | null;
-    if (!result) {
-        throw new NetworkError(new Error('sign route body'));
-    }
-
+    const result = await postRoute<{is_phone_verified: number}>('/api/user/sign/', {gender: form.gender, birth: form.birth, nickname: form.nickname});
     if (result.success && result.data) {
         return {state: 'ok', is_phone_verified: result.data.is_phone_verified};
     }
@@ -157,5 +133,5 @@ export async function signWithSns(form: UserSignFormType): Promise<SignWithSnsRe
         return {state: 'no-sns'};
     }
 
-    throw new ApiError(result.retry ? 503 : 400, {message: result.message ?? '', validation_errors: result.validation_errors ?? null});
+    throw routeFailure(result);
 }

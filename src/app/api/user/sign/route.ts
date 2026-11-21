@@ -7,7 +7,7 @@ import { NETWORK_ERROR_MESSAGE } from '@/shared/api/error';
 import { QUEUE_PENDING_MESSAGE } from '@/shared/api/queue';
 import { ApiError } from '@/shared/api/request';
 import { setTokenCookies } from '../../cookie/token-cookie';
-import { INVALID_REQUEST_MESSAGE, isSameSiteJson, json } from '../../route-util';
+import { INVALID_REQUEST_MESSAGE, isSameSiteJson, json, textOf } from '../../route-util';
 import { clearSnsSession, NO_SNS_CODE, readSnsAccount } from '../sns-session';
 
 /**
@@ -62,13 +62,4 @@ export async function POST(request: NextRequest): Promise<Response> {
     await setTokenCookies(cookieStore, 'user', result);
     clearSnsSession(cookieStore);
     return json({success: true, data: {is_phone_verified: result.is_phone_verified}});
-}
-
-/**
- * 본문 값 → 글자(아니면 빈 글자 — 백엔드 검증이 칸 오류로 돌려준다)
- *
- * @param value 본문 값
- */
-function textOf(value: unknown): string {
-    return typeof value === 'string' ? value : '';
 }

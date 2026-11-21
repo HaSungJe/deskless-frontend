@@ -5,7 +5,7 @@ import { FormEvent, useContext, useEffect, useState } from 'react';
 import { loginManagerByRoute, ManagerLoginRouteResultType } from '@/contracts/manager/api';
 import { ManagerLoginDto } from '@/contracts/manager/dto/manager-login.dto';
 import { handleApiError } from '@/shared/api/error';
-import { ApiError } from '@/shared/api/request';
+import { LoginFailureType, loginFailureOf } from '@/shared/api/route';
 import ConsoleAuthCard from '@/shared/components/console/ConsoleAuthCard';
 import ConsoleAuthFrame from '@/shared/components/console/ConsoleAuthFrame';
 import Loading from '@/shared/components/Loading';
@@ -26,31 +26,6 @@ type ManagerLoginContentProps = {
     storeCode: string;        // 주소의 업체코드 — 화면에서 받지 않는다
     returnUrl: string | null; // 로그인 뒤 돌아갈 주소
 };
-
-/** 로그인 실패 띠 — 받은 문구 · 정지 사유 */
-type LoginFailureType = {
-    message: string;             // "잘못된 로그인 정보입니다." · "이용이 제한된 계정입니다."
-    blockComment: string | null; // 정지 사유(403)
-};
-
-/** 문구 없이 실패했을 때 */
-const LOGIN_FAILED_MESSAGE = '로그인하지 못했어요. 잠시 뒤 다시 시도해 주세요.';
-
-/**
- * 띠로 보일 실패인지 — 칸 오류가 없는 ApiError(로그인 처리가 넘긴 백엔드 문구 · 다시 시도)
- * - 컴포넌트 밖(React Compiler — catch 안 값 계산을 건너뛴다)
- *
- * @param error 로그인 처리 실패
- * @returns 띠 내용, 칸 오류 · 그 밖의 오류면 null(공통 처리)
- */
-function loginFailureOf(error: unknown): LoginFailureType | null {
-    if (!(error instanceof ApiError) || (error.body.validation_errors?.length ?? 0) > 0) {
-        return null;
-    }
-
-    const blockComment = typeof error.body.block_comment === 'string' && error.body.block_comment ? error.body.block_comment : null;
-    return {message: error.body.message || LOGIN_FAILED_MESSAGE, blockComment};
-}
 
 /**
  * M1 업체 로그인 — 주소의 업체코드로 업체 확인(업체명 제목) → 아이디 · 비밀번호 → 로그인 처리 route → 비밀번호 변경 · 돌아갈 주소

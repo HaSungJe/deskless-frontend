@@ -1,0 +1,13 @@
+/* A2 대시보드 자리 — 머리 · 준비 중 안내(Phase 17 에서 시안 A2-dashboard 로) */
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+}
+
+.title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+}

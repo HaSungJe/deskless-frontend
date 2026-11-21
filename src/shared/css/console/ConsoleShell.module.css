@@ -125,6 +125,12 @@
     font-weight: 400;
 }
 
+/* 지금 화면이면(관리자 비밀번호 변경 — 콘솔 안) */
+.passwordLink[aria-current='page'] {
+    color: var(--primary-strong);
+    font-weight: 700;
+}
+
 /* 화면 자리 */
 .page {
     display: flex;

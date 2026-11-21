@@ -8,10 +8,8 @@ import { handleApiError } from '@/shared/api/error';
 import ConsoleShell from '@/shared/components/console/ConsoleShell';
 import { visibleMenu } from '@/shared/components/console/console-menu';
 import Badge from '@/shared/components/ui/display/Badge';
+import useConsoleLogout from '@/shared/hooks/useConsoleLogout';
 import { AuthContext } from '@/shared/providers/RootLayoutProvider';
-import { AREA_LOGIN_PATH } from '@/shared/utils/area';
-import { replaceDocument } from '@/shared/utils/base-path';
-import { showErrorPopup } from '@/shared/utils/error-popup';
 import { MANAGER_AUTH_BADGE, shortStoreCode } from '../manager-auth';
 import { ManagerConsoleContext } from './manager-console-context';
 import { MANAGER_MENU } from './manager-menu';
@@ -20,9 +18,6 @@ import styles from '@/app/css/manager/ManagerConsoleLayoutContent.module.css';
 type ManagerConsoleLayoutContentProps = {
     children: React.ReactNode;
 };
-
-/** 토큰 쿠키를 지우지 못함 */
-const LOGOUT_FAILED_MESSAGE = '로그아웃하지 못했어요. 잠시 뒤 다시 시도해 주세요.';
 
 /** 비밀번호 변경 — 상단 바 링크(띠 없이) */
 const PASSWORD_PATH = '/manager/password/';
@@ -38,12 +33,12 @@ export default function ManagerConsoleLayoutContent({children}: ManagerConsoleLa
     const pathname = usePathname();                                                       // 지금 주소 — 메뉴 강조
     const auth = useContext(AuthContext);                                                 // 매니저 토큰
     const loadStore = useEffectEvent((signal: AbortSignal) => getMyStore(auth, signal)); // 그때의 auth 로 내 업체 상세
+    const {loggingOut, logout} = useConsoleLogout();                                      // ⑤ 로그아웃 — 토큰 · 계정 쿠키만 지우고(업체코드 쿠키는 남는다) 업체 로그인 주소 안내 문서 → 기억한 업체 로그인
 
     // 상태
     const [store, setStore] = useState<StoreMineResultDto | null>(null);  // 내 업체 상세
     const [account, setAccount] = useState<AreaAccountType | null>(null); // 기억한 계정
     const [accountLoaded, setAccountLoaded] = useState<boolean>(false);   // 계정 쿠키를 다 읽었나 — 업체 총관리자 전용 화면이 기다린다
-    const [loggingOut, setLoggingOut] = useState<boolean>(false);         // 로그아웃 중 — 두 번 누름 막기
 
     // 계산 값
     const menu = visibleMenu(MANAGER_MENU, account?.auth_id ?? null);            // ④ 업체 관리자 메뉴는 업체 총관리자만
@@ -83,19 +78,6 @@ export default function ManagerConsoleLayoutContent({children}: ManagerConsoleLa
         }
 
         return next;
-    }
-
-    async function logout(): Promise<void> {
-        // ⑤ 로그아웃 — 토큰 · 계정 쿠키만 지우고(업체코드 쿠키는 남는다) 업체 로그인 주소 안내 문서를 새로 연다 → 기억한 업체 로그인
-        setLoggingOut(true);
-        const deleted = await auth.logout();
-        if (!deleted) {
-            setLoggingOut(false);
-            showErrorPopup(LOGOUT_FAILED_MESSAGE);
-            return;
-        }
-
-        replaceDocument(AREA_LOGIN_PATH.manager);
     }
 
     return (

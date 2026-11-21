@@ -1,8 +1,7 @@
 import { AuthType, withAuth } from '@/shared/api/auth';
 import { callQueue } from '@/shared/api/queue';
-import { ApiError, NetworkError, request, sendRequest } from '@/shared/api/request';
-import { withBasePath } from '@/shared/utils/base-path';
-import { ValidationErrorType } from '@/shared/utils/validation';
+import { request } from '@/shared/api/request';
+import { postRoute, routeFailure } from '@/shared/api/route';
 import { ManagerFindLoginIdConfirmDto, ManagerFindLoginIdConfirmResultDto } from './dto/manager-find-login-id-confirm.dto';
 import { ManagerFindLoginIdDto, ManagerFindLoginIdResultDto } from './dto/manager-find-login-id.dto';
 import { ManagerLoginDto, ManagerLoginResultDto } from './dto/manager-login.dto';
@@ -33,16 +32,6 @@ export type ManagerLoginRouteResultType = {
     is_password_change_required: number; // 1 이면 비밀번호 변경으로
 };
 
-/** 로그인 처리 route 본문(src/app/api/manager/login/route.ts) */
-type ManagerLoginRouteBodyType = {
-    success: boolean;
-    data?: ManagerLoginRouteResultType;
-    message?: string;
-    validation_errors?: Array<ValidationErrorType> | null;
-    block_comment?: string | null;
-    retry?: boolean;
-};
-
 /**
  * 매니저 토큰 재발급 — 동기 · 공개 (POST /admin-service/manager/token-refresh)
  *
@@ -68,25 +57,12 @@ export function loginManager(dto: ManagerLoginDto): Promise<ManagerLoginResultDt
  * @param dto 업체코드 · 아이디 · 비밀번호
  */
 export async function loginManagerByRoute(dto: ManagerLoginDto): Promise<ManagerLoginRouteResultType> {
-    const response = await sendRequest(withBasePath('/api/manager/login/'), {
-        method: 'POST',
-        headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify({store_code: dto.store_code, login_id: dto.login_id, login_pw: dto.login_pw}),
-    });
-    if (!response.ok) {
-        throw new NetworkError(new Error(`manager login route ${response.status}`));
-    }
-
-    const result = (await response.json().catch((): null => null)) as ManagerLoginRouteBodyType | null;
-    if (!result) {
-        throw new NetworkError(new Error('manager login route body'));
-    }
-
+    const result = await postRoute<ManagerLoginRouteResultType>('/api/manager/login/', {store_code: dto.store_code, login_id: dto.login_id, login_pw: dto.login_pw});
     if (result.success && result.data) {
         return result.data;
     }
 
-    throw new ApiError(result.retry ? 503 : 400, {message: result.message ?? '', validation_errors: result.validation_errors ?? null, block_comment: result.block_comment ?? null});
+    throw routeFailure(result, true);
 }
 
 /**

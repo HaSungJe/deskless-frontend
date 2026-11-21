@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import Button from '@/shared/components/ui/button/Button';
-import { activeMenuHref, ConsoleMenuItemType } from './console-menu';
+import { activeMenuHref, ConsoleMenuItemType, isCurrentPath } from './console-menu';
 import styles from '@/shared/css/console/ConsoleShell.module.css';
 
 type ConsoleShellProps = {
@@ -28,7 +28,8 @@ const LOGO = <svg className={styles.mark} viewBox="0 0 28 28" aria-hidden="true"
  */
 export default function ConsoleShell({areaName, menu, pathname, heading, account, passwordHref, loggingOut, onLogout, children}: ConsoleShellProps): React.ReactNode {
     // 계산 값
-    const activeHref = activeMenuHref(pathname, menu); // 강조할 메뉴
+    const activeHref = activeMenuHref(pathname, menu);        // 강조할 메뉴
+    const onPassword = isCurrentPath(pathname, passwordHref); // 비밀번호 변경 화면 — 상단 바 링크 강조(관리자는 콘솔 안)
 
     return (
         // 콘솔
@@ -52,7 +53,7 @@ export default function ConsoleShell({areaName, menu, pathname, heading, account
                     <div className={styles.topLeft}>{heading}</div>
                     <div className={styles.topRight}>
                         {account}
-                        <Link href={passwordHref} className={styles.passwordLink}>비밀번호 변경</Link>
+                        <Link href={passwordHref} className={styles.passwordLink} aria-current={onPassword ? 'page' : undefined}>비밀번호 변경</Link>
                         <Button size="sm" disabled={loggingOut} onClick={onLogout}>로그아웃</Button>
                     </div>
                 </header>

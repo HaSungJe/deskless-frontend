@@ -35,6 +35,16 @@ export function activeMenuHref(pathname: string, menu: ReadonlyArray<ConsoleMenu
 }
 
 /**
+ * 지금 주소가 그 주소인지 — 끝 '/' 는 보지 않는다(상단 바 비밀번호 변경 강조)
+ *
+ * @param pathname 지금 주소
+ * @param href 견줄 주소
+ */
+export function isCurrentPath(pathname: string, href: string): boolean {
+    return trimSlash(pathname) === trimSlash(href);
+}
+
+/**
  * 끝 / 떼기(루트는 그대로)
  *
  * @param path 주소

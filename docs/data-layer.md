@@ -66,15 +66,16 @@
 | `POST /api/cookie/<area>/refresh/` | 401 뒤 강제 재발급 | `GET` 의 재발급과 같음 — 로그인이 끝났으면 두 쿠키 삭제, 일시 실패면 `retry: true` |
 | `GET /api/cookie/<area>/account/` | 로그인 때 기억한 계정 읽기(쓰기는 로그인 route 만) | `{success, data: {login_id, auth_id}}` / 없으면 `{success: false}` |
 
-이용자 로그인 · 가입 route(`src/app/api/user/` — 사용자 2026-11-16, SNS 계정을 브라우저에 내보내지 않으려고 서버가 백엔드까지 부른다)와 매니저 로그인 route(`src/app/api/manager/login/` — 사용자 2026-11-18, 로그인 IP 와 재발급 IP 를 맞추려고):
+이용자 로그인 · 가입 route(`src/app/api/user/` — 사용자 2026-11-16, SNS 계정을 브라우저에 내보내지 않으려고 서버가 백엔드까지 부른다)와 매니저 · 관리자 로그인 route(`src/app/api/manager/login/` — 사용자 2026-11-18 · `src/app/api/admin/login/` — Phase 15, 로그인 IP 와 재발급 IP 를 맞추려고 — 앞부분은 `backendLogin`(`src/app/api/route-util.ts`) 하나, 화면 쪽은 `postRoute` · `routeFailure`(`src/shared/api/route.ts`)):
 
 | route handler | 하는 일 | 결과 |
 |---|---|---|
 | `GET /api/user/sns-login/?return_url=` | next-auth callbackUrl — SNS 세션(`getToken`)으로 백엔드 `user/login` → 이용자 토큰 쿠키(`setTokenCookies`) · next-auth 쿠키 삭제 | 303 `afterLoginPath`(휴대폰 인증 전이면 `/phone-verification/`) / 가입 전(404) `/signup/?sns=…` / `/login/?error=sns · login · retry` |
 | `POST /api/manager/login/` | 같은 사이트 JSON `{store_code, login_id, login_pw}` → 백엔드 `manager/login`(동기) → 매니저 토큰 · 계정 · 업체코드 쿠키 | `{success, data: {is_password_change_required}}` / 거절(4xx) `{success: false, message, validation_errors, block_comment}`(쿠키 안 씀) / `{success: false, message, retry: true}` |
+| `POST /api/admin/login/` | 같은 사이트 JSON `{login_id, login_pw}` → 백엔드 `admin/login`(동기) → 관리자 토큰 · 계정 쿠키(업체코드 쿠키 없음) | 매니저 로그인과 같다 |
 | `POST /api/user/sign/` | 같은 사이트 JSON `{gender, birth, nickname}` + SNS 세션 → 백엔드 `user/sign`(큐, 결과 없이 끝나면 `user/login` 으로 한 번 다시 조회) → 토큰 쿠키 · next-auth 쿠키 삭제(https 의 `__Secure-` · `__Host-` 이름은 secure 로) | `{success, data: {is_phone_verified}}` / `{success: false, code: 'NO_SNS'}` / `{success: false, message, validation_errors}` / `{success: false, message, retry: true}` |
 
-- ⚠️ 백엔드 재발급은 지금 로그인 때 IP 와 재발급 요청 IP 가 다르면 401 이다 — 재발급은 Next 서버가 부르므로 배포 환경에서는 access 토큰이 끝날 때 로그인이 풀린다(로컬은 IP 가 같아 영향 없음). 백엔드에 IP 검사 완화를 요청했다(2026-11-16). 이용자(`/api/user/sns-login/`) · 매니저(`/api/manager/login/`)는 로그인도 Next 서버가 부르므로 IP 가 같다 — 관리자 로그인(Phase 15)도 같은 모양으로.
+- ⚠️ 백엔드 재발급은 지금 로그인 때 IP 와 재발급 요청 IP 가 다르면 401 이다 — 재발급은 Next 서버가 부르므로 배포 환경에서는 access 토큰이 끝날 때 로그인이 풀린다(로컬은 IP 가 같아 영향 없음). 백엔드에 IP 검사 완화를 요청했다(2026-11-16). 이용자(`/api/user/sns-login/`) · 매니저(`/api/manager/login/`) · 관리자(`/api/admin/login/`)는 로그인도 Next 서버가 부르므로 IP 가 같다.
 - 영역별 재발급 API: 이용자 `/user-service/user/token-refresh` · 매니저 `/admin-service/manager/token-refresh` · 관리자 `/admin-service/admin/token-refresh` (`src/contracts/{user,manager,admin}/api.ts`, 본문 `{refresh_token}`).
 - 클라이언트는 쿠키를 직접 읽지 않고 `src/shared/api/cookie.ts` 로 route handler 를 부른다 — `getAreaToken` · `saveAreaTokens` · `deleteAreaTokens` · `getAreaAccount`(로그인 때 기억한 아이디 · 권한) · `refreshAreaToken`(같은 영역 동시 재발급은 진행 중인 하나를 나눈다 — refresh 토큰이 재발급마다 바뀌어서. 로그인이 끝났으면 `null`, `retry` · 응답 없음이면 `NetworkError`). 주소는 `trailingSlash` 에 맞춰 `/` 로 끝내고 앞에 basePath 를 붙인다(`withBasePath` — docs/architecture.md "basePath").
 

@@ -20,7 +20,7 @@ flowchart LR
   P12["Phase 12 · 상품·객실 (5)"]:::done
   P13["Phase 13 · 예약 현황 (1)"]:::done
   P14["Phase 14 · 대시보드·업체 관리자 (3)"]:::done
-  P15["Phase 15 · 관리자 로그인 (2)"]:::todo
+  P15["Phase 15 · 관리자 로그인 (2)"]:::inprog
   P16["Phase 16 · 입점 신청·업체 관리 (4)"]:::todo
   P17["Phase 17 · 통계·계정·이용자 (5)"]:::todo
   P2 --> P3
@@ -70,13 +70,13 @@ flowchart LR
 - Phase 12 — 상품·객실 · 유닛 5개 · 의존: Phase 10 · 푼다: Phase 13 · 파일 집합: src/app/manager/(console)/plans · room-groups · rooms, src/contracts/room, src/contracts/common/lookup.ts(#62) · done
 - Phase 13 — 예약 현황 · 유닛 1개 · 의존: Phase 12, Phase 8 · 푼다: — · 파일 집합: src/app/manager/(console)/reservations, src/contracts/reservation · done
 - Phase 14 — 대시보드·업체 관리자 · 유닛 3개 · 의존: Phase 10 · 푼다: Phase 17 · 파일 집합: src/app/manager/(console)/page · staff, src/contracts/stats, src/contracts/manager · done
-- Phase 15 — 관리자 로그인 · 유닛 2개 · 의존: Phase 10 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/admin/login · (console)/layout · password, src/contracts/admin · todo
+- Phase 15 — 관리자 로그인 · 유닛 2개 · 의존: Phase 10 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/admin/login · (console)/layout · password, src/contracts/admin · in-progress
 - Phase 16 — 입점 신청·업체 관리 · 유닛 4개 · 의존: Phase 15, Phase 11, Phase 9 · 푼다: — · 파일 집합: src/app/admin/(console)/store-applications · stores, src/contracts/store · todo
 - Phase 17 — 통계·계정·이용자 · 유닛 5개 · 의존: Phase 15, Phase 14, Phase 9 · 푼다: — · 파일 집합: src/app/admin/(console)/page · managers · users, src/contracts/stats · manager · user · todo
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: 진행 중 없음 · Next up: Phase 15
+지금: Phase 15 진행 중 · Next up: Phase 15
 
 ## 지금 할 일
 Phase 15 관리자 로그인 시작하기
@@ -363,8 +363,8 @@ Phase 15 관리자 로그인 시작하기
 ### Phase 15 — 관리자 로그인 (A1) · depends: Phase 10
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 51 | A1 관리자 로그인 | `/admin/login` 아이디 · 비밀번호 → 토큰 · `auth_id`, 변경 필요면 `/admin/password` — 관리자 콘솔 layout · 메뉴 포함 | — | 31 | todo |
-| 52 | A1 비밀번호 변경 | `/admin/password` 현재 · 새 비밀번호(큐) | — | 51 | todo |
+| 51 | A1 관리자 로그인 | `/admin/login` 아이디 · 비밀번호 → 토큰 · `auth_id`, 변경 필요면 `/admin/password` — 관리자 콘솔 layout · 메뉴 포함 | — | 31 | in-progress |
+| 52 | A1 비밀번호 변경 | `/admin/password` 현재 · 새 비밀번호(큐) | — | 51 | in-progress |
 
 **Expected pages**:
 
@@ -372,6 +372,9 @@ Phase 15 관리자 로그인 시작하기
 |------|-------|--------------|---------|
 | #51 | `/admin/login`, `src/app/admin/(console)/layout.tsx` | A1 · `POST admin/login` | 관리자 로그인 |
 | #52 | `/admin/password` | A1 · `PATCH admin/password` | 비밀번호 변경 |
+
+> 결정거리 — 대시보드(Phase 17) 전까지 첫 화면은 준비 중 안내, 메뉴는 시안대로 5개(사용자 2026-11-21). spec: `.beaver/output/spec/admin/admin-login-spec.md` · plan: `.beaver/output/plan/admin/admin-login-plan.md`.
+> build 완료(2026-11-22) — report: `.beaver/output/report/admin/admin-login-report.md`. 업체 · 관리자 로그인 처리 앞부분을 `backendLogin`, route 부르기를 `postRoute` · `routeFailure` · `loginFailureOf`, 콘솔 로그아웃을 `useConsoleLogout` 으로 함께 씀. 테스트 90파일 420건 통과.
 
 ### Phase 16 — 입점 신청·업체 관리 (A3 · A4) · depends: Phase 15, Phase 11, Phase 9
 | # | Unit | Goal | Key decision | Depends | Status |
