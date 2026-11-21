@@ -20,7 +20,7 @@ flowchart LR
   P12["Phase 12 · 상품·객실 (5)"]:::done
   P13["Phase 13 · 예약 현황 (1)"]:::done
   P14["Phase 14 · 대시보드·업체 관리자 (3)"]:::done
-  P15["Phase 15 · 관리자 로그인 (2)"]:::inprog
+  P15["Phase 15 · 관리자 로그인 (2)"]:::done
   P16["Phase 16 · 입점 신청·업체 관리 (4)"]:::todo
   P17["Phase 17 · 통계·계정·이용자 (5)"]:::todo
   P2 --> P3
@@ -70,18 +70,20 @@ flowchart LR
 - Phase 12 — 상품·객실 · 유닛 5개 · 의존: Phase 10 · 푼다: Phase 13 · 파일 집합: src/app/manager/(console)/plans · room-groups · rooms, src/contracts/room, src/contracts/common/lookup.ts(#62) · done
 - Phase 13 — 예약 현황 · 유닛 1개 · 의존: Phase 12, Phase 8 · 푼다: — · 파일 집합: src/app/manager/(console)/reservations, src/contracts/reservation · done
 - Phase 14 — 대시보드·업체 관리자 · 유닛 3개 · 의존: Phase 10 · 푼다: Phase 17 · 파일 집합: src/app/manager/(console)/page · staff, src/contracts/stats, src/contracts/manager · done
-- Phase 15 — 관리자 로그인 · 유닛 2개 · 의존: Phase 10 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/admin/login · (console)/layout · password, src/contracts/admin · in-progress
+- Phase 15 — 관리자 로그인 · 유닛 2개 · 의존: Phase 10 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/admin/login · (console)/layout · password, src/contracts/admin · done
 - Phase 16 — 입점 신청·업체 관리 · 유닛 4개 · 의존: Phase 15, Phase 11, Phase 9 · 푼다: — · 파일 집합: src/app/admin/(console)/store-applications · stores, src/contracts/store · todo
 - Phase 17 — 통계·계정·이용자 · 유닛 5개 · 의존: Phase 15, Phase 14, Phase 9 · 푼다: — · 파일 집합: src/app/admin/(console)/page · managers · users, src/contracts/stats · manager · user · todo
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: Phase 15 진행 중 · Next up: Phase 15
+지금: 진행 중 없음 · Next up: Phase 16
 
 ## 지금 할 일
-Phase 15 관리자 로그인 시작하기
-- #51 A1 관리자 로그인
-- #52 A1 비밀번호 변경
+Phase 16 입점 신청·업체 관리 시작하기
+- #53 A3 입점 신청 목록
+- #54 A3 입점 신청 상세
+- #55 A4 업체 목록
+- #56 A4 업체 상세
 - ok → 다음
 
 ## Scope & Actors
@@ -363,8 +365,8 @@ Phase 15 관리자 로그인 시작하기
 ### Phase 15 — 관리자 로그인 (A1) · depends: Phase 10
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 51 | A1 관리자 로그인 | `/admin/login` 아이디 · 비밀번호 → 토큰 · `auth_id`, 변경 필요면 `/admin/password` — 관리자 콘솔 layout · 메뉴 포함 | — | 31 | in-progress |
-| 52 | A1 비밀번호 변경 | `/admin/password` 현재 · 새 비밀번호(큐) | — | 51 | in-progress |
+| 51 | A1 관리자 로그인 | `/admin/login` 아이디 · 비밀번호 → 토큰 · `auth_id`, 변경 필요면 `/admin/password` — 관리자 콘솔 layout · 메뉴 포함 | — | 31 | done(b8879cc) |
+| 52 | A1 비밀번호 변경 | `/admin/password` 현재 · 새 비밀번호(큐) | — | 51 | done(b8879cc) |
 
 **Expected pages**:
 
@@ -412,8 +414,8 @@ Phase 15 관리자 로그인 시작하기
 | #60 | `/admin/users` | A6 · `GET user` | 이용자 목록 |
 | #61 | `/admin/users/[user_id]` | A6 · `GET user/:id` · `/reservation` · `PATCH /state` | 이용 제한 |
 
-**Progress**: 51/62 units done (14/17 phases)
-**Next up**: Phase 15 관리자 로그인 — 의존(Phase 10) 모두 완료
+**Progress**: 53/62 units done (15/17 phases)
+**Next up**: Phase 16 입점 신청·업체 관리 — 의존(Phase 15, Phase 11, Phase 9) 모두 완료
 
 ## Cross-Cutting Rules
 - 주소 · 화면 키 · 쓰는 API 는 `frontend/screens.md` 그대로. ★ 주소(`/reservation/[reservation_id]` · `…/cancel-request`)는 SMS 링크라 바꾸지 않는다.
