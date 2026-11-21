@@ -27,7 +27,7 @@
 | `src/shared/api/cookie.ts` | modified — `SnsLoginType` · `getSNSAccessToken` · `deleteSNSAccessToken` 삭제 |
 | `src/app/(user)/layout.tsx` · `UserLayoutContent.tsx` | new — 모바일 틀 · 하단 탭 · 내 정보 |
 | `src/app/(user)/_components/UserMeProvider.tsx` · `UserTopBar.tsx` · `UserTabBar.tsx` · `MemberStateBand.tsx` | new |
-| `src/app/(user)/HomeContent.tsx` | modified — U1 자리의 머리(roomless · 로그인 / 내 예약) |
+| `src/app/(user)/HomeContent.tsx` | modified — U1 자리의 머리(deskless · 로그인 / 내 예약) |
 | `src/app/(user)/login/page.tsx` · `LoginContent.tsx` · `login-flow.ts` | page rewritten · new |
 | `src/app/(user)/signup/page.tsx` · `SignupContent.tsx` · `dto.ts` · `birth.ts` | new |
 | `src/app/(user)/phone-verification/page.tsx` · `PhoneVerificationContent.tsx` | new |
@@ -860,9 +860,9 @@ export default function HomeContent(): React.ReactNode {
     return (
         // 지도 · 주변 업체
         <div className={styles.home}>
-            {/* 머리 — roomless · 로그인 / 내 예약 */}
+            {/* 머리 — deskless · 로그인 / 내 예약 */}
             <header className={styles.header}>
-                <strong className={styles.brand}>roomless</strong>
+                <strong className={styles.brand}>deskless</strong>
                 {auth.isLogin
                     ? <Link href="/reservation/" className={styles.headerLink}>내 예약</Link>
                     : <Link href={loginUrl('user', '/')} className={styles.headerLink}>로그인</Link>}
@@ -1078,7 +1078,7 @@ export default function LoginContent({returnUrl, error}: LoginContentProps): Rea
             <div className={styles.body}>
                 {/* 브랜드 */}
                 <div className={styles.brand}>
-                    <strong className={styles.logo}>roomless</strong>
+                    <strong className={styles.logo}>deskless</strong>
                     <p className={styles.tagline}>가까운 무인 객실을 지도에서 찾고<br />바로 예약해요</p>
                 </div>
 

@@ -74,7 +74,7 @@ async function renderDetail(): Promise<HTMLElement> {
 }
 
 beforeEach(() => {
-    vi.stubEnv('NEXT_PUBLIC_SERVER_URL', 'https://roomless.kr');
+    vi.stubEnv('NEXT_PUBLIC_SERVER_URL', 'https://deskless.kr');
     vi.stubEnv('NEXT_PUBLIC_LOCAL_SERVER_PREFIX', '');
     getMyStoreApplication.mockReset();
     issueStoreApplicationFileUrl.mockReset().mockResolvedValue({file_key: 'k', upload_url: 'https://s3/put', expires_at: '2026-11-08T03:10:00.000Z'});
@@ -166,7 +166,7 @@ describe('StoreApplicationDetailContent', () => {
 
         expect(screen.getByText('입점이 승인되었어요.')).toBeTruthy();
         expect(screen.getByText(STORE_CODE)).toBeTruthy();
-        expect(screen.getByText(`https://roomless.kr/manager/${STORE_CODE}/login/`)).toBeTruthy();
+        expect(screen.getByText(`https://deskless.kr/manager/${STORE_CODE}/login/`)).toBeTruthy();
         expect(screen.getByRole('button', {name: '로그인 주소 복사'})).toBeTruthy();
         expect(screen.getByAltText('사업자등록증')).toBeTruthy();
         expect(screen.queryByRole('button', {name: /지우기/})).toBeNull();

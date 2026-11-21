@@ -23,9 +23,9 @@ describe('login-flow 주소 · 문구', () => {
     });
 
     it('[SUCCESS] basePath 로 띄우면 callbackUrl 앞에 basePath — next-auth 가 origin 뒤에 그대로 붙인다', () => {
-        vi.stubEnv('NEXT_PUBLIC_LOCAL_SERVER_PREFIX', '/roomless');
+        vi.stubEnv('NEXT_PUBLIC_LOCAL_SERVER_PREFIX', '/deskless');
 
-        expect(snsLoginCallbackUrl('/stores/1/')).toBe('/roomless/api/user/sns-login/?return_url=%2Fstores%2F1%2F');
+        expect(snsLoginCallbackUrl('/stores/1/')).toBe('/deskless/api/user/sns-login/?return_url=%2Fstores%2F1%2F');
 
         vi.unstubAllEnvs();
     });

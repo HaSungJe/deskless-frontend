@@ -24,7 +24,7 @@
 | `src/shared/api/cookie.ts` | modified | `SnsLoginType` · `getSNSAccessToken` · `deleteSNSAccessToken` 삭제 |
 | `src/app/(user)/layout.tsx` · `UserLayoutContent.tsx` | created | 모바일 틀 · 주 탭 하단 탭 · 내 정보 Provider |
 | `src/app/(user)/_components/UserMeProvider.tsx` · `UserTopBar.tsx` · `UserTabBar.tsx` · `MemberStateBand.tsx` | created | |
-| `src/app/(user)/HomeContent.tsx` | modified | 머리(roomless · 로그인 / 내 예약) |
+| `src/app/(user)/HomeContent.tsx` | modified | 머리(deskless · 로그인 / 내 예약) |
 | `src/app/(user)/login/page.tsx` · `LoginContent.tsx` · `login-flow.ts` | rewritten · created | |
 | `src/app/(user)/signup/page.tsx` · `SignupContent.tsx` · `dto.ts` · `birth.ts` | created | |
 | `src/app/(user)/phone-verification/page.tsx` · `PhoneVerificationContent.tsx` | created | `AuthGuard` |

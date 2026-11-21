@@ -94,7 +94,7 @@ describe('callQueue', () => {
     it('[SUCCESS] pending 이면 null (다시 조회)', async () => {
         fetchMock.mockResolvedValue(sseResponse([ACCEPTED, sseEvent('pending', {request_id: 'r1', message: '처리 중입니다.'})]));
 
-        const result = await callQueue({method: 'PATCH', path: '/admin-service/store/mine', body: {store_name: '룸리스'}, token: 't'});
+        const result = await callQueue({method: 'PATCH', path: '/admin-service/store/mine', body: {store_name: '바로방'}, token: 't'});
 
         expect(result).toBeNull();
     });
@@ -131,7 +131,7 @@ describe('callQueue', () => {
     it('[SUCCESS] token 이 null 이면 Authorization 헤더를 붙이지 않는다', async () => {
         fetchMock.mockResolvedValue(sseResponse([ACCEPTED, sseEvent('done', null)]));
 
-        await callQueue({method: 'POST', path: '/user-service/store/applications', body: {store_name: '룸리스'}, token: null});
+        await callQueue({method: 'POST', path: '/user-service/store/applications', body: {store_name: '바로방'}, token: null});
 
         const {init} = fetchCall();
         expect(init.headers).not.toHaveProperty('Authorization');

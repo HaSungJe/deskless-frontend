@@ -8,7 +8,7 @@
 - Included features: Phase 3 영역별 로그인 기반(영역 판별 · 영역별 토큰 쿠키 · 401 재발급 `withAuth` · `AuthGuard` · 오류 팝업) + build 중 사용자 요청(예전 아이디 로그인 삭제, 테스트를 `src/test/` 로, `npm run lint` 오류 · 경고 정리) + 리뷰 뒤 고침
 - Change scope: 코드 · 테스트 약 60파일(새 · 고침 · 삭제 7 · 옮김 8), 문서 AGENTS.md · docs 5개 · beaver 기록(spec · plan · report · 로드맵 · 이 문서)
 - 검증: `npx vitest run` 14파일 85건 통과, `npx next typegen && npx tsc --noEmit` 소스 오류 0(`.next/dev/types` 의 옛 route 참조 3건은 dev 서버 산출물). `npm run lint` · `/dev/ui/` 화면 확인은 사용자 실행 대상이라 아직.
-- 리뷰 방식: 별도 에이전트가 읽기 전용으로 검토(옆 저장소 `roomless-backend` 의 재발급 코드까지) → 지적을 코드로 확인한 뒤 고침.
+- 리뷰 방식: 별도 에이전트가 읽기 전용으로 검토(옆 저장소 `deskless-backend` 의 재발급 코드까지) → 지적을 코드로 확인한 뒤 고침.
 
 ## Convention Check (against AGENTS.md)
 | Item | Result | Notes |

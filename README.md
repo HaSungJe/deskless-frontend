@@ -1,6 +1,6 @@
-# roomless-frontend
+# deskless-frontend
 
-roomless 이용자 · 업체 관리자 · 관리자 화면 (Next.js 16 App Router · React 19).
+deskless 이용자 · 업체 관리자 · 관리자 화면 (Next.js 16 App Router · React 19).
 
 화면 · API 지침은 [frontend/README.md](frontend/README.md), 코드 구조와 규칙은 [AGENTS.md](AGENTS.md).
 

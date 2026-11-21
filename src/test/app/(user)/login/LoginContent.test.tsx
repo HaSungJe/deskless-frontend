@@ -65,14 +65,14 @@ describe('LoginContent', () => {
     });
 
     it('[SUCCESS] basePath 로 띄우면 next-auth 주소 · callbackUrl 앞에 basePath', () => {
-        vi.stubEnv('NEXT_PUBLIC_LOCAL_SERVER_PREFIX', '/roomless');
+        vi.stubEnv('NEXT_PUBLIC_LOCAL_SERVER_PREFIX', '/deskless');
         renderLogin(null);
 
         fireEvent.click(screen.getByRole('button', {name: '카카오로 계속하기'}));
 
-        expect(sessionProvider).toHaveBeenLastCalledWith(expect.objectContaining({basePath: '/roomless/api/auth'}));
+        expect(sessionProvider).toHaveBeenLastCalledWith(expect.objectContaining({basePath: '/deskless/api/auth'}));
         expect(signIn).toHaveBeenCalledTimes(1);
-        expect(signIn).toHaveBeenCalledWith('kakao', {callbackUrl: '/roomless/api/user/sns-login/?return_url=%2Fstores%2F1%2F'});
+        expect(signIn).toHaveBeenCalledWith('kakao', {callbackUrl: '/deskless/api/user/sns-login/?return_url=%2Fstores%2F1%2F'});
     });
 
     it('[FAIL:error] error 가 있으면 한 번 안내하고 주소에서 error 를 지운다', () => {

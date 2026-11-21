@@ -19,7 +19,7 @@ export default function ConsoleAuthFrame({areaName, children}: ConsoleAuthFrameP
         // 바탕
         <div className={styles.frame}>
             {/* 로고 */}
-            <div className={styles.logo}>{LOGO}<div><b>roomless</b><small>{areaName}</small></div></div>
+            <div className={styles.logo}>{LOGO}<div><b>deskless</b><small>{areaName}</small></div></div>
 
             {/* 카드 */}
             {children}

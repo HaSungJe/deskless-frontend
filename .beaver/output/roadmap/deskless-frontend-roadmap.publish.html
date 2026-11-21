@@ -1,4 +1,4 @@
-<title>roomless-frontend 로드맵</title>
+<title>deskless-frontend 로드맵</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Do+Hyeon&family=Noto+Sans+KR:wght@400;500;700&family=IBM+Plex+Mono:wght@500&display=swap">
 <style>
 :root{--ground:#F7F4EF;--panel:#FFFFFF;--ink:#1E1A16;--muted:#6B635A;--line:#E3DCD2;--accent:#D9641E;--accent-soft:#FCEADF;--done:#2F8F5B;--prog:#C98A12;--todo:#9AA0A6;--todo-soft:#EEF0F2;--shadow:0 1px 2px rgba(30,26,22,.05),0 8px 24px rgba(30,26,22,.07)}
@@ -26,7 +26,7 @@ footer{color:var(--muted);font-size:13px;margin-top:36px}
 @media(max-width:640px){.now h1{font-size:32px}.steps li{grid-template-columns:44px 1fr}.steps .cn{display:none}}
 </style>
 <div class="wrap">
-<div class="top"><span><b>roomless-frontend</b> · 로드맵 <span>· 지침서 화면 25개를 공통 기반 → 이용자 → 업체 관리자 → 관리자 순으로</span></span><span>진행 중 없음 · Next up: Phase 16</span></div>
+<div class="top"><span><b>deskless-frontend</b> · 로드맵 <span>· 지침서 화면 25개를 공통 기반 → 이용자 → 업체 관리자 → 관리자 순으로</span></span><span>진행 중 없음 · Next up: Phase 16</span></div>
 
 
 <section class="sofar"><div class="lbl"><span>전체 흐름 · Phase 15 완료 / 0 진행 중 / 1 다음 후보 / 1 예정</span><b>디자인 기반 → 관리자 로그인 완료</b></div>
@@ -50,5 +50,5 @@ footer{color:var(--muted);font-size:13px;margin-top:36px}
 <details><summary>모든 Phase가 지키는 규칙<small>9개</small></summary><div class="body"><ul class="plain"><li>주소 · 화면 키 · 쓰는 API 는 frontend/screens.md 그대로. ★ 주소(/reservation/[reservation_id] · …/cancel-request)는 SMS 링크라 바꾸지 않는다.</li><li>쓰기 API 는 모두 큐 — done 이면 그 화면 조회를 다시 부르고, failed 면 validation_errors 는 칸 옆 · 없으면 message, pending 이면 조회를 다시 불러 확인한다.</li><li>로그인이 필요한 화면은 그 영역 AuthGuard 아래에 둔다. 401 은 그 영역 재발급 한 번 → 또 401 이면 그 영역 로그인(돌아올 주소).</li><li>백엔드 DTO 는 src/contracts/&lt;도메인&gt;/dto/ 사본 그대로 쓰고, 화면 입력 검증도 같은 DTO 로 한다.</li><li>시각은 한국 시각으로 보여 주고, 금액은 원 정수, 여부 값은 1 · 0, 상태 이름은 응답 *_name → 없으면 룩업.</li><li>목록은 page · size + 공통 Pagination, 고르기 상자처럼 전부 필요하면 all_search_yn=Y.</li><li>회원 상태(BLOCK · LEAVE_WAIT) · 업체 상태(SUSPEND) 안내 띠, 업체 총관리자 전용 메뉴 · 탭은 권한으로 숨긴다.</li><li>사진은 JPG · PNG 만. 비공개 파일 주소(사업자등록증)는 10분짜리라 화면을 열 때마다 새로 받는다.</li><li>frontend/changes/ 가 오면 위에서부터 반영하고, 어디까지 반영했는지 이 저장소에 기록한다.</li></ul></div></details>
 <details><summary>방향<small>느슨하게 — 언제든 바뀐다</small></summary><div class="body"><p>백엔드 Phase 27 지침서(frontend/)의 화면 25개(U1~U11 · M1~M8 · A1~A6)를 시안(아티팩트)대로 만든다. 공통 기반(디자인 · API 호출 · 영역별 로그인)을 먼저 깔고, 이용자 화면을 먼저, 그 뒤 업체 관리자 콘솔, 관리자 콘솔 순서로 간다(선택: 사용자 2026-11-13). 순서와 범위는 언제든 바뀔 수 있다.</p></div></details>
 
-<footer>원본: <span class="mono">roomless-frontend-roadmap.md</span> — 이 화면은 그 파일에서 생성된 읽기 전용 뷰. 순서 변경·추가·drop은 대화로 요청하면 md와 함께 갱신된다.</footer>
+<footer>원본: <span class="mono">deskless-frontend-roadmap.md</span> — 이 화면은 그 파일에서 생성된 읽기 전용 뷰. 순서 변경·추가·drop은 대화로 요청하면 md와 함께 갱신된다.</footer>
 </div>

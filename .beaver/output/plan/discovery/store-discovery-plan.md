@@ -663,9 +663,9 @@ export default function HomeContent(): React.ReactNode {
     return (
         // 지도 · 주변 업체
         <div className={styles.home}>
-            {/* 머리 — roomless · 로그인 / 내 예약 */}
+            {/* 머리 — deskless · 로그인 / 내 예약 */}
             <header className={styles.header}>
-                <strong className={styles.brand}>roomless</strong>
+                <strong className={styles.brand}>deskless</strong>
                 {auth.isLogin
                     ? <Link href="/reservation/" className={styles.headerLink}>내 예약</Link>
                     : <Link href={loginUrl('user', '/')} className={styles.headerLink}>로그인</Link>}

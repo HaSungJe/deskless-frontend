@@ -1274,7 +1274,7 @@ function errorField(error: unknown, key: 'code' | 'message'): string | null {
 
 ### 결제 승인 중계 — route handler (#13)
 
-근거: api.md "결제" 3단계("성공 주소에서 프론트 서버가 토스 결제 승인 API(시크릿 키)를 부른다"), 토스 `POST /v1/payments/confirm`(Basic `base64(시크릿 키:)` · `Idempotency-Key` · 본문 `{paymentKey, orderId, amount}`), 백엔드 대조 · 환불(`roomless-backend` `apps/user-service/src/reservation/reservation.service.ts:366-371`). route 응답 · 같은 사이트 검사는 쿠키 route 와 같다(`src/app/api/cookie/token-cookie.ts:66,176`) — 두 곳이 쓰게 되어 `route-util.ts` 로 옮긴다. route 파일은 Next.js 가 허용한 이름(`POST` 등)만 export 하므로 상수 · 함수는 `toss-confirm.ts` 에.
+근거: api.md "결제" 3단계("성공 주소에서 프론트 서버가 토스 결제 승인 API(시크릿 키)를 부른다"), 토스 `POST /v1/payments/confirm`(Basic `base64(시크릿 키:)` · `Idempotency-Key` · 본문 `{paymentKey, orderId, amount}`), 백엔드 대조 · 환불(`deskless-backend` `apps/user-service/src/reservation/reservation.service.ts:366-371`). route 응답 · 같은 사이트 검사는 쿠키 route 와 같다(`src/app/api/cookie/token-cookie.ts:66,176`) — 두 곳이 쓰게 되어 `route-util.ts` 로 옮긴다. route 파일은 Next.js 가 허용한 이름(`POST` 등)만 export 하므로 상수 · 함수는 `toss-confirm.ts` 에.
 
 ```ts
 // src/app/api/route-util.ts — token-cookie.ts 에서 옮김(내용 그대로 + message · code)

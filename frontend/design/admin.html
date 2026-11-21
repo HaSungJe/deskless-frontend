@@ -1,4 +1,4 @@
-<title>roomless 관리자 콘솔</title>
+<title>deskless 관리자 콘솔</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <style>
@@ -234,8 +234,8 @@ textarea.inp{height:auto;min-height:88px;padding:10px 12px;line-height:1.5;resiz
 <div class="page">
 
 <header class="doc-head">
-<p class="eyebrow">roomless · 무인 객실 대여 서비스 · /admin · PC 폭 1440 기준</p>
-<h1 class="doc-title">roomless 관리자 콘솔</h1>
+<p class="eyebrow">deskless · 무인 객실 대여 서비스 · /admin · PC 폭 1440 기준</p>
+<h1 class="doc-title">deskless 관리자 콘솔</h1>
 <p class="doc-lede">총괄관리자 · 관리자가 쓰는 PC 콘솔의 화면 시안입니다. 디자인 기준 → 로그인 → 대시보드 → 입점 신청 · 업체 → 계정 관리 순서로 위에서 아래로 이어집니다. 프론트(Next.js)는 이 시안과 screens.md · api.md · dto/ 를 보고 화면을 그대로 만듭니다. 화면마다 아래의 점선 상자는 같은 주소의 다른 상태(오류 · 결과 · 대화상자)입니다.</p>
 <nav class="toc card list-card" aria-label="화면 목록">
 <div class="tbl-box">
@@ -419,7 +419,7 @@ textarea.inp{height:auto;min-height:88px;padding:10px 12px;line-height:1.5;resiz
 <div class="frame">
 <div class="login">
 <div class="login-box">
-<div class="login-brand"><span class="brand-mark" style="width:36px;height:36px"><svg class="ic" style="width:20px;height:20px" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>roomless 관리자</div>
+<div class="login-brand"><span class="brand-mark" style="width:36px;height:36px"><svg class="ic" style="width:20px;height:20px" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>deskless 관리자</div>
 <div class="card stack g20" style="padding:32px">
 <div class="stack g4"><h4 class="h1">관리자 로그인</h4><p class="sub">총괄관리자 · 관리자 계정으로 로그인합니다.</p></div>
 <div><label class="lbl" for="a1l-id">아이디</label><input class="inp" id="a1l-id" type="text" value="admin" autocomplete="username"></div>
@@ -457,7 +457,7 @@ textarea.inp{height:auto;min-height:88px;padding:10px 12px;line-height:1.5;resiz
 <h3 class="screen-title" id="A1-password-t">A1 비밀번호 변경 — <span class="path">/admin/password</span></h3>
 <div class="frame">
 <div class="top">
-<a class="brand" href="#A2-dashboard"><span class="brand-mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>roomless 관리자</a>
+<a class="brand" href="#A2-dashboard"><span class="brand-mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>deskless 관리자</a>
 <div class="acct"><span class="acct-id">admin</span><span class="badge b-pri">총괄관리자</span><a class="btn btn-sm" href="#A1-password" aria-current="page" style="background:var(--primary-soft);border-color:var(--primary-soft);color:var(--primary-strong);font-weight:700">비밀번호 변경</a><a class="btn btn-s btn-sm" href="#A1-login">로그아웃</a></div>
 </div>
 <div class="shell">
@@ -514,7 +514,7 @@ textarea.inp{height:auto;min-height:88px;padding:10px 12px;line-height:1.5;resiz
 <h3 class="screen-title" id="A2-dashboard-t">A2 대시보드 — <span class="path">/admin</span></h3>
 <div class="frame">
 <div class="top">
-<a class="brand" href="#A2-dashboard"><span class="brand-mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>roomless 관리자</a>
+<a class="brand" href="#A2-dashboard"><span class="brand-mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>deskless 관리자</a>
 <div class="acct"><span class="acct-id">admin</span><span class="badge b-pri">총괄관리자</span><a class="btn btn-s btn-sm" href="#A1-password">비밀번호 변경</a><a class="btn btn-s btn-sm" href="#A1-login">로그아웃</a></div>
 </div>
 <div class="shell">
@@ -649,7 +649,7 @@ textarea.inp{height:auto;min-height:88px;padding:10px 12px;line-height:1.5;resiz
 <h3 class="screen-title" id="A3-list-t">A3 입점 신청 목록 — <span class="path">/admin/store-applications</span></h3>
 <div class="frame">
 <div class="top">
-<a class="brand" href="#A2-dashboard"><span class="brand-mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>roomless 관리자</a>
+<a class="brand" href="#A2-dashboard"><span class="brand-mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>deskless 관리자</a>
 <div class="acct"><span class="acct-id">admin</span><span class="badge b-pri">총괄관리자</span><a class="btn btn-s btn-sm" href="#A1-password">비밀번호 변경</a><a class="btn btn-s btn-sm" href="#A1-login">로그아웃</a></div>
 </div>
 <div class="shell">
@@ -703,7 +703,7 @@ textarea.inp{height:auto;min-height:88px;padding:10px 12px;line-height:1.5;resiz
 <h3 class="screen-title" id="A3-detail-t">A3 입점 신청 상세 — <span class="path">/admin/store-applications/[store_application_id]</span></h3>
 <div class="frame">
 <div class="top">
-<a class="brand" href="#A2-dashboard"><span class="brand-mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>roomless 관리자</a>
+<a class="brand" href="#A2-dashboard"><span class="brand-mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>deskless 관리자</a>
 <div class="acct"><span class="acct-id">admin</span><span class="badge b-pri">총괄관리자</span><a class="btn btn-s btn-sm" href="#A1-password">비밀번호 변경</a><a class="btn btn-s btn-sm" href="#A1-login">로그아웃</a></div>
 </div>
 <div class="shell">
@@ -846,7 +846,7 @@ textarea.inp{height:auto;min-height:88px;padding:10px 12px;line-height:1.5;resiz
 <h3 class="screen-title" id="A4-list-t">A4 업체 목록 — <span class="path">/admin/stores</span></h3>
 <div class="frame">
 <div class="top">
-<a class="brand" href="#A2-dashboard"><span class="brand-mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>roomless 관리자</a>
+<a class="brand" href="#A2-dashboard"><span class="brand-mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>deskless 관리자</a>
 <div class="acct"><span class="acct-id">admin</span><span class="badge b-pri">총괄관리자</span><a class="btn btn-s btn-sm" href="#A1-password">비밀번호 변경</a><a class="btn btn-s btn-sm" href="#A1-login">로그아웃</a></div>
 </div>
 <div class="shell">
@@ -900,7 +900,7 @@ textarea.inp{height:auto;min-height:88px;padding:10px 12px;line-height:1.5;resiz
 <h3 class="screen-title" id="A4-detail-t">A4 업체 상세 — <span class="path">/admin/stores/[store_id]</span></h3>
 <div class="frame">
 <div class="top">
-<a class="brand" href="#A2-dashboard"><span class="brand-mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>roomless 관리자</a>
+<a class="brand" href="#A2-dashboard"><span class="brand-mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>deskless 관리자</a>
 <div class="acct"><span class="acct-id">admin</span><span class="badge b-pri">총괄관리자</span><a class="btn btn-s btn-sm" href="#A1-password">비밀번호 변경</a><a class="btn btn-s btn-sm" href="#A1-login">로그아웃</a></div>
 </div>
 <div class="shell">
@@ -1050,7 +1050,7 @@ textarea.inp{height:auto;min-height:88px;padding:10px 12px;line-height:1.5;resiz
 <h3 class="screen-title" id="A5-list-t">A5 업체 관리자 목록 — <span class="path">/admin/managers</span></h3>
 <div class="frame">
 <div class="top">
-<a class="brand" href="#A2-dashboard"><span class="brand-mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>roomless 관리자</a>
+<a class="brand" href="#A2-dashboard"><span class="brand-mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>deskless 관리자</a>
 <div class="acct"><span class="acct-id">admin</span><span class="badge b-pri">총괄관리자</span><a class="btn btn-s btn-sm" href="#A1-password">비밀번호 변경</a><a class="btn btn-s btn-sm" href="#A1-login">로그아웃</a></div>
 </div>
 <div class="shell">
@@ -1107,7 +1107,7 @@ textarea.inp{height:auto;min-height:88px;padding:10px 12px;line-height:1.5;resiz
 <h3 class="screen-title" id="A5-detail-t">A5 업체 관리자 상세 — <span class="path">/admin/managers/[user_id]</span></h3>
 <div class="frame">
 <div class="top">
-<a class="brand" href="#A2-dashboard"><span class="brand-mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>roomless 관리자</a>
+<a class="brand" href="#A2-dashboard"><span class="brand-mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>deskless 관리자</a>
 <div class="acct"><span class="acct-id">admin</span><span class="badge b-pri">총괄관리자</span><a class="btn btn-s btn-sm" href="#A1-password">비밀번호 변경</a><a class="btn btn-s btn-sm" href="#A1-login">로그아웃</a></div>
 </div>
 <div class="shell">
@@ -1195,7 +1195,7 @@ textarea.inp{height:auto;min-height:88px;padding:10px 12px;line-height:1.5;resiz
 <h3 class="screen-title" id="A6-list-t">A6 이용자 목록 — <span class="path">/admin/users</span></h3>
 <div class="frame">
 <div class="top">
-<a class="brand" href="#A2-dashboard"><span class="brand-mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>roomless 관리자</a>
+<a class="brand" href="#A2-dashboard"><span class="brand-mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>deskless 관리자</a>
 <div class="acct"><span class="acct-id">admin</span><span class="badge b-pri">총괄관리자</span><a class="btn btn-s btn-sm" href="#A1-password">비밀번호 변경</a><a class="btn btn-s btn-sm" href="#A1-login">로그아웃</a></div>
 </div>
 <div class="shell">
@@ -1250,7 +1250,7 @@ textarea.inp{height:auto;min-height:88px;padding:10px 12px;line-height:1.5;resiz
 <h3 class="screen-title" id="A6-detail-t">A6 이용자 상세 — <span class="path">/admin/users/[user_id]</span></h3>
 <div class="frame">
 <div class="top">
-<a class="brand" href="#A2-dashboard"><span class="brand-mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>roomless 관리자</a>
+<a class="brand" href="#A2-dashboard"><span class="brand-mark"><svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 21V4.5A1.5 1.5 0 0 1 7.5 3h9A1.5 1.5 0 0 1 18 4.5V21"></path><path d="M3 21h18"></path><path d="M14.5 12h.01"></path></svg></span>deskless 관리자</a>
 <div class="acct"><span class="acct-id">admin</span><span class="badge b-pri">총괄관리자</span><a class="btn btn-s btn-sm" href="#A1-password">비밀번호 변경</a><a class="btn btn-s btn-sm" href="#A1-login">로그아웃</a></div>
 </div>
 <div class="shell">

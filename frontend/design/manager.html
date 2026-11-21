@@ -1,4 +1,4 @@
-<title>roomless 업체 관리자 콘솔</title>
+<title>deskless 업체 관리자 콘솔</title>
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap">
 <style>
@@ -305,8 +305,8 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="wrap">
 
 <header class="doc-head">
-<p class="eyebrow">roomless · 무인 객실 대여 서비스 · /manager</p>
-<h1 class="doc-title">roomless 업체 관리자 콘솔</h1>
+<p class="eyebrow">deskless · 무인 객실 대여 서비스 · /manager</p>
+<h1 class="doc-title">deskless 업체 관리자 콘솔</h1>
 <p class="doc-desc">업체 총관리자 · 업체 관리자가 PC 에서 쓰는 콘솔의 모든 화면 시안이다. 위에서 아래로 screens.md 순서(M1 ~ M8)대로 이어지고, 화면마다 머리줄(키 · 시안 이름 · 주소) 아래 실제 크기(최대 1440px) 시안을 둔다. 필드 · 문구는 dto/ 의 이름과 한국어 메시지를 따르고, 점선 상자는 같은 자리에 조건이 맞을 때만 나오는 상태 예시다. 예시 데이터는 모두 지어낸 값이다.</p>
 <nav class="toc" aria-label="화면 목록">
 <div><h2>시작</h2><ol><li><a href="#design"><span></span>디자인 기준</a></li></ol>
@@ -441,7 +441,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M1-login">M1 로그인</h3><span class="addr">/manager/[store_code]/login</span></div>
 <p class="screen-desc">POST /api/v1/admin-service/manager/login(store_code = 주소 값 · login_id · login_pw) → 토큰 · auth_id · store_id 저장, 이 업체코드도 브라우저에 기억해 둔다(로그아웃 · 401 때 돌아갈 로그인 주소). 로그인 전에는 업체 이름을 읽는 API 가 없어 업체 이름을 띄우지 않는다.</p>
 <div class="frame"><div class="auth">
-<div class="auth-logo"><svg class="mk" style="width:32px;height:32px" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<div class="auth-logo"><svg class="mk" style="width:32px;height:32px" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <div class="card auth-card" style="max-width:420px">
 <div><h4 class="pt">업체 관리자 로그인</h4><p class="ps" style="font-size:14px">아이디와 비밀번호를 입력해주세요.</p></div>
 <div class="band e" role="alert"><svg class="ic" aria-hidden="true"><use href="#i-alert"></use></svg><span>잘못된 로그인 정보입니다.</span></div>
@@ -463,7 +463,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M1-find">M1 아이디 찾기</h3><span class="addr">/manager/[store_code]/find-login-id</span></div>
 <p class="screen-desc">큐 POST …/manager/find-login-id(store_code = 주소 값 · phone) → done sms_verification_id · expires_at(5분) → 큐 POST …/find-login-id/confirm(sms_verification_id · code) → done login_id · created_at. 왼쪽은 인증번호를 보낸 뒤, 오른쪽은 확인 뒤 같은 카드.</p>
 <div class="frame"><div class="auth">
-<div class="auth-logo"><svg class="mk" style="width:32px;height:32px" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<div class="auth-logo"><svg class="mk" style="width:32px;height:32px" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <div class="auth-row">
 <div class="card auth-card">
 <div><h4 class="pt">아이디 찾기</h4><p class="ps" style="font-size:14px">계정에 등록된 휴대폰 번호로 인증번호를 받습니다.</p></div>
@@ -491,7 +491,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M1-reset">M1 비밀번호 초기화</h3><span class="addr">/manager/[store_code]/password-reset</span></div>
 <p class="screen-desc">큐 POST …/manager/password-reset(store_code = 주소 값 · login_id · phone) → 큐 POST …/password-reset/confirm(sms_verification_id · code) → 임시 비밀번호(영문 + 숫자 10자리)가 문자로 간다 → 로그인 → 비밀번호 변경. 2단계는 아이디 찾기와 같은 모양.</p>
 <div class="frame"><div class="auth">
-<div class="auth-logo"><svg class="mk" style="width:32px;height:32px" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<div class="auth-logo"><svg class="mk" style="width:32px;height:32px" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <div class="auth-row">
 <div class="card auth-card">
 <div><h4 class="pt">비밀번호 초기화</h4><p class="ps" style="font-size:14px">아이디와 등록된 휴대폰 번호가 맞으면 인증번호를 보냅니다. 인증이 끝나면 임시 비밀번호가 문자로 갑니다.</p></div>
@@ -517,10 +517,10 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M1-guide">M1 업체 로그인 주소 안내</h3><span class="addr">/manager/login</span></div>
 <p class="screen-desc">업체코드 없이 들어온 경우. 브라우저에 기억해 둔 업체코드가 있으면 이 화면 없이 바로 /manager/&lt;업체코드&gt;/login 으로 보내고, 없으면 이 안내를 띄운다. 업체코드를 붙여 넣고 이동하면 /manager/&lt;업체코드&gt;/login 으로 간다(API 호출 없음).</p>
 <div class="frame"><div class="auth">
-<div class="auth-logo"><svg class="mk" style="width:32px;height:32px" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<div class="auth-logo"><svg class="mk" style="width:32px;height:32px" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <div class="card auth-card" style="max-width:460px">
 <div><h4 class="pt">업체 로그인 주소로 접속해 주세요</h4><p class="ps" style="font-size:14px;line-height:1.7">업체 관리자 콘솔은 업체마다 로그인 주소가 따로 있습니다. 업체 총관리자에게 받은 로그인 주소로 접속하고, 즐겨찾기해 두면 다음부터 바로 들어올 수 있습니다.</p></div>
-<p style="margin:0;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);font-size:13px;color:var(--muted);overflow-wrap:anywhere">로그인 주소 모양 · https://roomless.example/manager/<b style="color:var(--fg)">업체코드 32자</b>/login</p>
+<p style="margin:0;padding:12px 14px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);font-size:13px;color:var(--muted);overflow-wrap:anywhere">로그인 주소 모양 · https://deskless.example/manager/<b style="color:var(--fg)">업체코드 32자</b>/login</p>
 <form>
 <div><label class="lbl" for="m1g-code">업체코드</label><input id="m1g-code" class="inp num" type="text" value="3f9a2c7e5b1d4a8e9c0f6b2d7e4a1c21" placeholder="로그인 주소 안의 32자를 붙여 넣으세요" autocomplete="off" spellcheck="false"><p class="hint">영문 소문자 · 숫자 32자 — 내 업체 설정 › 기본 정보에서 업체 총관리자가 확인할 수 있습니다.</p></div>
 <button type="submit" class="btn p full">로그인 화면으로 이동<svg class="ic" aria-hidden="true"><use href="#i-right"></use></svg></button>
@@ -534,7 +534,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M1-pw">M1 비밀번호 변경</h3><span class="addr">/manager/password</span></div>
 <p class="screen-desc">로그인 뒤 — 큐 PATCH /api/v1/admin-service/manager/password(current_password · new_password). 임시 비밀번호로 로그인했을 때(is_password_change_required 1) 바로 오는 화면이고, 상단 바 "비밀번호 변경" 으로도 온다(그때는 노란 띠 없음).</p>
 <div class="frame"><div class="auth">
-<div class="auth-logo"><svg class="mk" style="width:32px;height:32px" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<div class="auth-logo"><svg class="mk" style="width:32px;height:32px" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <div class="card auth-card" style="max-width:440px">
 <div><h4 class="pt">비밀번호 변경</h4><p class="ps row" style="margin-top:8px">leaf_front01 <span class="bd">업체 관리자</span></p></div>
 <div class="band w" role="status"><svg class="ic" aria-hidden="true"><use href="#i-warn"></use></svg><span>임시 비밀번호로 로그인했습니다. 새 비밀번호로 바꿔 주세요.</span></div>
@@ -556,7 +556,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M2">M2 대시보드</h3><span class="addr">/manager</span></div>
 <p class="screen-desc">GET /api/v1/admin-service/stats/mine(start_month · end_month YYYY-MM · environment LIVE · TEST). 기간을 비우면 최근 3개월, 최대 12개월. 합계(total) 카드 5개 → 월별(monthly) 그래프 · 표.</p>
 <div class="frame"><div class="con">
-<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <nav class="nav" aria-label="업체 관리자 메뉴">
 <a href="#M2-dashboard" aria-current="page"><svg class="ic" aria-hidden="true"><use href="#i-dash"></use></svg>대시보드</a>
 <a href="#M3-reservations"><svg class="ic" aria-hidden="true"><use href="#i-cal"></use></svg>예약 현황</a>
@@ -626,7 +626,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M3">M3 예약 현황</h3><span class="addr">/manager/reservations</span></div>
 <p class="screen-desc">GET /api/v1/admin-service/reservation/store(date). 호실 줄(room_name · floor · 그룹 · room_state_name) 위에 그날과 겹치는 예약 막대(start_at ~ end_at, 점선 꼬리 = 정비 포함 점유 끝 blocked_until). 막대 = 상태 색 · 시간 · 예약자 user_name · 상품, 위 배지 = 이용 중 취소 요청 상태. 막대를 누르면 작업 메뉴(예약자 휴대폰 user_phone · 금액 total_price 포함).</p>
 <div class="frame"><div class="con">
-<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <nav class="nav" aria-label="업체 관리자 메뉴">
 <a href="#M2-dashboard"><svg class="ic" aria-hidden="true"><use href="#i-dash"></use></svg>대시보드</a>
 <a href="#M3-reservations" aria-current="page"><svg class="ic" aria-hidden="true"><use href="#i-cal"></use></svg>예약 현황</a>
@@ -707,7 +707,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M3c">M3 업체 취소</h3><span class="addr">/manager/reservations</span></div>
 <p class="screen-desc">예약 현황 위 대화상자. 큐 PATCH /api/v1/admin-service/reservation/:reservation_id/store-cancel(cancel_reason 필수 · 255자) — 시작 전 예약만, 확정 예약은 전액 환불. 사유는 예약자에게 가는 문자에 함께 나간다.</p>
 <div class="frame"><div class="con">
-<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <nav class="nav" aria-label="업체 관리자 메뉴">
 <a href="#M2-dashboard"><svg class="ic" aria-hidden="true"><use href="#i-dash"></use></svg>대시보드</a>
 <a href="#M3-reservations" aria-current="page"><svg class="ic" aria-hidden="true"><use href="#i-cal"></use></svg>예약 현황</a>
@@ -758,7 +758,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M3m">M3 호실 이동</h3><span class="addr">/manager/reservations</span></div>
 <p class="screen-desc">예약 현황 위 대화상자. 옮길 호실은 GET /api/v1/admin-service/room 결과 중 같은 객실 그룹 호실 → 큐 PATCH /api/v1/admin-service/reservation/:reservation_id/room(room_id). 이용 시작 전 확정 예약만, 금액 · 시간은 그대로.</p>
 <div class="frame"><div class="con">
-<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <nav class="nav" aria-label="업체 관리자 메뉴">
 <a href="#M2-dashboard"><svg class="ic" aria-hidden="true"><use href="#i-dash"></use></svg>대시보드</a>
 <a href="#M3-reservations" aria-current="page"><svg class="ic" aria-hidden="true"><use href="#i-cal"></use></svg>예약 현황</a>
@@ -813,7 +813,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M3u">M3 이용 중 취소 요청</h3><span class="addr">/manager/reservations</span></div>
 <p class="screen-desc">예약 현황 위 대화상자. 이용 중 예약만 — 큐 POST /api/v1/admin-service/reservation/:reservation_id/use-cancel-request(cancel_reason) → done expires_at(요청 + 10분, 예약 끝이 먼저면 예약 끝). 예약자에게 동의 링크 문자가 가고, 결과는 현황의 막대 배지(cancel_request_state_id)로 본다.</p>
 <div class="frame"><div class="con">
-<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <nav class="nav" aria-label="업체 관리자 메뉴">
 <a href="#M2-dashboard"><svg class="ic" aria-hidden="true"><use href="#i-dash"></use></svg>대시보드</a>
 <a href="#M3-reservations" aria-current="page"><svg class="ic" aria-hidden="true"><use href="#i-cal"></use></svg>예약 현황</a>
@@ -869,7 +869,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M4">M4 호실</h3><span class="addr">/manager/rooms</span></div>
 <p class="screen-desc">GET /api/v1/admin-service/room(floor · room_group_id · page) + 그룹 거르기용 GET …/room/group(all_search_yn=Y). 줄마다 수정 · 상태(정비 완료 · 사용중지 · 사용 재개 — room_state_id AVAILABLE · DISABLED) · 문 열기(동기 POST …/door-open → 그 줄 door_state 반영) · 삭제. 문 바뀐 시각은 door_changed_at(yyyyMMddHHmmss, 00000000000000 이면 기록 없음).</p>
 <div class="frame"><div class="con">
-<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <nav class="nav" aria-label="업체 관리자 메뉴">
 <a href="#M2-dashboard"><svg class="ic" aria-hidden="true"><use href="#i-dash"></use></svg>대시보드</a>
 <a href="#M3-reservations"><svg class="ic" aria-hidden="true"><use href="#i-cal"></use></svg>예약 현황</a>
@@ -924,7 +924,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M4f">M4 호실 등록 · 수정</h3><span class="addr">/manager/rooms</span></div>
 <p class="screen-desc">호실 목록 위 대화상자. 등록 = 큐 POST /api/v1/admin-service/room(room_group_id · room_name · floor) — 상태는 예약가능으로 시작. 수정 = 큐 PATCH …/room/:room_id(room_name · floor) — 그룹은 바꾸지 않는다. 끝나면 목록을 다시 부른다.</p>
 <div class="frame"><div class="con">
-<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <nav class="nav" aria-label="업체 관리자 메뉴">
 <a href="#M2-dashboard"><svg class="ic" aria-hidden="true"><use href="#i-dash"></use></svg>대시보드</a>
 <a href="#M3-reservations"><svg class="ic" aria-hidden="true"><use href="#i-cal"></use></svg>예약 현황</a>
@@ -987,7 +987,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M5">M5 객실 그룹 목록</h3><span class="addr">/manager/room-groups</span></div>
 <p class="screen-desc">GET /api/v1/admin-service/room/group(keyword · page). 카드 = 대표 사진 image_url(없으면 자리표시) · 그룹명 · 호실 수 room_count. "그룹 등록" → 큐 POST …/room/group(room_group_name · description · room_group_detail) → done room_group_id → 상세로.</p>
 <div class="frame"><div class="con">
-<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <nav class="nav" aria-label="업체 관리자 메뉴">
 <a href="#M2-dashboard"><svg class="ic" aria-hidden="true"><use href="#i-dash"></use></svg>대시보드</a>
 <a href="#M3-reservations"><svg class="ic" aria-hidden="true"><use href="#i-cal"></use></svg>예약 현황</a>
@@ -1020,7 +1020,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M5d">M5 객실 그룹 상세</h3><span class="addr">/manager/room-groups/[room_group_id]</span></div>
 <p class="screen-desc">GET /api/v1/admin-service/room/group/:room_group_id(그룹 · room_group_detail · images · plans) + 상품을 고르면 GET …/plan/:room_plan_type_id/price. 수정 큐 PATCH …/room/group/:room_group_id · 삭제 큐 DELETE(호실 · 사진도 함께) · 사진 upload-url → PUT → 큐 POST …/image · 순서 큐 PUT …/image/order(전체) · 사진 삭제 · 그룹 상품 큐 PATCH …/plan/:room_plan_type_id(is_used · price).</p>
 <div class="frame"><div class="con">
-<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <nav class="nav" aria-label="업체 관리자 메뉴">
 <a href="#M2-dashboard"><svg class="ic" aria-hidden="true"><use href="#i-dash"></use></svg>대시보드</a>
 <a href="#M3-reservations"><svg class="ic" aria-hidden="true"><use href="#i-cal"></use></svg>예약 현황</a>
@@ -1099,7 +1099,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M5p">M5 기간 가격</h3><span class="addr">/manager/room-groups/[room_group_id]</span></div>
 <p class="screen-desc">그룹 상세 아래 "상품별 기간 가격" 절 위에 뜬 추가 대화상자. 큐 POST …/room/group/:room_group_id/plan/:room_plan_type_id/price(start_date · end_date · price · memo) · 수정 PATCH …/price/:room_group_plan_price_id · 삭제 DELETE. 같은 상품 안에서 날짜가 겹치면 400.</p>
 <div class="frame"><div class="con">
-<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <nav class="nav" aria-label="업체 관리자 메뉴">
 <a href="#M2-dashboard"><svg class="ic" aria-hidden="true"><use href="#i-dash"></use></svg>대시보드</a>
 <a href="#M3-reservations"><svg class="ic" aria-hidden="true"><use href="#i-cal"></use></svg>예약 현황</a>
@@ -1151,7 +1151,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M6">M6 업체 상품 설정</h3><span class="addr">/manager/plans</span></div>
 <p class="screen-desc">GET /api/v1/admin-service/room/plan(HOURLY · NIGHT · LONG). 카드 "저장" → 큐 PATCH …/room/plan/:room_plan_type_id — is_used · days_of_week(비트 합, 일 1 ~ 토 64, 매일 127) · is_extendable · max_extensions(1 ~ 10)는 늘 필수, 시간 이용은 usage_hours, 1박 · 연박은 check_in_time · check_out_time, 연박은 min_nights · max_nights 도.</p>
 <div class="frame"><div class="con">
-<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <nav class="nav" aria-label="업체 관리자 메뉴">
 <a href="#M2-dashboard"><svg class="ic" aria-hidden="true"><use href="#i-dash"></use></svg>대시보드</a>
 <a href="#M3-reservations"><svg class="ic" aria-hidden="true"><use href="#i-cal"></use></svg>예약 현황</a>
@@ -1221,7 +1221,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M7a">M7 내 업체 설정(기본 정보)</h3><span class="addr">/manager/store</span></div>
 <p class="screen-desc">업체코드 store_code · 상태 · 사업자 정보 · 주소 · 위치는 읽기만(총관리자가 바꾼다). 소개 introduction(2,000자 · 비우면 null) · 연락처 phone(숫자 8 ~ 11자리)은 큐 PATCH …/store/mine/profile.</p>
 <div class="frame"><div class="con">
-<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <nav class="nav" aria-label="업체 관리자 메뉴">
 <a href="#M2-dashboard"><svg class="ic" aria-hidden="true"><use href="#i-dash"></use></svg>대시보드</a>
 <a href="#M3-reservations"><svg class="ic" aria-hidden="true"><use href="#i-cal"></use></svg>예약 현황</a>
@@ -1240,7 +1240,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <h5 class="st" id="m7a-info">업체 정보</h5>
 <dl class="dl">
 <dt>업체코드</dt><dd class="num">3f9a2c7e5b1d4a8e9c0f6b2d7e4a1c21</dd>
-<dt>업체 로그인 주소</dt><dd><div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px"><code class="num" style="min-width:0;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);font-family:inherit;font-size:13px;overflow-wrap:anywhere">https://roomless.example/manager/3f9a2c7e5b1d4a8e9c0f6b2d7e4a1c21/login</code><button type="button" class="btn sm"><svg class="ic" aria-hidden="true"><use href="#i-copy"></use></svg>로그인 주소 복사</button></div><p class="hint">앞부분은 실제 프론트 주소. 업체 관리자에게 이 주소를 알려 주세요 — 업체 관리자 등록 문자에는 업체코드만 가고 로그인 주소는 가지 않습니다.</p></dd>
+<dt>업체 로그인 주소</dt><dd><div style="display:flex;flex-wrap:wrap;align-items:center;gap:8px"><code class="num" style="min-width:0;padding:6px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);font-family:inherit;font-size:13px;overflow-wrap:anywhere">https://deskless.example/manager/3f9a2c7e5b1d4a8e9c0f6b2d7e4a1c21/login</code><button type="button" class="btn sm"><svg class="ic" aria-hidden="true"><use href="#i-copy"></use></svg>로그인 주소 복사</button></div><p class="hint">앞부분은 실제 프론트 주소. 업체 관리자에게 이 주소를 알려 주세요 — 업체 관리자 등록 문자에는 업체코드만 가고 로그인 주소는 가지 않습니다.</p></dd>
 <dt>상태</dt><dd><span class="bd ok">활성</span></dd>
 <dt>상호명</dt><dd>스테이 리프 강남역점</dd>
 <dt>사업자등록번호</dt><dd class="num">123-45-67890</dd>
@@ -1266,7 +1266,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M7b">M7 내 업체 설정(사진)</h3><span class="addr">/manager/store</span></div>
 <p class="screen-desc">files 중 STORE_IMAGE(공개 · 5장까지, 첫 번째가 대표) — upload-url(content_type) → PUT → 큐 POST …/store/mine/file · 순서 큐 PUT …/file/order(전체 store_file_ids) · 삭제 큐 DELETE …/file/:store_file_id. BUSINESS_LICENSE(사업자등록증)는 보기만 — 비공개, file_url 은 10분짜리 열람 주소.</p>
 <div class="frame"><div class="con">
-<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <nav class="nav" aria-label="업체 관리자 메뉴">
 <a href="#M2-dashboard"><svg class="ic" aria-hidden="true"><use href="#i-dash"></use></svg>대시보드</a>
 <a href="#M3-reservations"><svg class="ic" aria-hidden="true"><use href="#i-cal"></use></svg>예약 현황</a>
@@ -1311,7 +1311,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M7c">M7 내 업체 설정(영업시간 · 브레이크)</h3><span class="addr">/manager/store</span></div>
 <p class="screen-desc">영업시간 = 큐 PUT …/store/mine/hours(is_always_open + 일 ~ 토 7개 hours — 통째로 교체), 브레이크 = 큐 PUT …/store/mine/breaks(전체 breaks · 10개까지). 휴무가 아닌 요일은 여는 · 닫는 시각이 둘 다 필요하고, 닫는 시각이 여는 시각보다 이르면 다음 날까지.</p>
 <div class="frame"><div class="con">
-<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <nav class="nav" aria-label="업체 관리자 메뉴">
 <a href="#M2-dashboard"><svg class="ic" aria-hidden="true"><use href="#i-dash"></use></svg>대시보드</a>
 <a href="#M3-reservations"><svg class="ic" aria-hidden="true"><use href="#i-cal"></use></svg>예약 현황</a>
@@ -1364,7 +1364,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M7d">M7 내 업체 설정(운영 규정)</h3><span class="addr">/manager/store</span></div>
 <p class="screen-desc">영업중 is_open = 큐 PATCH …/store/mine/open · 정비시간 maintenance_minutes(0 ~ 240분) = 큐 PATCH …/maintenance · 예약 · 환불 규정(booking_open_hours 1 ~ 4,320시간 · refund_deadline_minutes 0 ~ 10,080분 · late_refund_percent 0 ~ 100%) = 큐 PATCH …/reservation-policy. 저장 단위가 셋이라 카드도 셋.</p>
 <div class="frame"><div class="con">
-<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <nav class="nav" aria-label="업체 관리자 메뉴">
 <a href="#M2-dashboard"><svg class="ic" aria-hidden="true"><use href="#i-dash"></use></svg>대시보드</a>
 <a href="#M3-reservations"><svg class="ic" aria-hidden="true"><use href="#i-cal"></use></svg>예약 현황</a>
@@ -1408,7 +1408,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M7e">M7 내 업체 설정(일시 예약불가)</h3><span class="addr">/manager/store</span></div>
 <p class="screen-desc">GET …/store/mine/unavailable-period(page — 끝나지 않은 기간만, 시작 순) · 추가 큐 POST(starts_at · ends_at YYYY-MM-DD HH:mm 한국 시각 · memo 30자) · 삭제 큐 DELETE …/:store_unavailable_period_id. 서로 겹치면 400.</p>
 <div class="frame"><div class="con">
-<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <nav class="nav" aria-label="업체 관리자 메뉴">
 <a href="#M2-dashboard"><svg class="ic" aria-hidden="true"><use href="#i-dash"></use></svg>대시보드</a>
 <a href="#M3-reservations"><svg class="ic" aria-hidden="true"><use href="#i-cal"></use></svg>예약 현황</a>
@@ -1453,7 +1453,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M7f">M7 내 업체 설정(문 연동)</h3><span class="addr">/manager/store</span></div>
 <p class="screen-desc">업체 총관리자만 — 큐 PATCH …/store/mine/door-secret(door_secret 영문 · 숫자 16 ~ 64자). 원문은 저장하지 않으므로 다시 볼 수 없고 설정 여부(is_door_secret_set)만 보인다. 바꾸면 연결된 문 쪽 프로그램이 끊기고 새 시크릿으로 다시 붙어야 한다. 업체 관리자에게는 이 탭을 숨긴다(403).</p>
 <div class="frame"><div class="con">
-<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <nav class="nav" aria-label="업체 관리자 메뉴">
 <a href="#M2-dashboard"><svg class="ic" aria-hidden="true"><use href="#i-dash"></use></svg>대시보드</a>
 <a href="#M3-reservations"><svg class="ic" aria-hidden="true"><use href="#i-cal"></use></svg>예약 현황</a>
@@ -1499,7 +1499,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M8">M8 업체 관리자 목록</h3><span class="addr">/manager/staff</span></div>
 <p class="screen-desc">업체 총관리자(auth_id HEAD_MANAGER)만 — 업체 관리자에게는 메뉴를 숨긴다(403). GET /api/v1/admin-service/manager/staff(keyword — 아이디 · 이름 · 휴대폰 부분 일치, page). 업체 총관리자가 맨 위, 나머지는 등록 최신순.</p>
 <div class="frame"><div class="con">
-<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <nav class="nav" aria-label="업체 관리자 메뉴">
 <a href="#M2-dashboard"><svg class="ic" aria-hidden="true"><use href="#i-dash"></use></svg>대시보드</a>
 <a href="#M3-reservations"><svg class="ic" aria-hidden="true"><use href="#i-cal"></use></svg>예약 현황</a>
@@ -1538,7 +1538,7 @@ textarea.inp{height:auto;padding:10px 12px;line-height:1.6;resize:vertical}
 <div class="screen-head"><h3 id="h-M8d">M8 업체 관리자 상세 · 등록</h3><span class="addr">/manager/staff/[user_id]</span></div>
 <p class="screen-desc">상세 GET …/manager/staff/:user_id · 수정 큐 PATCH(name · phone · gender · birth — 아이디는 바꾸지 않는다) · 비밀번호 초기화 큐 PATCH …/password-reset(임시 비밀번호 문자) · 정지 · 해제 큐 PATCH …/state(state_id BLOCK · ACTIVE · block_comment) · 삭제 큐 DELETE(탈퇴 처리 → 목록). 등록 큐 POST …/manager/staff(login_id · name · phone · gender · birth) — 업체코드 · 아이디 · 임시 비밀번호가 그 휴대폰으로 문자.</p>
 <div class="frame"><div class="con">
-<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>roomless</b><small>업체 관리자 콘솔</small></div></div>
+<aside class="side" aria-label="메뉴"><div class="logo"><svg class="mk" aria-hidden="true"><use href="#i-logo"></use></svg><div><b>deskless</b><small>업체 관리자 콘솔</small></div></div>
 <nav class="nav" aria-label="업체 관리자 메뉴">
 <a href="#M2-dashboard"><svg class="ic" aria-hidden="true"><use href="#i-dash"></use></svg>대시보드</a>
 <a href="#M3-reservations"><svg class="ic" aria-hidden="true"><use href="#i-cal"></use></svg>예약 현황</a>

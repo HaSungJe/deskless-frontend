@@ -31,14 +31,14 @@ describe('managerLoginPath — 업체 로그인 주소', () => {
 
 describe('managerLoginUrl — 업체 콘솔 로그인 주소(입점 신청 · 내 업체 설정)', () => {
     it('[SUCCESS] 프론트 주소 뒤에 업체코드 로그인 주소를 붙인다', () => {
-        expect(managerLoginUrl(STORE_CODE, 'https://roomless.kr', '')).toBe(`https://roomless.kr/manager/${STORE_CODE}/login/`);
+        expect(managerLoginUrl(STORE_CODE, 'https://deskless.kr', '')).toBe(`https://deskless.kr/manager/${STORE_CODE}/login/`);
     });
 
     it('[SUCCESS] 하위 경로로 배포하면 그 경로를 사이에 넣는다', () => {
-        expect(managerLoginUrl(STORE_CODE, 'https://roomless.kr', '/app')).toBe(`https://roomless.kr/app/manager/${STORE_CODE}/login/`);
+        expect(managerLoginUrl(STORE_CODE, 'https://deskless.kr', '/app')).toBe(`https://deskless.kr/app/manager/${STORE_CODE}/login/`);
     });
 
     it('[SUCCESS] 프론트 주소 끝에 / 가 있어도 겹치지 않는다', () => {
-        expect(managerLoginUrl(STORE_CODE, 'https://roomless.kr/', '')).toBe(`https://roomless.kr/manager/${STORE_CODE}/login/`);
+        expect(managerLoginUrl(STORE_CODE, 'https://deskless.kr/', '')).toBe(`https://deskless.kr/manager/${STORE_CODE}/login/`);
     });
 });

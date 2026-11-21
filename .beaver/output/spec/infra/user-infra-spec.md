@@ -73,7 +73,7 @@ U1 · U2 · U3 · U5 · U7 · U9 · U11 · M1 · M5 · M7 · A4 화면이 같이
   - 본문 검사: `paymentKey` 1~200자 · `orderId` 32자 소문자 hex(우리 `payment_id`) · `amount` 양의 정수. 아니면 `{success: false, message: '결제 정보가 올바르지 않습니다.'}`.
   - `TOSS_SECRET_KEY` 가 없으면 `{success: false, message: '결제 설정이 없습니다.'}` + 서버 로그.
   - 토스 `POST https://api.tosspayments.com/v1/payments/confirm` — `Authorization: Basic base64(<시크릿 키>:)` · `Idempotency-Key: <paymentKey>`(같은 결제를 다시 승인해도 같은 응답) · 본문 `{paymentKey, orderId, amount}`.
-  - 금액은 성공 주소의 `amount` 를 그대로 쓴다 — 프론트 서버는 예약 금액을 모른다. 다르면 백엔드 결제 확인이 토스에서 다시 읽어 대조하고 환불한다(`roomless-backend` `reservation.service.ts:366` `verifyPaymentLookup` → MISMATCH 환불).
+  - 금액은 성공 주소의 `amount` 를 그대로 쓴다 — 프론트 서버는 예약 금액을 모른다. 다르면 백엔드 결제 확인이 토스에서 다시 읽어 대조하고 환불한다(`deskless-backend` `reservation.service.ts:366` `verifyPaymentLookup` → MISMATCH 환불).
   - 응답 정리 `toConfirmResult(status, body)`: 200 · `ALREADY_PROCESSED_PAYMENT`(새로고침 · 다시 승인) → 성공 / 401 · 403(키 문제) → "결제를 승인하지 못했습니다." + 서버 로그 / 그 밖 4xx → 토스 `message` · `code` / 4xx 인데 본문을 못 읽음 → "결제를 승인하지 못했습니다." / 5xx · 응답 없음 → "결제 승인이 잠시 안 됩니다. 잠시 뒤 다시 시도해 주세요." + `retry: true`.
   - 성공 뒤 백엔드 `POST /api/v1/user-service/reservation/payment-confirm`(큐)은 화면(U4 — Phase 7)이 이용자 토큰으로 부른다.
 - **설정**

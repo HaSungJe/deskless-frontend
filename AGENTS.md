@@ -1,6 +1,6 @@
 # AGENTS.md
 
-roomless 이용자 · 업체 관리자 · 관리자 화면. 규칙의 근거는 `경로:줄`(측정), `(선택: 사용자)`, `(표준: Next.js 권장)`, `(지침서: frontend/…)` 로 표시한다.
+deskless 이용자 · 업체 관리자 · 관리자 화면. 규칙의 근거는 `경로:줄`(측정), `(선택: 사용자)`, `(표준: Next.js 권장)`, `(지침서: frontend/…)` 로 표시한다.
 
 ## ⚠️ 주의사항
 - `npm run dev` · `npm run build` · `npm run start` · `npm run lint`, `docker compose` 는 **사용자만 실행** (Claude 실행 금지) (선택: 사용자).

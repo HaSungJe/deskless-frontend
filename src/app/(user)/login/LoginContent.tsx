@@ -68,7 +68,7 @@ export default function LoginContent({returnUrl, error, testLogin = false}: Logi
                 <div className={styles.body}>
                     {/* 브랜드 */}
                     <div className={styles.brand}>
-                        <strong className={styles.logo}>roomless</strong>
+                        <strong className={styles.logo}>deskless</strong>
                         <p className={styles.tagline}>가까운 무인 객실을 지도에서 찾고<br />바로 예약해요</p>
                     </div>
 

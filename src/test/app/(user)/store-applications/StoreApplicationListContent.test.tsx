@@ -26,7 +26,7 @@ function application(id: string, name: string, extra: Partial<StoreMyApplication
 }
 
 beforeEach(() => {
-    vi.stubEnv('NEXT_PUBLIC_SERVER_URL', 'https://roomless.kr');
+    vi.stubEnv('NEXT_PUBLIC_SERVER_URL', 'https://deskless.kr');
     vi.stubEnv('NEXT_PUBLIC_LOCAL_SERVER_PREFIX', '');
     getMyStoreApplications.mockReset();
 });
@@ -67,7 +67,7 @@ describe('StoreApplicationListContent', () => {
         expect(screen.getByRole('link', {name: /무인텔 온담 홍대점/}).textContent).toContain('사업자등록증 사진이 흐려 확인할 수 없습니다.');
 
         expect(screen.getByRole('link', {name: '스테이 리프 강남역점'}).getAttribute('href')).toBe(`/store-applications/${'c'.repeat(32)}/`);
-        expect(screen.getByText(`https://roomless.kr/manager/${STORE_CODE}/login/`)).toBeTruthy();
+        expect(screen.getByText(`https://deskless.kr/manager/${STORE_CODE}/login/`)).toBeTruthy();
         expect(screen.getByTitle(STORE_CODE).textContent).toBe('3f9a2c7e…');
         expect(screen.getByRole('button', {name: '로그인 주소 복사'})).toBeTruthy();
         expect(screen.getByRole('link', {name: /새 입점 신청/}).getAttribute('href')).toBe('/store-applications/new/');

@@ -4,8 +4,8 @@ services:
       context: .
       secrets:
         - dotenv
-    image: roomless-frontend
-    container_name: roomless-frontend
+    image: deskless-frontend
+    container_name: deskless-frontend
     env_file: .env.production
     ports:
       - "5000:5000"

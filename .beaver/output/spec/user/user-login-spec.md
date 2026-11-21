@@ -19,7 +19,7 @@ affected_data: ["쿠키 user_access_token · user_refresh_token (httpOnly — �
     - `src/app/(user)/layout.tsx` → `UserLayoutContent` — 모바일 틀(가운데 · 최대 480px), 주 탭 주소(`/` · `/reservation/` · `/me/`)면 하단 탭(지도 · 내 예약 · 마이), 내 정보 Context
     - `src/app/(user)/_components/UserMeProvider.tsx` — `UserMeContext` `{me, reloadMe}`: 로그인했으면 `GET user/me`(앱을 열 때 · 로그인한 뒤), 아니면 `null`
     - `src/app/(user)/_components/UserTopBar.tsx`(뒤로 · 제목) · `UserTabBar.tsx`(하단 탭) · `MemberStateBand.tsx`(BLOCK · LEAVE_WAIT 띠 — 화면은 U3 · U9 · U10 Phase 에서 붙인다)
-    - U1 자리(`HomeContent`)의 머리 — "roomless" + 로그인 안 했으면 "로그인", 했으면 "내 예약"
+    - U1 자리(`HomeContent`)의 머리 — "deskless" + 로그인 안 했으면 "로그인", 했으면 "내 예약"
   - **#15 SNS 로그인**
     - `/login/` `LoginContent` — 카카오 · 네이버 버튼 → next-auth `signIn(provider, {callbackUrl: /api/user/sns-login/?return_url=…})`, `?error=` 이면 안내 팝업, 이미 로그인했으면 돌아갈 주소로
     - `src/app/api/auth/[...nextauth]/route.ts` — 카카오 · 네이버만, 세션 10분, `jwt` 콜백이 `toSnsAccount` 로 `sns_id` · `sns_user_id` 를 세션 토큰에만(화면에 주는 세션에는 넣지 않는다)

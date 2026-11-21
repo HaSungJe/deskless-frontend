@@ -108,9 +108,9 @@ affected_data: ["백엔드 회원 탈퇴 대기 · 철회(탈퇴 큐)", "백엔�
 
 | 확인하는 것 | 입력 | 기대 결과 |
 |---|---|---|
-| 프론트 주소 뒤에 업체코드 로그인 주소를 붙인다 | `('3f9a…c21', 'https://roomless.kr', '')` | `'https://roomless.kr/manager/3f9a…c21/login/'` |
-| 하위 경로로 배포하면 그 경로를 사이에 넣는다 | `('3f9a…c21', 'https://roomless.kr', '/app')` | `'https://roomless.kr/app/manager/3f9a…c21/login/'` |
-| 프론트 주소 끝에 `/`가 있어도 겹치지 않는다 | `('3f9a…c21', 'https://roomless.kr/', '')` | `'https://roomless.kr/manager/3f9a…c21/login/'` |
+| 프론트 주소 뒤에 업체코드 로그인 주소를 붙인다 | `('3f9a…c21', 'https://deskless.kr', '')` | `'https://deskless.kr/manager/3f9a…c21/login/'` |
+| 하위 경로로 배포하면 그 경로를 사이에 넣는다 | `('3f9a…c21', 'https://deskless.kr', '/app')` | `'https://deskless.kr/app/manager/3f9a…c21/login/'` |
+| 프론트 주소 끝에 `/`가 있어도 겹치지 않는다 | `('3f9a…c21', 'https://deskless.kr/', '')` | `'https://deskless.kr/manager/3f9a…c21/login/'` |
 
 ---
 

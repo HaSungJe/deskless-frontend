@@ -51,13 +51,13 @@ describe('signWithSns', () => {
     });
 
     it('[SUCCESS] basePath 로 띄우면 route 주소 앞에 basePath', async () => {
-        vi.stubEnv('NEXT_PUBLIC_LOCAL_SERVER_PREFIX', '/roomless');
+        vi.stubEnv('NEXT_PUBLIC_LOCAL_SERVER_PREFIX', '/deskless');
         fetchMock.mockResolvedValue(routeResponse({success: true, data: {is_phone_verified: 1}}));
 
         await signWithSns(FORM);
 
         expect(fetchMock).toHaveBeenCalledTimes(1);
-        expect(fetchMock.mock.calls[0][0]).toBe('/roomless/api/user/sign/');
+        expect(fetchMock.mock.calls[0][0]).toBe('/deskless/api/user/sign/');
     });
 
     it('[FAIL:no-sns] NO_SNS 면 no-sns — 던지지 않는다', async () => {
