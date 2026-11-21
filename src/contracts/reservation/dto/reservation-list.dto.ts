@@ -1,14 +1,21 @@
+import {IsIn, IsOptional} from 'class-validator';
 import {PaginationDto, PaginationResultDto} from '../../common/pagination.dto';
 
 /**
- * 내 예약 목록 query — 페이지만. 결제 대기 만료 건은 나오지 않는다, 입실 일시 최근순
+ * 내 예약 목록 query — 상태(선택) · 페이지. 결제 대기 만료 건은 나오지 않는다, 입실 일시 최근순
  */
 export class ReservationListDto extends PaginationDto {
+    // 예약 상태 (PENDING: 결제 대기, CONFIRMED: 예약 확정, CHECKED_IN: 이용 중, COMPLETED: 이용 완료, CANCELED: 취소) — 없으면 전체
+    @IsOptional()
+    @IsIn(['PENDING', 'CONFIRMED', 'CHECKED_IN', 'COMPLETED', 'CANCELED'], {message: '예약 상태가 올바르지 않습니다.'})
+    reservation_state_id: string | null;
+
     /**
-     * @param data 요청 쿼리 — 빠진 페이지 값은 PaginationDto 기본값
+     * @param data 요청 쿼리 — 빠진 페이지 값은 PaginationDto 기본값, 빠진 거르기는 null
      */
     constructor(data?: Partial<ReservationListDto>) {
         super(data);
+        this.reservation_state_id = data?.reservation_state_id ?? null;
     }
 }
 

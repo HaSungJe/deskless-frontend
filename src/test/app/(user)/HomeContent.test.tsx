@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { act, fireEvent, render, screen } from '@testing-library/react';
+import { act, fireEvent, render, screen, within } from '@testing-library/react';
 import HomeContent from '@/app/(user)/HomeContent';
 import { DiscoveryStoreItemResultDto, DiscoveryStoreListResultDto } from '@/contracts/discovery/dto/discovery-store-list.dto';
 import { ApiError } from '@/shared/api/request';
@@ -15,15 +15,16 @@ type MapPropsType = {
     onMarkerClick?: (id: string) => void;
 };
 
-const {getNearbyStores, push, showErrorPopup, mapProps} = vi.hoisted(() => ({
+const {getNearbyStores, getRoomGroupDetailFilters, push, showErrorPopup, mapProps} = vi.hoisted(() => ({
     getNearbyStores: vi.fn(),
+    getRoomGroupDetailFilters: vi.fn(),
     push: vi.fn(),
     showErrorPopup: vi.fn(),
     mapProps: {current: null as MapPropsType | null},
 }));
 
 vi.mock('next/navigation', () => ({useRouter: () => ({push})}));
-vi.mock('@/contracts/discovery/api', () => ({getNearbyStores}));
+vi.mock('@/contracts/discovery/api', () => ({getNearbyStores, getRoomGroupDetailFilters}));
 vi.mock('@/shared/utils/error-popup', () => ({showErrorPopup}));
 vi.mock('@/shared/hooks/useMyLocation', () => ({default: () => ({location: {latitude: 37.5, longitude: 127.03}, isDefault: false, loading: false})}));
 vi.mock('@/shared/components/map/StoreMap', () => ({
@@ -74,6 +75,7 @@ async function idle(center: MapPointType): Promise<void> {
 
 beforeEach(() => {
     getNearbyStores.mockReset();
+    getRoomGroupDetailFilters.mockReset().mockResolvedValue({list: [{key: 'room_count', name: '방 2개 이상'}, {key: 'has_shower', name: '샤워실'}, {key: 'has_tv', name: 'TV'}, {key: 'has_pc', name: 'PC'}]});
     push.mockClear();
     showErrorPopup.mockClear();
     mapProps.current = null;
@@ -87,7 +89,7 @@ describe('HomeContent', () => {
         await idle({latitude: 37.5, longitude: 127.03});
 
         expect(getNearbyStores).toHaveBeenCalledTimes(1);
-        expect(getNearbyStores.mock.calls[0][0]).toMatchObject({latitude: '37.500000', longitude: '127.030000', radius_km: '20'});
+        expect(getNearbyStores.mock.calls[0][0]).toMatchObject({latitude: '37.500000', longitude: '127.030000', radius_km: '20', detail_filter: null});
         expect(getNearbyStores.mock.calls[0][1]).toBeInstanceOf(AbortSignal);
         expect(mapProps.current?.radiusKm).toBe(20);
         expect(mapProps.current?.myLocation).toEqual({latitude: 37.5, longitude: 127.03});
@@ -120,6 +122,59 @@ describe('HomeContent', () => {
         expect(getNearbyStores.mock.calls[1][0]).toMatchObject({latitude: '37.500000', longitude: '127.030000', radius_km: '5'});
         expect(screen.getByRole('button', {name: '5km'}).getAttribute('aria-pressed')).toBe('true');
         expect(mapProps.current?.radiusKm).toBe(5);
+    });
+
+    it('[SUCCESS] "제한 없음"을 고르면 같은 중심 · radius_km ALL 로 한 번 더 — 반경 원은 그리지 않는다', async () => {
+        getNearbyStores.mockResolvedValue({list: [STORE], is_truncated: 0});
+        renderHome();
+        await idle({latitude: 37.5, longitude: 127.03});
+
+        await act(async () => {
+            fireEvent.click(screen.getByRole('button', {name: '제한 없음'}));
+        });
+
+        expect(getNearbyStores).toHaveBeenCalledTimes(2);
+        expect(getNearbyStores.mock.calls[1][0]).toMatchObject({latitude: '37.500000', longitude: '127.030000', radius_km: 'ALL', detail_filter: null});
+        expect(screen.getByRole('button', {name: '제한 없음'}).getAttribute('aria-pressed')).toBe('true');
+        expect(mapProps.current?.radiusKm).toBeUndefined();
+    });
+
+    it('[SUCCESS] 추가정보 필터 팝업에서 두 개를 고르고 적용한다 → 항목 1번 · 업체 검색(항목 순서로 쉼표) → 다시 열어 초기화하면 필터 없이', async () => {
+        getNearbyStores.mockResolvedValue({list: [STORE], is_truncated: 0});
+        renderHome();
+        await idle({latitude: 37.5, longitude: 127.03});
+
+        await act(async () => {
+            fireEvent.click(screen.getByRole('button', {name: '추가정보'}));
+        });
+        expect(getRoomGroupDetailFilters).toHaveBeenCalledTimes(1);
+        let dialog = within(document.querySelector('dialog[open]') as HTMLElement);
+        expect(dialog.getAllByRole('checkbox').map((box) => box.closest('label')?.textContent)).toEqual(['방 2개 이상', '샤워실', 'TV', 'PC']);
+        fireEvent.click(dialog.getByRole('checkbox', {name: 'PC'}));
+        fireEvent.click(dialog.getByRole('checkbox', {name: '샤워실'}));
+        await act(async () => {
+            fireEvent.click(dialog.getByRole('button', {name: '적용'}));
+        });
+
+        expect(getNearbyStores).toHaveBeenCalledTimes(2);
+        expect(getNearbyStores.mock.calls[1][0]).toMatchObject({latitude: '37.500000', longitude: '127.030000', radius_km: '20', detail_filter: 'has_shower,has_pc'});
+        expect(document.querySelector('dialog[open]')).toBeNull();
+        expect(screen.getByRole('button', {name: '추가정보 2'}).getAttribute('aria-pressed')).toBe('true');
+
+        await act(async () => {
+            fireEvent.click(screen.getByRole('button', {name: '추가정보 2'}));
+        });
+        dialog = within(document.querySelector('dialog[open]') as HTMLElement);
+        expect((dialog.getByRole('checkbox', {name: 'PC'}) as HTMLInputElement).checked).toBe(true);
+        fireEvent.click(dialog.getByRole('button', {name: '초기화'}));
+        await act(async () => {
+            fireEvent.click(dialog.getByRole('button', {name: '적용'}));
+        });
+
+        expect(getRoomGroupDetailFilters).toHaveBeenCalledTimes(1);
+        expect(getNearbyStores).toHaveBeenCalledTimes(3);
+        expect(getNearbyStores.mock.calls[2][0]).toMatchObject({radius_km: '20', detail_filter: null});
+        expect(screen.getByRole('button', {name: '추가정보'}).getAttribute('aria-pressed')).toBe('false');
     });
 
     it('[FAIL:same-query] 거의 같은 중심(약 11m 안)으로 다시 멈추면 부르지 않는다', async () => {
@@ -173,13 +228,13 @@ describe('HomeContent', () => {
         expect(getNearbyStores.mock.calls[2][0]).toMatchObject({latitude: '37.600000', longitude: '127.100000', radius_km: '10'});
     });
 
-    it('[FAIL:truncated] 300곳을 넘어 잘렸으면 반경을 줄이라는 안내', async () => {
+    it('[FAIL:truncated] 300곳을 넘어 잘렸으면 반경을 줄이거나 추가정보 필터를 더하라는 안내', async () => {
         getNearbyStores.mockResolvedValue({list: [STORE], is_truncated: 1});
         renderHome();
 
         await idle({latitude: 37.5, longitude: 127.03});
 
-        expect(screen.getByText('업체가 많아 가까운 300곳만 보여요. 반경을 줄여 주세요.')).toBeTruthy();
+        expect(screen.getByText('업체가 많아 가까운 300곳만 보여요. 반경을 줄이거나 추가정보 필터를 더해 보세요.')).toBeTruthy();
     });
 
     it('[FAIL:empty] 빈 목록이면 빈 안내 — 카드 없음', async () => {

@@ -61,14 +61,14 @@ export function confirmPayment(auth: AuthType, dto: ReservationPaymentConfirmDto
 }
 
 /**
- * 내 예약 목록 — 동기 · 이용자 (GET /user-service/reservation)
+ * 내 예약 목록 — 동기 · 이용자 (GET /user-service/reservation) — 상태로 거르면 쪽 · 개수도 거른 결과 기준(frontend/changes/2026-11-22-reservation-list-state.md)
  *
  * @param auth AuthContext 값
- * @param query 페이지 · 개수
- * @param signal 페이지가 바뀌거나 화면을 떠날 때 취소
+ * @param query 상태(없으면 전체) · 페이지 · 개수
+ * @param signal 거르기 · 페이지가 바뀌거나 화면을 떠날 때 취소
  */
 export function getMyReservations(auth: AuthType, query: ReservationListDto, signal?: AbortSignal): Promise<ReservationListResultDto | null> {
-    return withAuth(auth, (token) => request<ReservationListResultDto>({path: '/user-service/reservation', query: {page: query.page, size: query.size}, token, signal}));
+    return withAuth(auth, (token) => request<ReservationListResultDto>({path: '/user-service/reservation', query: {reservation_state_id: query.reservation_state_id, page: query.page, size: query.size}, token, signal}));
 }
 
 /**

@@ -56,12 +56,30 @@
 .radius {
     position: absolute;
     top: 12px;
-    right: 16px;
-    left: 16px;
+    right: 0;
+    left: 0;
     z-index: 2;
     display: flex;
     gap: 8px;
+    padding: 0 16px 2px;
+    overflow-x: auto;
+    scrollbar-width: none;
     pointer-events: none;
+}
+
+.radius::-webkit-scrollbar {
+    display: none;
+}
+
+/* 추가정보 칩 · 반경 칩 묶음 — 한 줄, 좁으면 가로로 밀어 본다 */
+.radius > *,
+.radiusChips > * {
+    flex-shrink: 0;
+}
+
+.radiusChips {
+    display: flex;
+    gap: 8px;
 }
 
 .radius > * {

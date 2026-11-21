@@ -62,3 +62,15 @@
 .alert svg {
     flex-shrink: 0;
 }
+
+/* 상태 칩 — 좁으면 가로로 밀어 본다 */
+.states {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+}
+
+.states > * {
+    flex-shrink: 0;
+}

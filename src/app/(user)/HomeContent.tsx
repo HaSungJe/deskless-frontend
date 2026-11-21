@@ -3,7 +3,8 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useRef, useState } from 'react';
-import { getNearbyStores } from '@/contracts/discovery/api';
+import { getNearbyStores, getRoomGroupDetailFilters } from '@/contracts/discovery/api';
+import { DiscoveryRoomGroupDetailFilterItemResultDto, DiscoveryRoomGroupDetailFilterListResultDto } from '@/contracts/discovery/dto/discovery-room-group-detail-filter.dto';
 import { DiscoveryStoreItemResultDto, DiscoveryStoreListDto, DiscoveryStoreListResultDto } from '@/contracts/discovery/dto/discovery-store-list.dto';
 import { handleApiError } from '@/shared/api/error';
 import StoreMap from '@/shared/components/map/StoreMap';
@@ -17,11 +18,12 @@ import { MapMarkerType, MapPointType } from '@/shared/types/map';
 import { loginUrl } from '@/shared/utils/area';
 import { formatPrice } from '@/shared/utils/format';
 import { SITE_NAME } from '@/shared/utils/site';
+import DetailFilterModal from './_components/DetailFilterModal';
 import { formatDistance } from './distance';
 import styles from '@/app/css/user/HomeContent.module.css';
 
-/** 반경(km) — DiscoveryStoreListDto.radius_km 의 값 */
-const RADIUS_OPTIONS = [5, 10, 20, 50] as const;
+/** 반경(km) — DiscoveryStoreListDto.radius_km 의 값, ALL 은 거리 제한 없음(가까운 순 300곳 — frontend/changes/2026-11-22-discovery-filter.md) */
+const RADIUS_OPTIONS = [5, 10, 20, 50, 'ALL'] as const;
 
 type RadiusType = typeof RADIUS_OPTIONS[number];
 
@@ -39,11 +41,12 @@ const PHOTO_ICON = <svg width="22" height="22" viewBox="0 0 24 24" fill="none" s
 
 /** 조회 중심 · 반경 */
 type StoreQueryType = MapPointType & {
-    radiusKm: RadiusType; // 반경(km)
+    radiusKm: RadiusType;  // 반경(km) · ALL
+    detailFilter: string; // 추가정보 필터 키(쉼표 — 항목 순서), 없으면 ''
 };
 
 /**
- * U1 지도 · 주변 업체 — 내 위치 · 지도 중심 · 반경으로 주변 업체를 불러 지도 핀과 목록에 그린다
+ * U1 지도 · 주변 업체 — 내 위치 · 지도 중심 · 반경(제한 없음 포함) · 추가정보 필터로 주변 업체를 불러 지도 핀과 목록에 그린다
  *
  * @returns
  */
@@ -57,13 +60,19 @@ export default function HomeContent(): React.ReactNode {
     const abortRef = useRef<AbortController | null>(null);          // 진행 중 조회 — 새 조회가 시작되면 취소
 
     // 상태
-    const [radiusKm, setRadiusKm] = useState<RadiusType>(DEFAULT_RADIUS);           // 고른 반경
-    const [result, setResult] = useState<DiscoveryStoreListResultDto | null>(null); // 마지막 조회 결과 — 아직 없으면 null
+    const [radiusKm, setRadiusKm] = useState<RadiusType>(DEFAULT_RADIUS);                                            // 고른 반경
+    const [result, setResult] = useState<DiscoveryStoreListResultDto | null>(null);                                  // 마지막 조회 결과 — 아직 없으면 null
+    const [detailKeys, setDetailKeys] = useState<Array<string>>([]);                                                 // 적용 중인 추가정보 필터 키(항목 순서)
+    const [filterOpen, setFilterOpen] = useState<boolean>(false);                                                    // 추가정보 필터 팝업
+    const [filterItems, setFilterItems] = useState<Array<DiscoveryRoomGroupDetailFilterItemResultDto> | null>(null); // 필터 항목 — 처음 열 때 한 번 받는다
+    const [filterFailed, setFilterFailed] = useState<boolean>(false);                                                // 필터 항목을 못 받음
 
     // 계산 값
     const stores = result?.list ?? [];                          // 업체 목록(가까운 순 — 응답 그대로)
     const markers: Array<MapMarkerType> = stores.map(toMarker); // 지도 핀
     const myLocation = isDefault ? null : location;             // 내 위치 점 — 기본 위치(서울시청)면 그리지 않음
+    const detailFilter = detailKeys.join(',');                  // 조회에 넣을 추가정보 필터
+    const circleKm = radiusKm === 'ALL' ? undefined : radiusKm; // 반경 원 — 제한 없음이면 그리지 않는다
 
     // 효과
     useEffect(() => () => {
@@ -82,7 +91,7 @@ export default function HomeContent(): React.ReactNode {
         abortRef.current?.abort();
         const controller = new AbortController();
         abortRef.current = controller;
-        const dto = new DiscoveryStoreListDto({latitude: query.latitude.toFixed(6), longitude: query.longitude.toFixed(6), radius_km: String(query.radiusKm)});
+        const dto = new DiscoveryStoreListDto({latitude: query.latitude.toFixed(6), longitude: query.longitude.toFixed(6), radius_km: String(query.radiusKm), detail_filter: query.detailFilter || null});
 
         // try 안에는 await 만 — 값 갈래(??, ?:)가 try 안에 있으면 React Compiler 가 이 컴포넌트를 건너뛴다
         let found: DiscoveryStoreListResultDto | null;
@@ -102,9 +111,9 @@ export default function HomeContent(): React.ReactNode {
     }
 
     function idle(center: MapPointType): void {
-        // 지도가 멈춤 — 그 중심 + 고른 반경으로
+        // 지도가 멈춤 — 그 중심 + 고른 반경 · 추가정보 필터로
         centerRef.current = center;
-        search({...center, radiusKm});
+        search({...center, radiusKm, detailFilter});
     }
 
     function changeRadius(next: RadiusType): void {
@@ -112,7 +121,42 @@ export default function HomeContent(): React.ReactNode {
         setRadiusKm(next);
         const center = centerRef.current ?? location;
         if (center) {
-            search({latitude: center.latitude, longitude: center.longitude, radiusKm: next});
+            search({latitude: center.latitude, longitude: center.longitude, radiusKm: next, detailFilter});
+        }
+    }
+
+    async function openFilter(): Promise<void> {
+        // 추가정보 필터 팝업 — 항목은 처음 열 때 한 번(못 받았으면 다음에 열 때 다시)
+        setFilterOpen(true);
+        if (filterItems) {
+            return;
+        }
+
+        setFilterFailed(false);
+        let found: DiscoveryRoomGroupDetailFilterListResultDto | null = null; // 필터 항목
+        let failure: {error: unknown} | null = null;                         // 실패 — 처리는 try 밖에서
+        try {
+            found = await getRoomGroupDetailFilters();
+        } catch (error) {
+            failure = {error};
+        }
+
+        if (failure) {
+            setFilterFailed(true);
+            handleApiError(failure.error);
+            return;
+        }
+
+        setFilterItems(found?.list ?? []);
+    }
+
+    function applyFilter(keys: Array<string>): void {
+        // 추가정보 필터 적용 — 마지막으로 멈춘 중심(없으면 내 위치)으로 바로 다시, 아무것도 고르지 않으면 필터 없이
+        setDetailKeys(keys);
+        setFilterOpen(false);
+        const center = centerRef.current ?? location;
+        if (center) {
+            search({latitude: center.latitude, longitude: center.longitude, radiusKm, detailFilter: keys.join(',')});
         }
     }
 
@@ -136,16 +180,20 @@ export default function HomeContent(): React.ReactNode {
             <section className={styles.mapArea} aria-label="지도">
                 {loading || !location
                     ? <div className={styles.locating}>내 위치를 확인하고 있어요</div>
-                    : <StoreMap center={location} markers={markers} radiusKm={radiusKm} myLocation={myLocation} onIdle={idle} onMarkerClick={openStore} />}
-                <div className={styles.radius} role="group" aria-label="반경">
-                    {RADIUS_OPTIONS.map((option) => (
-                        <Chip key={option} pressed={option === radiusKm} onClick={() => changeRadius(option)}>{option}km</Chip>
-                    ))}
+                    : <StoreMap center={location} markers={markers} radiusKm={circleKm} myLocation={myLocation} onIdle={idle} onMarkerClick={openStore} />}
+                <div className={styles.radius}>
+                    {/* 추가정보 필터 — 맨 앞(반경 칩이 가로로 밀려도 보이게) */}
+                    <Chip pressed={detailKeys.length > 0} onClick={openFilter}>{detailKeys.length > 0 ? `추가정보 ${detailKeys.length}` : '추가정보'}</Chip>
+                    <div className={styles.radiusChips} role="group" aria-label="반경">
+                        {RADIUS_OPTIONS.map((option) => (
+                            <Chip key={option} pressed={option === radiusKm} onClick={() => changeRadius(option)}>{radiusLabel(option)}</Chip>
+                        ))}
+                    </div>
                 </div>
             </section>
 
             {/* 300곳 넘음 */}
-            {result?.is_truncated === 1 ? <Band tone="info">업체가 많아 가까운 300곳만 보여요. 반경을 줄여 주세요.</Band> : null}
+            {result?.is_truncated === 1 ? <Band tone="info">업체가 많아 가까운 300곳만 보여요. {radiusKm === 'ALL' ? '지도를 옮기거나' : '반경을 줄이거나'} 추가정보 필터를 더해 보세요.</Band> : null}
 
             {/* 주변 업체 */}
             <section className={styles.list} aria-labelledby="home-list-title">
@@ -155,7 +203,7 @@ export default function HomeContent(): React.ReactNode {
                 </div>
 
                 {/* 빈 목록 */}
-                {result && stores.length === 0 ? <EmptyState title="이 반경에 업체가 없어요" description="반경을 넓히거나 지도를 옮겨 보세요." /> : null}
+                {result && stores.length === 0 ? <EmptyState title={detailKeys.length > 0 ? '조건에 맞는 업체가 없어요' : '이 반경에 업체가 없어요'} description={detailKeys.length > 0 ? '추가정보 필터를 줄이거나 반경을 넓혀 보세요.' : '반경을 넓히거나 지도를 옮겨 보세요.'} /> : null}
 
                 {/* 업체 카드 */}
                 {stores.map((store) => (
@@ -180,8 +228,20 @@ export default function HomeContent(): React.ReactNode {
                     </Link>
                 ))}
             </section>
+
+            {/* 추가정보 필터 */}
+            <DetailFilterModal open={filterOpen} items={filterItems} failed={filterFailed} selected={detailKeys} onApply={applyFilter} onClose={() => setFilterOpen(false)} />
         </div>
     );
+}
+
+/**
+ * 반경 칩 글자 — 5km · … · 제한 없음
+ *
+ * @param option 반경
+ */
+function radiusLabel(option: RadiusType): string {
+    return option === 'ALL' ? '제한 없음' : `${option}km`;
 }
 
 /**
@@ -203,7 +263,7 @@ function toMarker(store: DiscoveryStoreItemResultDto): MapMarkerType {
 }
 
 /**
- * 같은 조회인지 — 반경이 같고 중심 차이가 SAME_CENTER_EPSILON 미만
+ * 같은 조회인지 — 반경 · 추가정보 필터가 같고 중심 차이가 SAME_CENTER_EPSILON 미만
  *
  * @param last 마지막 조회
  * @param next 새 조회
@@ -211,6 +271,7 @@ function toMarker(store: DiscoveryStoreItemResultDto): MapMarkerType {
 function isSameQuery(last: StoreQueryType | null, next: StoreQueryType): boolean {
     return last !== null
         && last.radiusKm === next.radiusKm
+        && last.detailFilter === next.detailFilter
         && Math.abs(last.latitude - next.latitude) < SAME_CENTER_EPSILON
         && Math.abs(last.longitude - next.longitude) < SAME_CENTER_EPSILON;
 }
