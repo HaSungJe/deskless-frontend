@@ -18,7 +18,7 @@ flowchart LR
   P10["Phase 10 · 콘솔 틀·매니저 로그인 (6)"]:::done
   P11["Phase 11 · 내 업체 설정 (6)"]:::done
   P12["Phase 12 · 상품·객실 (5)"]:::done
-  P13["Phase 13 · 예약 현황 (1)"]:::inprog
+  P13["Phase 13 · 예약 현황 (1)"]:::done
   P14["Phase 14 · 대시보드·업체 관리자 (3)"]:::done
   P15["Phase 15 · 관리자 로그인 (2)"]:::todo
   P16["Phase 16 · 입점 신청·업체 관리 (4)"]:::todo
@@ -68,7 +68,7 @@ flowchart LR
 - Phase 10 — 콘솔 틀·매니저 로그인 · 유닛 6개 · 의존: Phase 4 · 푼다: Phase 11, Phase 12, Phase 14, Phase 15 · 파일 집합: src/shared/components/console, src/app/manager, src/contracts/manager · done
 - Phase 11 — 내 업체 설정 · 유닛 6개 · 의존: Phase 10 · 푼다: Phase 16 · 파일 집합: src/app/manager/(console)/store, src/contracts/store · done
 - Phase 12 — 상품·객실 · 유닛 5개 · 의존: Phase 10 · 푼다: Phase 13 · 파일 집합: src/app/manager/(console)/plans · room-groups · rooms, src/contracts/room, src/contracts/common/lookup.ts(#62) · done
-- Phase 13 — 예약 현황 · 유닛 1개 · 의존: Phase 12, Phase 8 · 푼다: — · 파일 집합: src/app/manager/(console)/reservations, src/contracts/reservation · in-progress
+- Phase 13 — 예약 현황 · 유닛 1개 · 의존: Phase 12, Phase 8 · 푼다: — · 파일 집합: src/app/manager/(console)/reservations, src/contracts/reservation · done
 - Phase 14 — 대시보드·업체 관리자 · 유닛 3개 · 의존: Phase 10 · 푼다: Phase 17 · 파일 집합: src/app/manager/(console)/page · staff, src/contracts/stats, src/contracts/manager · done
 - Phase 15 — 관리자 로그인 · 유닛 2개 · 의존: Phase 10 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/admin/login · (console)/layout · password, src/contracts/admin · todo
 - Phase 16 — 입점 신청·업체 관리 · 유닛 4개 · 의존: Phase 15, Phase 11, Phase 9 · 푼다: — · 파일 집합: src/app/admin/(console)/store-applications · stores, src/contracts/store · todo
@@ -76,11 +76,12 @@ flowchart LR
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: Phase 13 진행 중 · Next up: Phase 13
+지금: 진행 중 없음 · Next up: Phase 15
 
 ## 지금 할 일
-Phase 13 예약 현황 시작하기
-- #47 M3 예약 현황
+Phase 15 관리자 로그인 시작하기
+- #51 A1 관리자 로그인
+- #52 A1 비밀번호 변경
 - ok → 다음
 
 ## Scope & Actors
@@ -331,7 +332,7 @@ Phase 13 예약 현황 시작하기
 ### Phase 13 — 예약 현황 (M3) · depends: Phase 12, Phase 8
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 47 | M3 예약 현황 | `/manager/reservations` 날짜 · 호실별 예약 막대(정비 포함) · 업체 취소 · 호실 이동 · 이용 중 취소 요청 | 시간 막대(타임라인)를 CSS 로 그릴지 라이브러리를 쓸지 | 46 | in-progress |
+| 47 | M3 예약 현황 | `/manager/reservations` 날짜 · 호실별 예약 막대(정비 포함) · 업체 취소 · 호실 이동 · 이용 중 취소 요청 | 시간 막대(타임라인)를 CSS 로 그릴지 라이브러리를 쓸지 | 46 | done(dacbac5) |
 
 **Expected pages**:
 
@@ -408,8 +409,8 @@ Phase 13 예약 현황 시작하기
 | #60 | `/admin/users` | A6 · `GET user` | 이용자 목록 |
 | #61 | `/admin/users/[user_id]` | A6 · `GET user/:id` · `/reservation` · `PATCH /state` | 이용 제한 |
 
-**Progress**: 50/62 units done (13/17 phases)
-**Next up**: Phase 13 예약 현황 — 의존(Phase 12, Phase 8) 모두 완료
+**Progress**: 51/62 units done (14/17 phases)
+**Next up**: Phase 15 관리자 로그인 — 의존(Phase 10) 모두 완료
 
 ## Cross-Cutting Rules
 - 주소 · 화면 키 · 쓰는 API 는 `frontend/screens.md` 그대로. ★ 주소(`/reservation/[reservation_id]` · `…/cancel-request`)는 SMS 링크라 바꾸지 않는다.
