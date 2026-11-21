@@ -199,7 +199,7 @@ export default function MyPageContent(): React.ReactNode {
                                 <dt>성별</dt><dd>{lookupName('gender', me.gender)}</dd>
                                 <dt>생년월일</dt><dd>{formatKoreanDate(me.birth)}</dd>
                                 <dt>가입일</dt><dd>{formatKoreanDate(me.created_at)}</dd>
-                                <dt>회원 식별 코드</dt><dd className={pageStyles.mono}>{me.user_search_code}</dd>
+                                {/* <dt>회원 식별 코드</dt><dd className={pageStyles.mono}>{me.user_search_code}</dd> */}
                             </dl>
                         </section>
 

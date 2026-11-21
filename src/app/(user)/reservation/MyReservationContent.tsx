@@ -91,8 +91,8 @@ export default function MyReservationContent(): React.ReactNode {
                     </Link>
                 ))}
 
-                {/* ④ 페이지 */}
-                <Pagination pagination={result?.pagination ?? null} movePage={(next) => setPage(Number(next))} label="내 예약 페이지" />
+                {/* ④ 페이지 — 항상 아래쪽 */}
+                <div className={pageStyles.pager}><Pagination pagination={result?.pagination ?? null} movePage={(next) => setPage(Number(next))} label="내 예약 페이지" /></div>
             </div>
         </div>
     );

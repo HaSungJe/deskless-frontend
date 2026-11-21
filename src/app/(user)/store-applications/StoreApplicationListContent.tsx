@@ -77,8 +77,8 @@ export default function StoreApplicationListContent(): React.ReactNode {
                 {result && applications.length === 0 ? <EmptyState title="아직 보낸 입점 신청이 없어요" description="위의 새 입점 신청으로 시작해요." /> : null}
                 {applications.map((item) => <ApplicationCard key={item.store_application_id} item={item} />)}
 
-                {/* ④ 페이지 */}
-                <Pagination pagination={result?.pagination ?? null} movePage={(next) => setPage(Number(next))} label="입점 신청 페이지" />
+                {/* ④ 페이지 — 항상 아래쪽 */}
+                <div className={pageStyles.pager}><Pagination pagination={result?.pagination ?? null} movePage={(next) => setPage(Number(next))} label="입점 신청 페이지" /></div>
             </div>
         </div>
     );

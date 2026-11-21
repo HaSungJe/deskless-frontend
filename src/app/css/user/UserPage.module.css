@@ -30,6 +30,12 @@
     padding: 16px;
 }
 
+/* 목록 페이지 번호 — 항상 화면 아래쪽(목록이 짧아도 하단 탭 바로 위, 길면 목록 끝) — 사용자 2026-11-22 */
+.pager {
+    margin-top: auto;
+    padding-top: 8px;
+}
+
 .card {
     display: flex;
     flex-direction: column;
