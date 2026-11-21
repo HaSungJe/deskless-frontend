@@ -1,0 +1,102 @@
+import {IsNotEmpty, Matches} from 'class-validator';
+
+/**
+ * 내 업체 예약 현황 query — 날짜(한국 날짜) 하루와 겹치는 예약을 호실별로
+ */
+export class ReservationStoreDto {
+    /** 날짜 (YYYY-MM-DD, 한국 날짜) */
+    @Matches(/^\d{4}-\d{2}-\d{2}$/, {message: '날짜를 YYYY-MM-DD 로 입력해주세요.'})
+    @IsNotEmpty({message: '날짜를 입력해주세요.'})
+    date: string;
+
+    /**
+     * @param data 요청 쿼리 — 빠진 날짜는 빈 문자열(검증에서 걸린다)
+     */
+    constructor(data?: Partial<ReservationStoreDto>) {
+        this.date = data?.date ?? '';
+    }
+}
+
+/**
+ * 호실의 예약 1건
+ */
+export class ReservationStoreItemResultDto {
+    /** 예약 ID */
+    reservation_id: string;
+
+    /** 예약 상태 (PENDING · CONFIRMED · CHECKED_IN · COMPLETED) */
+    reservation_state_id: string;
+
+    /** 예약 상태명 */
+    reservation_state_name: string;
+
+    /** 상품 종류 (HOURLY · NIGHT · LONG) */
+    room_plan_type_id: string;
+
+    /** 상품 종류명 */
+    room_plan_type_name: string;
+
+    /** 입실 일시 (ISO 8601) */
+    start_at: string;
+
+    /** 퇴실 일시 (ISO 8601) */
+    end_at: string;
+
+    /** 점유 끝 (ISO 8601 — 퇴실 + 정비시간) */
+    blocked_until: string;
+
+    /** 합계 금액(원) */
+    total_price: number;
+
+    /** 이용자 이름 */
+    user_name: string;
+
+    /** 이용자 휴대폰 번호 — 인증 전이면 null */
+    user_phone: string | null;
+
+    /** 마지막 이용 중 취소 요청 상태 (REQUESTED: 요청 중, APPROVED: 승인, REJECTED: 거절, EXPIRED: 만료 — 요청 중인데 10분이 지나면 만료) — 요청이 없으면 null */
+    cancel_request_state_id: string | null;
+
+    /** 마지막 이용 중 취소 요청 일시 (ISO 8601) — 요청이 없으면 null */
+    cancel_request_created_at: string | null;
+}
+
+/**
+ * 호실 1개와 그날 예약
+ */
+export class ReservationStoreRoomResultDto {
+    /** 호실 ID */
+    room_id: string;
+
+    /** 호실명 */
+    room_name: string;
+
+    /** 층 */
+    floor: number;
+
+    /** 객실 그룹 ID */
+    room_group_id: string;
+
+    /** 객실 그룹명 */
+    room_group_name: string;
+
+    /** 호실 상태 (AVAILABLE · RESERVED · IN_USE · MAINTENANCE · DISABLED) */
+    room_state_id: string;
+
+    /** 호실 상태명 */
+    room_state_name: string;
+
+    /** 그날 예약 (입실 순) */
+    reservations: ReservationStoreItemResultDto[];
+}
+
+/**
+ * 내 업체 예약 현황
+ */
+export class ReservationStoreResultDto {
+    /** 날짜 (YYYY-MM-DD) */
+    date: string;
+
+    /** 호실 목록 (층 · 호실명 순 — 지워지지 않은 호실) */
+    list: ReservationStoreRoomResultDto[];
+}

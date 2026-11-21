@@ -1,5 +1,6 @@
 'use client';
 import { useContext, useState } from 'react';
+import { ROOM_STATE } from '@/contracts/common/room.constants';
 import { updateRoomState } from '@/contracts/room/api';
 import { RoomListItemResultDto } from '@/contracts/room/dto/room-list.dto';
 import { RoomStateDto } from '@/contracts/room/dto/room-state.dto';
@@ -7,7 +8,7 @@ import { handleApiError } from '@/shared/api/error';
 import Button from '@/shared/components/ui/button/Button';
 import Modal from '@/shared/components/ui/modal/Modal';
 import { AuthContext } from '@/shared/providers/RootLayoutProvider';
-import { ROOM_STATE, roomStateActions } from '../room-format';
+import { roomStateActions } from '../room-format';
 import styles from '@/app/css/manager/RoomsContent.module.css';
 
 type RoomStateModalProps = {

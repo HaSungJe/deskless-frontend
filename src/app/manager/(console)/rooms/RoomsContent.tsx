@@ -16,7 +16,8 @@ import Pagination from '@/shared/components/ui/nav/Pagination';
 import { AuthContext } from '@/shared/providers/RootLayoutProvider';
 import RoomFormModal from './_components/RoomFormModal';
 import RoomStateModal from './_components/RoomStateModal';
-import { floorLabel, formatOpenedAt, ROOM_STATE_TONE } from './room-format';
+import { floorLabel, ROOM_STATE_TONE } from '../room-display';
+import { formatOpenedAt } from './room-format';
 import styles from '@/app/css/manager/RoomsContent.module.css';
 
 /** 한 쪽 개수 */

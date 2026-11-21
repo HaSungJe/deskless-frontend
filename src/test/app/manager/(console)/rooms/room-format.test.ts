@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
-import { floorLabel, formatOpenedAt, ROOM_STATE, roomStateActions } from '@/app/manager/(console)/rooms/room-format';
+import { formatOpenedAt, roomStateActions } from '@/app/manager/(console)/rooms/room-format';
+import { ROOM_STATE } from '@/contracts/common/room.constants';
 
 describe('formatOpenedAt — 마지막으로 연 시각 글자', () => {
     it('[SUCCESS] 시각 글자를 날짜 시각으로 바꾼다', () => {
@@ -13,16 +14,6 @@ describe('formatOpenedAt — 마지막으로 연 시각 글자', () => {
 
     it('[FAIL:모양이 틀림] 모양이 틀린 글자면 줄표', () => {
         expect(formatOpenedAt('2026-11-19')).toBe('-');
-    });
-});
-
-describe('floorLabel — 층 이름', () => {
-    it('[SUCCESS] 지상 층은 "층"을 붙인다', () => {
-        expect(floorLabel(3)).toBe('3층');
-    });
-
-    it('[SUCCESS] 지하 층은 B 를 붙인다', () => {
-        expect(floorLabel(-1)).toBe('B1');
     });
 });
 

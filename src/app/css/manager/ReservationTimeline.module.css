@@ -1,0 +1,221 @@
+/* M3 예약 현황 막대 판 — 시안 .tl · .tl-h · .tl-rm · .tl-t · .bar · .tail · .now (호실 칸 220px · 줄 72px · 막대 44px · 판 최소 1060px — 부품 고유 치수) */
+.wrap {
+    overflow-x: auto;
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+}
+
+.timeline {
+    min-width: 1060px;
+}
+
+/* 눈금 */
+.head {
+    display: flex;
+    height: 36px;
+    border-bottom: 1px solid var(--line);
+    background: var(--surface-2);
+    font-size: 12px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.head .room {
+    background: var(--surface-2);
+    font-weight: 700;
+}
+
+.tick {
+    position: absolute;
+    top: 10px;
+    transform: translateX(-50%);
+}
+
+/* 눈금선 · 지금 선 */
+.body {
+    position: relative;
+}
+
+.grid {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 220px;
+    right: 0;
+    pointer-events: none;
+}
+
+.gridLine {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 1px;
+    background: var(--line);
+}
+
+.now {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: var(--danger);
+    z-index: 1;
+}
+
+.nowLabel {
+    position: absolute;
+    top: 2px;
+    transform: translateX(-50%);
+    padding: 1px 6px;
+    border-radius: 999px;
+    background: var(--danger);
+    color: var(--on-primary);
+    font-size: 12px;
+    font-weight: 700;
+    white-space: nowrap;
+    font-variant-numeric: tabular-nums;
+    z-index: 2;
+}
+
+/* 호실 줄 */
+.row {
+    display: flex;
+    height: 72px;
+    border-bottom: 1px solid var(--line);
+}
+
+.row:last-child {
+    border-bottom: 0;
+}
+
+.off,
+.off .room {
+    background: var(--surface-2);
+}
+
+.room {
+    width: 220px;
+    flex: none;
+    padding: 10px 16px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 4px;
+    border-right: 1px solid var(--line);
+    background: var(--surface);
+}
+
+.roomName {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 700;
+}
+
+.roomSub {
+    font-size: 12px;
+    color: var(--muted);
+}
+
+.track {
+    position: relative;
+    flex: 1;
+    min-width: 0;
+}
+
+.empty {
+    position: absolute;
+    top: 26px;
+    left: 12px;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* 막대 — 상태 색 */
+.bar {
+    position: absolute;
+    top: 20px;
+    height: 44px;
+    padding: 4px 8px;
+    border: 1px solid;
+    border-radius: 6px;
+    text-align: left;
+    font: inherit;
+    font-size: 12px;
+    line-height: 1.4;
+    overflow: hidden;
+    cursor: pointer;
+    z-index: 1;
+}
+
+.bar b,
+.bar span {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.bar b {
+    font-variant-numeric: tabular-nums;
+}
+
+.bar span {
+    font-weight: 400;
+    color: var(--fg);
+}
+
+.pend {
+    background: var(--warn-soft);
+    border-color: var(--warn);
+    color: var(--warn);
+}
+
+.conf {
+    background: var(--primary-soft);
+    border-color: var(--primary);
+    color: var(--primary-strong);
+}
+
+.in {
+    background: var(--ok-soft);
+    border-color: var(--ok);
+    color: var(--ok);
+}
+
+.done {
+    background: var(--neutral-bg);
+    border-color: var(--faint);
+    color: var(--neutral-fg);
+}
+
+.cutLeft {
+    border-left: 0;
+    border-radius: 0 6px 6px 0;
+}
+
+.cutRight {
+    border-right: 0;
+    border-radius: 6px 0 0 6px;
+}
+
+.selected {
+    box-shadow: 0 0 0 2px var(--surface), 0 0 0 4px var(--primary);
+}
+
+/* 정비 꼬리 · 취소 요청 배지 */
+.tail {
+    position: absolute;
+    top: 20px;
+    height: 44px;
+    border: 1px dashed var(--faint);
+    border-left: 0;
+    border-radius: 0 6px 6px 0;
+    background: var(--surface-2);
+}
+
+.requestBadge {
+    position: absolute;
+    top: 1px;
+}

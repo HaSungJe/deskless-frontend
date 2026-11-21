@@ -1,14 +1,4 @@
-/** 호실 상태 — room_state_id */
-export const ROOM_STATE = {AVAILABLE: 'AVAILABLE', RESERVED: 'RESERVED', IN_USE: 'IN_USE', MAINTENANCE: 'MAINTENANCE', DISABLED: 'DISABLED'} as const;
-
-/** 호실 상태 배지 색 — 시안 M4(예약가능 ok · 예약완료 pri · 사용중 use · 정비중 warn · 사용중지 err) */
-export const ROOM_STATE_TONE: Record<string, 'ok' | 'primary' | 'inuse' | 'warn' | 'danger'> = {
-    [ROOM_STATE.AVAILABLE]: 'ok',
-    [ROOM_STATE.RESERVED]: 'primary',
-    [ROOM_STATE.IN_USE]: 'inuse',
-    [ROOM_STATE.MAINTENANCE]: 'warn',
-    [ROOM_STATE.DISABLED]: 'danger',
-};
+import { ROOM_STATE } from '@/contracts/common/room.constants';
 
 /** 상태 대화상자 버튼 하나 */
 export type RoomStateActionType = {
@@ -51,13 +41,4 @@ export function formatOpenedAt(value: string | null | undefined): string {
 
     const [, year, month, day, hour, minute] = match;
     return `${year}-${month}-${day} ${hour}:${minute}`;
-}
-
-/**
- * 층 이름 — 지상 '3층', 지하 'B1'
- *
- * @param floor 층(지하는 음수)
- */
-export function floorLabel(floor: number): string {
-    return floor < 0 ? `B${Math.abs(floor)}` : `${floor}층`;
 }

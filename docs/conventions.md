@@ -93,6 +93,7 @@ React Compiler(`next.config.ts:37`)는 아래 모양이 있는 컴포넌트 · �
 - `try` 안의 값 갈래 — `??` · `?:` · `&&` · `?.`
 - `finally` 가 있는 `try`, `catch` 없는 `try`
 - 변수 영역의 `useEffectEvent` 가 그보다 아래에서 선언되는 값(`useState` 의 setter · 함수 영역의 함수)을 부르는 것 — 효과 이벤트는 값을 돌려주게만 두고, setState 는 효과 안 `.then` 에서 한다(`src/app/(user)/payments/success/PaymentSuccessContent.tsx` `loadView`)
+- 훅이 아닌 함수의 이름을 `use…` 로 짓는 것 — 컴파일러가 훅으로 보고 함수 안(이벤트 처리 등)에서 부르면 "Hooks must be called at the top level" 로 건너뛴다. 계산 함수는 `use` 로 시작하지 않게(`src/app/manager/(console)/reservations/reservation-board-format.ts` `cancelRequestNotice` — 처음 이름 `useCancelNotice` 를 회귀 테스트가 잡음)
 - `useRef` 를 쓰는 함수를 render 중에 부르는 함수의 인자로 넘기는 것("Cannot access refs during render") — 그 함수는 JSX 의 prop(`closeFunc` · `onClick` …)으로 직접 넘긴다(`src/app/(user)/reservation/[reservation_id]/ReservationDetailContent.tsx` `expirePending`)
 
 그래서 **`try` 안에는 `await` 만** 두고, 결과 처리는 밖에서 한다 — 결과를 `let` 에 담고 `catch` 는 실패 처리 뒤 `return`, 정리(`setBusy(false)` 등)는 `try` 다음 줄에 (`src/app/(user)/stores/[store_id]/booking/BookingContent.tsx` `submit` · `src/shared/components/payment/TossPaymentWidget.tsx` `pay`). 오류를 부르는 쪽에 그대로 넘겨야 하는 공통 부품(`try … finally` 를 쓰던 곳)은 `catch` 에서 `{error}` 로 담고, 정리 뒤 다시 던진다(`src/shared/components/sms/SmsVerification.tsx` `send` · `src/shared/components/upload/ImageUploader.tsx` `chooseFile`).

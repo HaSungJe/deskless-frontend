@@ -11,6 +11,10 @@ import { ReservationExtensionResultDto } from './dto/reservation-extension.dto';
 import { ReservationListDto, ReservationListResultDto } from './dto/reservation-list.dto';
 import { ReservationPaymentConfirmDto, ReservationPaymentConfirmResultDto } from './dto/reservation-payment-confirm.dto';
 import { ReservationQrResultDto } from './dto/reservation-qr.dto';
+import { ReservationRoomChangeDto } from './dto/reservation-room-change.dto';
+import { ReservationStoreCancelDto } from './dto/reservation-store-cancel.dto';
+import { ReservationStoreDto, ReservationStoreResultDto } from './dto/reservation-store.dto';
+import { ReservationUseCancelRequestDto, ReservationUseCancelRequestResultDto } from './dto/reservation-use-cancel-request.dto';
 import { ReservationDto, ReservationResultDto } from './dto/reservation.dto';
 
 /**
@@ -150,4 +154,62 @@ export function getExtension(auth: AuthType, reservation_id: string, signal?: Ab
  */
 export function requestExtension(auth: AuthType, reservation_id: string): Promise<ReservationExtendResultDto | null> {
     return withAuth(auth, (token) => callQueue<ReservationExtendResultDto>({method: 'POST', path: `${reservationPath(reservation_id)}/extension`, token}));
+}
+
+// ── 업체 예약 현황 (M3 — 매니저) ──
+
+/** 업체 쪽 예약 경로 */
+const STORE_RESERVATION_PATH = '/admin-service/reservation';
+
+/**
+ * 업체 쪽 예약 하나의 경로 — /admin-service/reservation/<ID>
+ *
+ * @param reservation_id 예약 ID
+ */
+function storeReservationPath(reservation_id: string): string {
+    return `${STORE_RESERVATION_PATH}/${encodeURIComponent(reservation_id)}`;
+}
+
+/**
+ * 내 업체 예약 현황 — 동기 · 매니저 (GET /admin-service/reservation/store) — 그 한국 날짜와 겹치는 예약을 호실별로
+ *
+ * @param auth AuthContext 값
+ * @param query date(YYYY-MM-DD)
+ * @param signal 날짜가 바뀌거나 화면을 떠날 때 취소
+ */
+export function getStoreReservations(auth: AuthType, query: ReservationStoreDto, signal?: AbortSignal): Promise<ReservationStoreResultDto | null> {
+    return withAuth(auth, (token) => request<ReservationStoreResultDto>({path: `${STORE_RESERVATION_PATH}/store`, query: {date: query.date}, token, signal}));
+}
+
+/**
+ * 업체 취소 — 큐 · 매니저 (PATCH /admin-service/reservation/:reservation_id/store-cancel) — 시작 전만, 확정은 전액 환불, 결과 null
+ *
+ * @param auth AuthContext 값
+ * @param reservation_id 예약 ID
+ * @param dto cancel_reason
+ */
+export function cancelStoreReservation(auth: AuthType, reservation_id: string, dto: ReservationStoreCancelDto): Promise<null> {
+    return withAuth(auth, (token) => callQueue<null>({method: 'PATCH', path: `${storeReservationPath(reservation_id)}/store-cancel`, body: dto, token}));
+}
+
+/**
+ * 호실 이동 — 큐 · 매니저 (PATCH /admin-service/reservation/:reservation_id/room) — 같은 그룹 · 시작 전 확정만, 겹치면 400, 결과 null
+ *
+ * @param auth AuthContext 값
+ * @param reservation_id 예약 ID
+ * @param dto room_id
+ */
+export function changeReservationRoom(auth: AuthType, reservation_id: string, dto: ReservationRoomChangeDto): Promise<null> {
+    return withAuth(auth, (token) => callQueue<null>({method: 'PATCH', path: `${storeReservationPath(reservation_id)}/room`, body: dto, token}));
+}
+
+/**
+ * 이용 중 취소 요청 — 큐 · 매니저 (POST /admin-service/reservation/:reservation_id/use-cancel-request) — 예약자 동의 링크 SMS, done 이면 만료 일시
+ *
+ * @param auth AuthContext 값
+ * @param reservation_id 예약 ID
+ * @param dto cancel_reason
+ */
+export function requestUseCancel(auth: AuthType, reservation_id: string, dto: ReservationUseCancelRequestDto): Promise<ReservationUseCancelRequestResultDto | null> {
+    return withAuth(auth, (token) => callQueue<ReservationUseCancelRequestResultDto>({method: 'POST', path: `${storeReservationPath(reservation_id)}/use-cancel-request`, body: dto, token}));
 }

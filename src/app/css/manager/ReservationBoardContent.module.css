@@ -1,0 +1,171 @@
+/* M3 예약 현황 — 머리(시안 .phd · .pt · .ps) · 날짜 줄 · 색 안내(.legend) · 대화상자(정보 dl · 작업 버튼 · 호실 고르기) */
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+}
+
+.head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.subtitle {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* 날짜 줄 */
+.dateBar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+.date {
+    width: 170px;
+}
+
+/* 색 안내 */
+.legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px 20px;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.legend span {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.swatch {
+    display: inline-block;
+    width: 14px;
+    height: 12px;
+    border-radius: 3px;
+    border: 1px solid transparent;
+}
+
+.pend {
+    background: var(--warn-soft);
+    border-color: var(--warn);
+}
+
+.conf {
+    background: var(--primary-soft);
+    border-color: var(--primary);
+}
+
+.in {
+    background: var(--ok-soft);
+    border-color: var(--ok);
+}
+
+.done {
+    background: var(--neutral-bg);
+    border-color: var(--faint);
+}
+
+.tail {
+    background: var(--surface-2);
+    border: 1px dashed var(--faint);
+}
+
+.nowSwatch {
+    display: inline-block;
+    width: 2px;
+    height: 14px;
+    background: var(--danger);
+}
+
+.hint {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+}
+
+.muted {
+    color: var(--muted);
+}
+
+/* 대화상자 */
+.dialog {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.summary {
+    margin: 0;
+    display: grid;
+    grid-template-columns: 72px 1fr;
+    gap: 6px 12px;
+    font-size: 14px;
+}
+
+.summary dt {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.summary dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
+}
+
+.badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.menuActions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 16px 0 8px;
+}
+
+/* 호실 고르기 */
+.roomOptions {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.roomOption {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 12px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    cursor: pointer;
+}
+
+.roomOptionName {
+    flex: 1;
+    min-width: 0;
+}
+
+.disabled {
+    color: var(--muted);
+    background: var(--surface-2);
+    cursor: not-allowed;
+}
