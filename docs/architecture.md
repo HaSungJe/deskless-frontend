@@ -16,7 +16,7 @@ src/
 │  ├─ dev/ui/                        개발 전용 — /dev/ui 공통 UI 미리보기 · UiPreviewContent.tsx (운영 404)
 │  ├─ (user)/                        이용자 `/` · 모바일 (괄호 폴더는 주소에 안 나옴)
 │  │  ├─ layout.tsx · UserLayoutContent.tsx  이용자 틀(모바일 폭 · 하단 탭 · 내 정보 Context)
-│  │  ├─ _components/                UserMeProvider · UserTopBar(이전 화면 · 바로방 · 지나온 화면 › 지금 화면) · UserBackButton · user-history.ts(UserHistoryContext · canGoHistoryBack) · UserTabBar · MemberStateBand
+│  │  ├─ _components/                UserMeProvider · UserTopBar(이전 화면 · 바로방 · 지나온 화면 › 지금 화면) · UserBackButton · UserHistoryProvider(referrer · 이동 → canGoBack) · user-history.ts(UserHistoryContext · canGoHistoryBack) · UserTabBar · MemberStateBand
 │  │  ├─ page.tsx · HomeContent.tsx  U1 `/`
 │  │  └─ login/ · signup/ · phone-verification/ · find-login-id/  U5
 │  ├─ manager/                       업체 관리자 `/manager` · PC 콘솔 — layout.tsx(data-area="console") · manager-auth.ts(업체코드 쿠키 · 업체 로그인 주소 · 권한 배지)

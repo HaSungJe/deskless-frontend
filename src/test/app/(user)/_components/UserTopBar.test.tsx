@@ -34,7 +34,7 @@ describe('UserTopBar', () => {
     it('[SUCCESS] 이 사이트 안에서 옮겨 온 화면 — 이전 화면을 누르면 브라우저 뒤로 1번(링크 이동은 막음)', () => {
         const back = vi.spyOn(window.history, 'back').mockImplementation(() => undefined);
         render(
-            <UserHistoryContext.Provider value={{moved: true}}>
+            <UserHistoryContext.Provider value={{canGoBack: true}}>
                 <UserTopBar title="예약 상세" parents={[{label: '내 예약', href: '/reservation/'}]} />
             </UserHistoryContext.Provider>,
         );
