@@ -95,7 +95,7 @@ describe('StoreDetailContent', () => {
         const group = screen.getByRole('link', {name: /스탠다드 더블/});
         expect(group.getAttribute('href')).toBe(`/stores/${STORE_ID}/booking/?room_group_id=${GROUP_ID}`);
         expect(screen.getByText('예약 받는 호실 6개')).toBeTruthy();
-        expect(screen.getByText('샤워 시설')).toBeTruthy();
+        expect(screen.getByText('샤워실')).toBeTruthy();
         expect(screen.getByText('59,000원')).toBeTruthy();
         expect(screen.getByText('기간 가격 · 12월 24일 ~ 12월 25일 1박 79,000원 (성탄 연휴)')).toBeTruthy();
         expect(screen.getByRole('link', {name: '예약하기'}).getAttribute('href')).toBe(`/stores/${STORE_ID}/booking/`);

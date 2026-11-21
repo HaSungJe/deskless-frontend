@@ -47,7 +47,7 @@ beforeEach(() => {
 });
 
 describe('RoomGroupDetailContent', () => {
-    it('[SUCCESS] 기본 정보를 고쳐 저장한다 → 수정(큐) 1번(그룹명 · 설명 · 방 개수 · 편의시설 0 · 1) → 상세 다시', async () => {
+    it('[SUCCESS] 기본 정보를 고쳐 저장한다 → 수정(큐) 1번(그룹명 · 설명 · 방 개수 · 객실 옵션 0 · 1) → 상세 다시', async () => {
         await renderDetail();
         expect(api.getRoomGroup).toHaveBeenCalledTimes(1);
         expect(screen.getByText('호실 2개(301호 · 302호) · 등록 2026-03-02 · 수정 2026-11-08 16:20')).toBeTruthy();

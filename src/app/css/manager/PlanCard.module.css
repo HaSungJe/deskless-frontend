@@ -1,5 +1,6 @@
 /* M6 상품 카드 — 시안 M6-plans(.days · .unit · .fg · .kv · .sep) */
 .card {
+    flex: 1; /* 늘어난 카드(Card 는 세로 flex)의 남은 높이를 채운다 */
     display: flex;
     flex-direction: column;
     gap: 16px;
@@ -51,8 +52,9 @@
     gap: 8px;
 }
 
-/* 저장 줄 */
+/* 저장 줄 — 카드 바닥에 붙여 세 카드의 버튼 줄을 맞춘다 */
 .actions {
+    margin-top: auto;
     display: flex;
     flex-wrap: wrap;
     align-items: center;

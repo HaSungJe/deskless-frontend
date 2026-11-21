@@ -44,6 +44,7 @@
 - 금액: `formatPrice(12000)` → `12,000원`. 요일: `daysToBits([1, 3, 5])` → `42`, `bitsToDays(42)` → `[1, 3, 5]`, `formatDays(42)` → `월 · 수 · 금`, `formatDays(31)` → `일 ~ 목`(3일 이상 이어지면 범위 — 토 다음 일로 주를 넘어도, `formatDays(97)` → `금 ~ 일`), `formatDays(127)` → `매일` (0 일 ~ 6 토).
 - 상태 · 종류 이름: 응답 `*_name` 먼저, 없으면 `lookupName('reservation_state_id', 'CONFIRMED')` → `예약 확정` (모르는 값은 그대로).
 - 백엔드 수정 요청(`frontend/changes/`)이 오면 해당 파일을 새 코드로 통째로 바꾼다. 반영한 문서 — `2026-11-18-store-login-store.md`(매니저 로그인용 업체 확인 `GET /admin-service/store/login-store/:store_code` — `src/contracts/store/dto/store-login-store.dto.ts` · `getLoginStore`, Phase 10 revision 261118-1) · `2026-11-19-door-state-removed.md`(문 열림 · 닫힘 대신 마지막으로 연 시각 `door_opened_at` — `src/contracts/room/dto/room-list.dto.ts` · `room-door-open.dto.ts`, 룩업 `door_state` 지움, Phase 12) · `2026-11-20-room-group-detail-floors.md`(그룹 상세 `price_count` · `room_count` · `rooms`, 호실 목록 `floors` — `src/contracts/room/dto/room-group-detail.dto.ts` · `room-list.dto.ts`, Phase 12).
+- 객실 옵션(객실 그룹 상세정보 `room_group_detail` 의 켜고 끄는 항목 — 샤워실 · TV · PC …)은 `ROOM_GROUP_OPTIONS`(`src/contracts/common/room.constants.ts`) 한 곳에 키 · 이름을 둔다 — 업체 관리자 그룹 칸(스위치)과 이용자 업체 상세(칩)가 이 목록을 그린다. 백엔드가 항목을 더하면(반려동물 동반 · 배달 가능 등) 그 DTO 사본들에 필드를 더하고 이 목록에 한 줄을 더한다(목록의 키가 DTO 에 없으면 타입 검사가 잡는다).
 
 ## 토큰 쿠키 — route handler
 

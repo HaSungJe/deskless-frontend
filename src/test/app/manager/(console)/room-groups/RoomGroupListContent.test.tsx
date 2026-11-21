@@ -42,7 +42,7 @@ beforeEach(() => {
 });
 
 describe('RoomGroupListContent', () => {
-    it('[SUCCESS] 그룹을 등록한다 → 등록(큐) 1번(그룹명 · 설명 · 방 개수 · 편의시설) → 받은 그룹 상세 주소로 이동', async () => {
+    it('[SUCCESS] 그룹을 등록한다 → 등록(큐) 1번(그룹명 · 설명 · 방 개수 · 객실 옵션) → 받은 그룹 상세 주소로 이동', async () => {
         await renderList();
         expect(getRoomGroups).toHaveBeenCalledTimes(1);
         expect(screen.getByText('디럭스 트윈')).toBeTruthy();

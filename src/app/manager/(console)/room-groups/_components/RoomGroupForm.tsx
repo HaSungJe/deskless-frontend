@@ -1,3 +1,4 @@
+import { ROOM_GROUP_OPTIONS } from '@/contracts/common/room.constants';
 import Field from '@/shared/components/ui/form/Field';
 import Input from '@/shared/components/ui/form/Input';
 import Switch from '@/shared/components/ui/form/Switch';
@@ -18,7 +19,7 @@ const NAME_MAX = 100;
 const DESCRIPTION_MAX = 2000;
 
 /**
- * 객실 그룹 칸 — 그룹명 · 방 개수 · 설명 · 편의시설(샤워실 · TV · PC). 목록의 등록 대화상자와 상세의 기본 정보 카드가 함께 쓴다
+ * 객실 그룹 칸 — 그룹명 · 방 개수 · 설명 · 객실 옵션(ROOM_GROUP_OPTIONS — 항목이 늘어도 목록만). 목록의 등록 대화상자와 상세의 기본 정보 카드가 함께 쓴다
  * - 방 개수는 안쪽 DTO(room_group_detail)라 오류 키를 붙인다
  *
  * @param param0
@@ -43,12 +44,10 @@ export default function RoomGroupForm({idPrefix, form, onChange}: RoomGroupFormP
                 <Textarea id={`${idPrefix}-description`} rows={3} maxLength={DESCRIPTION_MAX} value={form.description} onChange={(event) => onChange({description: event.target.value})} />
             </Field>
 
-            {/* 편의시설 */}
-            <fieldset className={styles.amenities}>
-                <legend className={styles.legend}>편의시설</legend>
-                <Switch label="샤워실" checked={form.has_shower} onChange={(checked) => onChange({has_shower: checked})} />
-                <Switch label="TV" checked={form.has_tv} onChange={(checked) => onChange({has_tv: checked})} />
-                <Switch label="PC" checked={form.has_pc} onChange={(checked) => onChange({has_pc: checked})} />
+            {/* 객실 옵션 */}
+            <fieldset className={styles.options}>
+                <legend className={styles.legend}>객실 옵션</legend>
+                {ROOM_GROUP_OPTIONS.map((option) => <Switch key={option.key} label={option.label} checked={form.options[option.key]} onChange={(checked) => onChange({options: {...form.options, [option.key]: checked}})} />)}
             </fieldset>
         </div>
     );

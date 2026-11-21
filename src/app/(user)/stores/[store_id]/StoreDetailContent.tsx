@@ -17,7 +17,7 @@ import { DAY_NAMES, formatPrice, todayKst } from '@/shared/utils/format';
 import UserTopBar from '../../_components/UserTopBar';
 import StoreImageSlider from './_components/StoreImageSlider';
 import { isStoreNotFound, STORE_NOT_FOUND_MESSAGE } from './store-not-found';
-import { amenityLabels, describeBookingPolicy, describePlan, formatHourRange, formatPeriodPrice, planPriceLabel } from './store-detail-format';
+import { describeBookingPolicy, describePlan, formatHourRange, formatPeriodPrice, planPriceLabel, roomOptionLabels } from './store-detail-format';
 import styles from '@/app/css/user/StoreDetailContent.module.css';
 
 type StoreDetailContentProps = {
@@ -191,7 +191,7 @@ export default function StoreDetailContent({storeId}: StoreDetailContentProps): 
 }
 
 /**
- * 객실 그룹 카드 내용 — 사진 · 이름 · 설명 · 호실 수 · 편의시설 · 상품별 가격 · 기간 가격
+ * 객실 그룹 카드 내용 — 사진 · 이름 · 설명 · 호실 수 · 객실 옵션 · 상품별 가격 · 기간 가격
  * - 영업중이면 예약 링크, 아니면 링크 없이(예약하기를 막은 것과 같이)
  *
  * @param group 객실 그룹
@@ -211,9 +211,9 @@ function roomGroupBody(group: DiscoveryRoomGroupItemResultDto): React.ReactNode 
                 </div>
             </div>
 
-            {/* 편의시설 */}
-            <div className={styles.amenities}>
-                {amenityLabels(group.room_group_detail).map((label) => <span key={label} className={styles.amenity}>{label}</span>)}
+            {/* 객실 옵션 */}
+            <div className={styles.options}>
+                {roomOptionLabels(group.room_group_detail).map((label) => <span key={label} className={styles.option}>{label}</span>)}
             </div>
 
             {/* 상품별 가격 */}

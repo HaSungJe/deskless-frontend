@@ -218,13 +218,13 @@
     color: var(--muted);
 }
 
-.amenities {
+.options {
     display: flex;
     flex-wrap: wrap;
     gap: 6px;
 }
 
-.amenity {
+.option {
     display: inline-flex;
     align-items: center;
     height: var(--badge-h);

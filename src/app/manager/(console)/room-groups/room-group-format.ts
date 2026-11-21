@@ -1,3 +1,4 @@
+import { ROOM_GROUP_OPTIONS, RoomGroupOptionKeyType } from '@/contracts/common/room.constants';
 import { RoomGroupDetailResultDto } from '@/contracts/room/dto/room-group-detail.dto';
 import { RoomGroupUpdateDetailDto, RoomGroupUpdateDto } from '@/contracts/room/dto/room-group-update.dto';
 import { RoomGroupDetailInputDto, RoomGroupDto } from '@/contracts/room/dto/room-group.dto';
@@ -15,16 +16,23 @@ export const ROOM_GROUP_IMAGE_MAX = 5;
 
 /** 그룹 칸 */
 export type RoomGroupFormType = {
-    room_group_name: string; // 그룹명
-    description: string;     // 설명
-    room_count: string;      // 방 개수 칸 글자
-    has_shower: boolean;     // 샤워실
-    has_tv: boolean;         // TV
-    has_pc: boolean;         // PC
+    room_group_name: string;                          // 그룹명
+    description: string;                              // 설명
+    room_count: string;                               // 방 개수 칸 글자
+    options: Record<RoomGroupOptionKeyType, boolean>; // 객실 옵션(샤워실 · TV · PC …) — 켬 · 끔
 };
 
-/** 등록 대화상자 빈 칸 — 백엔드 기본값(방 1 · 편의시설 모두 있음)과 같게 */
-export const EMPTY_ROOM_GROUP_FORM: RoomGroupFormType = {room_group_name: '', description: '', room_count: '1', has_shower: true, has_tv: true, has_pc: true};
+/**
+ * 객실 옵션 항목마다 값을 정한다(ROOM_GROUP_OPTIONS 순서) — 빈 칸 · 받은 상세 → 칸 · 칸 → 보낼 값이 함께 쓴다
+ *
+ * @param valueOf 항목 키 → 값
+ */
+function optionsOf<T>(valueOf: (key: RoomGroupOptionKeyType) => T): Record<RoomGroupOptionKeyType, T> {
+    return Object.fromEntries(ROOM_GROUP_OPTIONS.map((option) => [option.key, valueOf(option.key)])) as Record<RoomGroupOptionKeyType, T>;
+}
+
+/** 등록 대화상자 빈 칸 — 백엔드 기본값(방 1 · 객실 옵션 모두 켬)과 같게 */
+export const EMPTY_ROOM_GROUP_FORM: RoomGroupFormType = {room_group_name: '', description: '', room_count: '1', options: optionsOf(() => true)};
 
 /**
  * 그룹 상세 주소
@@ -42,16 +50,16 @@ export function roomGroupPath(roomGroupId: string): string {
  */
 export function roomGroupFormOf(group: RoomGroupDetailResultDto): RoomGroupFormType {
     const detail = group.room_group_detail;
-    return {room_group_name: group.room_group_name, description: group.description ?? '', room_count: String(detail.room_count), has_shower: detail.has_shower === 1, has_tv: detail.has_tv === 1, has_pc: detail.has_pc === 1};
+    return {room_group_name: group.room_group_name, description: group.description ?? '', room_count: String(detail.room_count), options: optionsOf((key) => detail[key] === 1)};
 }
 
 /**
- * 편의시설 값 — 4개 모두(0 · 1)
+ * 상세정보 보낼 값 — 방 개수 + 객실 옵션 모두(0 · 1)
  *
  * @param form 그룹 칸
  */
-function detailValuesOf(form: RoomGroupFormType): {room_count: number | undefined; has_shower: number; has_tv: number; has_pc: number} {
-    return {room_count: numberOf(form.room_count), has_shower: form.has_shower ? 1 : 0, has_tv: form.has_tv ? 1 : 0, has_pc: form.has_pc ? 1 : 0};
+function detailValuesOf(form: RoomGroupFormType): {room_count: number | undefined} & Record<RoomGroupOptionKeyType, number> {
+    return {room_count: numberOf(form.room_count), ...optionsOf((key) => (form.options[key] ? 1 : 0))};
 }
 
 /**
@@ -64,7 +72,7 @@ export function toRoomGroupDto(form: RoomGroupFormType): RoomGroupDto {
 }
 
 /**
- * 그룹 수정 보낼 값 — 편의시설 통째로, 설명은 빈 글자로도 보낸다(빠뜨리면 지우지 못한다)
+ * 그룹 수정 보낼 값 — 상세정보(방 개수 · 객실 옵션) 통째로, 설명은 빈 글자로도 보낸다(빠뜨리면 지우지 못한다)
  *
  * @param form 그룹 칸
  */

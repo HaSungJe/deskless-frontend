@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { describe, expect, it } from 'vitest';
-import { amenityLabels, describeBookingPolicy, describePlan, formatHourRange, formatPeriodPrice, planPriceLabel } from '@/app/(user)/stores/[store_id]/store-detail-format';
+import { describeBookingPolicy, describePlan, formatHourRange, formatPeriodPrice, planPriceLabel, roomOptionLabels } from '@/app/(user)/stores/[store_id]/store-detail-format';
 import { DiscoveryStorePlanResultDto } from '@/contracts/discovery/dto/discovery-store-detail.dto';
 
 /** 판매 상품 설정 — 빠진 칸은 null · 0 */
@@ -107,13 +107,13 @@ describe('formatPeriodPrice', () => {
     });
 });
 
-describe('amenityLabels', () => {
+describe('roomOptionLabels', () => {
     it('[SUCCESS] 있는 것만 방 · 샤워 · TV · PC 순서로', () => {
-        expect(amenityLabels({room_count: 1, has_shower: 1, has_tv: 1, has_pc: 0})).toEqual(['방 1개', '샤워 시설', 'TV']);
-        expect(amenityLabels({room_count: 2, has_shower: 1, has_tv: 1, has_pc: 1})).toEqual(['방 2개', '샤워 시설', 'TV', 'PC']);
+        expect(roomOptionLabels({room_count: 1, has_shower: 1, has_tv: 1, has_pc: 0})).toEqual(['방 1개', '샤워실', 'TV']);
+        expect(roomOptionLabels({room_count: 2, has_shower: 1, has_tv: 1, has_pc: 1})).toEqual(['방 2개', '샤워실', 'TV', 'PC']);
     });
 
     it('[FAIL:none] 없으면 칩을 만들지 않음', () => {
-        expect(amenityLabels({room_count: 0, has_shower: 0, has_tv: 0, has_pc: 0})).toEqual([]);
+        expect(roomOptionLabels({room_count: 0, has_shower: 0, has_tv: 0, has_pc: 0})).toEqual([]);
     });
 });

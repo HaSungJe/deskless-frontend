@@ -16,7 +16,7 @@ type RoomGroupInfoCardProps = {
 };
 
 /**
- * 기본 정보 카드 — 그룹명 · 방 개수 · 설명 · 편의시설 저장
+ * 기본 정보 카드 — 그룹명 · 방 개수 · 설명 · 객실 옵션 저장
  *
  * @param param0
  * @returns
@@ -31,7 +31,7 @@ export default function RoomGroupInfoCard({group, onSaved}: RoomGroupInfoCardPro
 
     // 함수
     async function save(): Promise<void> {
-        // ② 그룹명 · 설명 · 방 개수 검사 → 수정(큐 — 편의시설 통째로) → ⑤ 상세 다시
+        // ② 그룹명 · 설명 · 방 개수 검사 → 수정(큐 — 상세정보 통째로) → ⑤ 상세 다시
         const dto = toRoomGroupUpdateDto(form);
         if (saving || !(await validateRoomGroup(dto))) {
             return;

@@ -28,8 +28,8 @@
     white-space: nowrap;
 }
 
-/* 편의시설 */
-.amenities {
+/* 객실 옵션 */
+.options {
     display: flex;
     flex-wrap: wrap;
     gap: 16px;

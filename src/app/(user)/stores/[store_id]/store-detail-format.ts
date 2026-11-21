@@ -1,3 +1,4 @@
+import { ROOM_GROUP_OPTIONS } from '@/contracts/common/room.constants';
 import { DiscoveryRoomGroupDetailResultDto, DiscoveryRoomGroupPeriodPriceResultDto, DiscoveryRoomGroupPlanResultDto } from '@/contracts/discovery/dto/discovery-room-group-list.dto';
 import { DiscoveryStoreDetailResultDto, DiscoveryStoreHourResultDto, DiscoveryStorePlanResultDto } from '@/contracts/discovery/dto/discovery-store-detail.dto';
 import { EVERY_DAY_BITS, formatDays, formatPrice } from '@/shared/utils/format';
@@ -81,16 +82,14 @@ export function formatPeriodPrice(period: DiscoveryRoomGroupPeriodPriceResultDto
 }
 
 /**
- * 편의시설 칩 글자 — 방 개수(1개 이상) · 샤워 · TV · PC 중 있는 것만, 이 순서로
+ * 객실 옵션 칩 글자 — 방 개수(1개 이상) 다음 켜진 객실 옵션(ROOM_GROUP_OPTIONS 순서 — 업체 관리자 그룹 칸과 같은 이름)
  *
  * @param detail 객실 그룹 상세정보
  */
-export function amenityLabels(detail: DiscoveryRoomGroupDetailResultDto): Array<string> {
+export function roomOptionLabels(detail: DiscoveryRoomGroupDetailResultDto): Array<string> {
     return [
         detail.room_count > 0 ? `방 ${detail.room_count}개` : '',
-        detail.has_shower === 1 ? '샤워 시설' : '',
-        detail.has_tv === 1 ? 'TV' : '',
-        detail.has_pc === 1 ? 'PC' : '',
+        ...ROOM_GROUP_OPTIONS.map((option) => (detail[option.key] === 1 ? option.label : '')),
     ].filter(Boolean);
 }
 
