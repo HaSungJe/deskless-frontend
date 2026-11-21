@@ -47,7 +47,7 @@ describe('ManagerConsoleLayoutContent', () => {
         expect(getAreaAccount).toHaveBeenCalledWith('manager');
         const top = within(screen.getByRole('banner'));
         expect(top.getByText('스테이 리프 강남역점')).toBeTruthy();
-        expect(top.getByText('업체코드 3f9a2c7e…')).toBeTruthy();
+        expect(top.queryByText(/업체코드/)).toBeNull();
         expect(top.getByText('leaf_gangnam')).toBeTruthy();
         expect(top.getByText('업체 총관리자')).toBeTruthy();
         expect(top.getByRole('link', {name: '비밀번호 변경'}).getAttribute('href')).toBe('/manager/password/');

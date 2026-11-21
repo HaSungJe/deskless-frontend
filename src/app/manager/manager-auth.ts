@@ -16,9 +16,6 @@ export const MANAGER_GUIDE_MANUAL_PATH = '/manager/login/?manual=1';
 /** 비밀번호 변경 — 임시 비밀번호로 로그인했을 때(안내 띠) */
 const PASSWORD_REQUIRED_PATH = '/manager/password/?required=1';
 
-/** 업체코드를 줄여 보일 앞 글자 수 */
-const STORE_CODE_SHORT_LENGTH = 8;
-
 /** 권한 배지 — 지침서 화면 문구(screens.md M1 · 시안 배지) */
 export const MANAGER_AUTH_BADGE = new Map<string, {label: string; tone: 'primary' | 'neutral'}>([
     [AUTH_ID.HEAD_MANAGER, {label: '업체 총관리자', tone: 'primary'}],
@@ -60,15 +57,6 @@ export function managerLoginPath(storeCode: string, returnUrl: string | null): s
  */
 export function afterManagerLoginPath(isPasswordChangeRequired: number, returnUrl: string | null): string {
     return isPasswordChangeRequired === 1 ? PASSWORD_REQUIRED_PATH : safeReturnPath(returnUrl, 'manager');
-}
-
-/**
- * 업체코드 줄임 — 앞 8자 + 줄임표(상단 바)
- *
- * @param storeCode 업체코드
- */
-export function shortStoreCode(storeCode: string): string {
-    return storeCode.length > STORE_CODE_SHORT_LENGTH ? `${storeCode.slice(0, STORE_CODE_SHORT_LENGTH)}…` : storeCode;
 }
 
 /**

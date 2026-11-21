@@ -7,12 +7,6 @@ export const STAFF_LIST_PATH = '/manager/staff/';
 /** 업체 총관리자가 아닐 때 안내 */
 export const HEAD_MANAGER_ONLY_TITLE = '업체 총관리자만 볼 수 있는 화면입니다.';
 
-/** 회원 상태 — state_id(업체 관리자는 ACTIVE · BLOCK) */
-export const STAFF_STATE = {ACTIVE: 'ACTIVE', BLOCK: 'BLOCK'} as const;
-
-/** 상태 배지 색 — 시안 M8(정상 ok · 정지 err) */
-export const STAFF_STATE_TONE: Record<string, 'ok' | 'danger'> = {[STAFF_STATE.ACTIVE]: 'ok', [STAFF_STATE.BLOCK]: 'danger'};
-
 /** 휴대폰 최대 자리 — ManagerStaffDto(01X + 7 ~ 8자리) */
 export const PHONE_MAX = 11;
 

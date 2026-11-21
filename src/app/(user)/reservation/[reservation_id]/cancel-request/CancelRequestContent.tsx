@@ -129,7 +129,7 @@ export default function CancelRequestContent({reservationId}: CancelRequestConte
         // 취소 동의
         <div className={pageStyles.page}>
             {/* 상단 바 */}
-            <UserTopBar title="취소 동의" backHref={detailPath} />
+            <UserTopBar title="취소 동의" parents={[{label: '내 예약', href: '/reservation/'}, {label: '예약 상세', href: detailPath}]} />
 
             {request ? (
                 <>

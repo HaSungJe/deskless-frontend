@@ -1,5 +1,6 @@
 'use client';
 import { useContext, useState } from 'react';
+import { MEMBER_STATE } from '@/contracts/common/member.constants';
 import { deleteManagerStaff, resetManagerStaffPassword, updateManagerStaffState } from '@/contracts/manager/api';
 import { ManagerStaffDetailResultDto } from '@/contracts/manager/dto/manager-staff-detail.dto';
 import { ManagerStaffStateDto } from '@/contracts/manager/dto/manager-staff-state.dto';
@@ -14,7 +15,6 @@ import ConfirmModal from '@/shared/components/ui/modal/ConfirmModal';
 import { AuthContext } from '@/shared/providers/RootLayoutProvider';
 import { formatPhone } from '@/shared/utils/format';
 import { validateAction } from '@/shared/utils/validation';
-import { STAFF_STATE } from '../../staff-format';
 import styles from '@/app/css/manager/StaffDetailContent.module.css';
 
 type StaffAccountCardProps = {
@@ -47,7 +47,7 @@ export default function StaffAccountCard({staff, onChanged, onDeleted}: StaffAcc
     const [notice, setNotice] = useState<string | null>(null);                  // ④ 초기화 안내
 
     // 계산 값
-    const blocked = staff.state_id === STAFF_STATE.BLOCK;                                 // 정지된 계정 — 정지 줄 대신 해제
+    const blocked = staff.state_id === MEMBER_STATE.BLOCK;                                 // 정지된 계정 — 정지 줄 대신 해제
     const phoneTo = staff.phone ? `${formatPhone(staff.phone)} 로` : '등록된 휴대폰으로'; // 문자가 갈 곳 — 조사까지 한 덩어리
     const confirmText: Record<StaffActionType, {title: string; message: string; label: string}> = {
         reset: {title: '비밀번호 초기화', message: `${staff.login_id} 계정의 비밀번호를 초기화할까요? 임시 비밀번호가 ${phoneTo} 문자로 갑니다.`, label: '초기화'},
@@ -59,7 +59,7 @@ export default function StaffAccountCard({staff, onChanged, onDeleted}: StaffAcc
     // 함수
     function blockDto(): ManagerStaffStateDto {
         // 정지 값 — 사유는 다듬고 비면 보내지 않는다
-        return Object.assign(new ManagerStaffStateDto(), {state_id: STAFF_STATE.BLOCK, block_comment: blockComment.trim() || undefined});
+        return Object.assign(new ManagerStaffStateDto(), {state_id: MEMBER_STATE.BLOCK, block_comment: blockComment.trim() || undefined});
     }
 
     async function askBlock(): Promise<void> {
@@ -117,7 +117,7 @@ export default function StaffAccountCard({staff, onChanged, onDeleted}: StaffAcc
         setBusy(true);
         let failure: {error: unknown} | null = null; // 실패 — 처리는 try 밖에서
         try {
-            await updateManagerStaffState(auth, staff.user_id, Object.assign(new ManagerStaffStateDto(), {state_id: STAFF_STATE.ACTIVE}));
+            await updateManagerStaffState(auth, staff.user_id, Object.assign(new ManagerStaffStateDto(), {state_id: MEMBER_STATE.ACTIVE}));
         } catch (error) {
             failure = {error};
         }

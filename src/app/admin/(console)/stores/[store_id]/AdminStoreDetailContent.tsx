@@ -28,7 +28,9 @@ type AdminStoreDetailContentProps = {
 };
 
 /**
- * A4 업체 상세 — 머리(업체코드 · 로그인 주소 복사 · 업체 관리자로) · 정보 수정 · 상태 · 영업중 · 운영 규정 · 업체 정보 파일
+ * A4 업체 상세 — 머리(등록 · 수정일, 로그인 주소 복사 · 업체 관리자로) · 정보 수정 · 상태 · 영업중 · 운영 규정 · 업체 정보 파일
+ * - 업체코드 · 로그인 주소 글자는 보이지 않는다 — 주소는 복사 버튼으로만(사용자 2026-11-22)
+ * - 배치: 정보(넓게) · 상태 + 영업중(좁게), 아래 운영 규정 · 파일은 같은 높이
  * - 칸 카드는 다시 읽어도 고치던 칸이 남게 key 로 다시 만든다 — 정보 칸은 업체가 바뀔 때만, 상태 칸은 상태가 바뀔 때도(고른 값 · 사유를 비운다)
  *
  * @param param0
@@ -86,33 +88,39 @@ export default function AdminStoreDetailContent({storeId}: AdminStoreDetailConte
     return (
         // 업체 상세
         <div className={styles.page}>
-            {/* 머리 — 업체코드 · 로그인 주소 · ⑥ 업체 관리자로 */}
+            {/* 머리 — 이름 · 배지 · 등록 · 수정일, 오른쪽 로그인 주소 복사 · ⑥ 업체 관리자로 */}
             <div className={styles.head}>
                 <div>
                     <p className={styles.crumb}><Link href={STORE_LIST_PATH}>업체 목록</Link></p>
                     <h1 className={styles.title}>{store.store_name}<Badge tone={STORE_STATE_TONE[store.store_state_id] ?? 'neutral'}>{lookupName('store_state_id', store.store_state_id)}</Badge><Badge tone={open.tone}>{open.label}</Badge></h1>
-                    <div className={styles.copyRow}><span className={styles.muted}>업체코드</span><code className={styles.mono}>{store.store_code}</code><CopyButton text={store.store_code} size="sm" /></div>
-                    <div className={styles.copyRow}><span className={styles.muted}>업체 관리자 콘솔 로그인 주소</span><code className={styles.mono}>{loginUrl}</code><CopyButton text={loginUrl} label="로그인 주소 복사" size="sm" /></div>
-                    <p className={styles.sub}>등록 {toKst(store.created_at, 'YYYY-MM-DD HH:mm')} · 수정 {toKst(store.updated_at, 'YYYY-MM-DD HH:mm')}</p>
+                    <dl className={styles.meta}>
+                        <div><dt>등록일</dt><dd>{toKst(store.created_at, 'YYYY-MM-DD HH:mm')}</dd></div>
+                        <div><dt>수정일</dt><dd>{toKst(store.updated_at, 'YYYY-MM-DD HH:mm')}</dd></div>
+                    </dl>
                 </div>
-                <Link href={storeManagersPath(store.store_id)} className={buttonClass({})}>이 업체의 업체 관리자</Link>
+                <div className={styles.actions}>
+                    <CopyButton text={loginUrl} label="로그인 주소 복사" />
+                    <Link href={storeManagersPath(store.store_id)} className={buttonClass({})}>이 업체의 업체 관리자</Link>
+                </div>
             </div>
 
             {/* 영업중지 사유 · ① 탈퇴 잠금 */}
             {store.store_state_id === STORE_STATE.SUSPEND && store.suspend_comment ? <Band tone="danger" title="영업중지 사유">{store.suspend_comment}</Band> : null}
             {locked ? <Band tone="warn">탈퇴한 업체는 바꿀 수 없습니다.</Band> : null}
 
-            {/* ②③ 정보 · ④ 상태 · ⑤ 영업중 */}
+            {/* ②③ 정보(넓게) · ④ 상태 · ⑤ 영업중(좁게) */}
             <div className={styles.cols}>
-                <StoreInfoCard key={store.store_id} store={store} locked={locked} onSaved={reload} />
-                <div className={styles.stack}>
+                <div className={styles.colWide}>
+                    <StoreInfoCard key={store.store_id} store={store} locked={locked} onSaved={reload} />
+                </div>
+                <div className={`${styles.colNarrow} ${styles.stack}`}>
                     <StoreStateCard key={`${store.store_id}-${store.store_state_id}`} store={store} locked={locked} onChanged={reload} />
                     <StoreOpenCard store={store} locked={locked} onChanged={reload} />
                 </div>
             </div>
 
-            {/* 운영 규정(보기만) · 업체 정보 파일 */}
-            <div className={styles.cols}>
+            {/* 운영 규정(보기만) · 업체 정보 파일 — 같은 높이 */}
+            <div className={`${styles.cols} ${styles.even}`}>
                 <Card title="운영 규정">
                     <p className={styles.muted}>업체 관리자가 내 업체 설정에서 바꿉니다. 여기서는 읽기만.</p>
                     <dl className={styles.dl}>

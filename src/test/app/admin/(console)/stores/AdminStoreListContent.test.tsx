@@ -12,7 +12,7 @@ beforeEach(() => {
 });
 
 describe('AdminStoreListContent', () => {
-    it('[SUCCESS] "영업중지"를 고르고 검색어로 조회한다 → 목록 다시(영업중지 · 검색어 · 1쪽) · 표(업체코드 앞 8자 · 탈퇴 업체 DELETE_ 줄임)', async () => {
+    it('[SUCCESS] "영업중지"를 고르고 검색어로 조회한다 → 목록 다시(영업중지 · 검색어 · 1쪽) · 표(번호 — 검색 결과 기준으로 내려감 · 업체코드 없음 · 탈퇴 업체 DELETE_ 줄임)', async () => {
         await act(async () => {
             renderWithAdmin(<AdminStoreListContent />);
         });
@@ -21,8 +21,9 @@ describe('AdminStoreListContent', () => {
         expect({...getStores.mock.calls[0][1]}).toMatchObject({page: 1, size: 20, store_state_id: null, keyword: null});
 
         const rows = screen.getAllByRole('row');
-        expect(within(rows[1]).getAllByRole('cell').map((cell) => cell.textContent)).toEqual(['7a4c9e2b…', '스테이 리프 강남역점', '120-88-45678', '김현석', '02-555-0123', '서울특별시 강남구 강남대로 123', '영업중', '활성']);
+        expect(within(rows[1]).getAllByRole('cell').map((cell) => cell.textContent)).toEqual(['14', '스테이 리프 강남역점', '120-88-45678', '김현석', '02-555-0123', '서울특별시 강남구 강남대로 123', '영업중', '활성']);
         expect(within(rows[1]).getByRole('link', {name: '스테이 리프 강남역점'}).getAttribute('href')).toBe(`/admin/stores/${STORE_ID}/`);
+        expect(within(rows[2]).getAllByRole('cell')[0].textContent).toBe('13');
         expect(within(rows[2]).getAllByRole('cell')[2].textContent).toBe('DELETE_eeeeeeee…');
 
         await act(async () => {

@@ -155,7 +155,7 @@ describe('StoreApplicationDetailContent', () => {
         expect(screen.getByRole('heading', {name: '스테이 리프 신촌점'})).toBeTruthy();
     });
 
-    it('[SUCCESS] 승인된 신청을 연다 → 업체코드 · 로그인 주소 · 복사, 파일은 보기만, 신청 취소 없음', async () => {
+    it('[SUCCESS] 승인된 신청을 연다 → 로그인 주소 복사만(업체코드 · 주소 글자 숨김 — 복사하면 그 업체 로그인 주소), 파일은 보기만, 신청 취소 없음', async () => {
         getMyStoreApplication.mockResolvedValue(detail({
             store_application_state_id: 'APPROVED',
             store_code: STORE_CODE,
@@ -165,9 +165,13 @@ describe('StoreApplicationDetailContent', () => {
         const container = await renderDetail();
 
         expect(screen.getByText('입점이 승인되었어요.')).toBeTruthy();
-        expect(screen.getByText(STORE_CODE)).toBeTruthy();
-        expect(screen.getByText(`https://deskless.kr/manager/${STORE_CODE}/login/`)).toBeTruthy();
-        expect(screen.getByRole('button', {name: '로그인 주소 복사'})).toBeTruthy();
+        expect(document.body.textContent).not.toContain(STORE_CODE);
+        const writeText = vi.fn().mockResolvedValue(undefined);
+        Object.defineProperty(navigator, 'clipboard', {value: {writeText}, configurable: true});
+        await act(async () => {
+            fireEvent.click(screen.getByRole('button', {name: '로그인 주소 복사'}));
+        });
+        expect(writeText).toHaveBeenCalledWith(`https://deskless.kr/manager/${STORE_CODE}/login/`);
         expect(screen.getByAltText('사업자등록증')).toBeTruthy();
         expect(screen.queryByRole('button', {name: /지우기/})).toBeNull();
         expect(container.querySelector('input[type="file"]')).toBeNull();

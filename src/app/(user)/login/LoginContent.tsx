@@ -64,7 +64,7 @@ export default function LoginContent({returnUrl, error, testLogin = false}: Logi
         <SessionProvider basePath={authBasePath} session={null} refetchOnWindowFocus={false}>
             <div className={styles.page}>
                 {/* 상단 바 */}
-                <UserTopBar title="로그인" backHref="/" />
+                <UserTopBar title="로그인" />
 
                 <div className={styles.body}>
                     {/* 브랜드 */}

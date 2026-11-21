@@ -1,4 +1,5 @@
 'use client';
+import UserTopBar from '../../_components/UserTopBar';
 import PaymentFailView from '../_components/PaymentFailView';
 import { paymentReturnPath } from '../payment-result';
 import styles from '@/app/css/user/UserPage.module.css';
@@ -22,8 +23,8 @@ export default function PaymentFailContent({code, message, returnUrl}: PaymentFa
     return (
         // 결제 결과
         <div className={styles.page}>
-            {/* 머리 */}
-            <header className={styles.plainHeader}><h1 className={styles.plainTitle}>결제 결과</h1></header>
+            {/* 머리 — 제목 · 홈으로 */}
+            <UserTopBar title="결제 결과" />
 
             {/* ① 사유 · 코드 · ② 다시 고르기 */}
             <PaymentFailView message={message || PAYMENT_FAIL_MESSAGE} code={code} backPath={paymentReturnPath(returnUrl)} />

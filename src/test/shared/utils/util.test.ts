@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { createQueryString, digitsOnly } from '@/shared/utils/util';
+import { createQueryString, digitsOnly, listNumber } from '@/shared/utils/util';
 
 describe('createQueryString', () => {
     it('[SUCCESS] 키 · 값을 encodeURIComponent 로 바꿔 ? 뒤에 잇는다', () => {
@@ -27,5 +27,13 @@ describe('digitsOnly — 입력 칸 숫자만 남기기', () => {
 
     it('[FAIL:no-digit] 숫자가 없으면 빈 글자다', () => {
         expect(digitsOnly('abc', 10)).toBe('');
+    });
+});
+
+describe('listNumber — 목록 번호(검색 결과 기준, 내려감)', () => {
+    it('[SUCCESS] 한 쪽 10개 · 99개 — 1쪽은 99 부터, 마지막 10쪽의 마지막 줄은 1', () => {
+        // 1쪽: content_start_number 99 · 10쪽: 9
+        expect([0, 1, 9].map((index) => listNumber({content_start_number: 99}, index))).toEqual([99, 98, 90]);
+        expect([0, 8].map((index) => listNumber({content_start_number: 9}, index))).toEqual([9, 1]);
     });
 });

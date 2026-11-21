@@ -41,3 +41,14 @@ export function digitsOnly(value: string, max: number): string {
 export function numberOf(value: string): number | undefined {
     return value.trim() === '' ? undefined : Number(value);
 }
+
+/**
+ * 목록 번호 — 검색 결과 기준으로 첫 쪽 맨 위가 총 개수, 마지막 쪽 맨 아래가 1(pagination.content_start_number 부터 한 줄씩 내려간다)
+ * - 예: 한 쪽 10개 · 99개면 1쪽 99 ~ 90, 10쪽은 9 ~ 1
+ *
+ * @param pagination 목록 응답의 pagination — content_start_number
+ * @param index 이 쪽에서의 줄 순서(0부터)
+ */
+export function listNumber(pagination: {content_start_number: number}, index: number): number {
+    return pagination.content_start_number - index;
+}

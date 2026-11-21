@@ -55,7 +55,7 @@ export default function ManagerLoginGuideContent({returnUrl}: ManagerLoginGuideC
 
                 {/* ③ 업체코드 */}
                 <form className={styles.form} onSubmit={submit} noValidate>
-                    <Field label="업체코드" name="store_code" htmlFor="manager-guide-code" hint="영문 소문자 · 숫자 32자 — 내 업체 설정 › 기본 정보에서 업체 총관리자가 확인할 수 있습니다.">
+                    <Field label="업체코드" name="store_code" htmlFor="manager-guide-code" hint="영문 소문자 · 숫자 32자 — 업체 관리자 등록 문자, 또는 업체 총관리자가 내 업체 설정 › 기본 정보에서 복사한 로그인 주소 안에 있습니다.">
                         <Input id="manager-guide-code" autoComplete="off" spellCheck={false} placeholder="로그인 주소 안의 32자를 붙여 넣으세요" value={storeCode} onChange={(event) => setStoreCode(event.target.value)} />
                     </Field>
                     <Button type="submit" variant="primary" full>로그인 화면으로 이동</Button>

@@ -33,3 +33,11 @@
 .muted {
     color: var(--muted);
 }
+
+/* 글자 + 배지 한 줄 — 시안 .cell-2(업체 상태 · 임시 비밀번호) */
+.cell {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}

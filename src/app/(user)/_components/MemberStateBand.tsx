@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import dayjs from 'dayjs';
+import { MEMBER_STATE } from '@/contracts/common/member.constants';
 import { UserMeResultDto } from '@/contracts/user/dto/user-me.dto';
 import Band from '@/shared/components/ui/display/Band';
 
@@ -16,7 +17,7 @@ type MemberStateBandProps = {
  * @returns
  */
 export default function MemberStateBand({me, action}: MemberStateBandProps): React.ReactNode {
-    if (me?.state_id === 'BLOCK') {
+    if (me?.state_id === MEMBER_STATE.BLOCK) {
         return (
             // 이용 제한
             <Band tone="danger" title="이용이 제한된 계정이에요">
@@ -26,7 +27,7 @@ export default function MemberStateBand({me, action}: MemberStateBandProps): Rea
         );
     }
 
-    if (me?.state_id === 'LEAVE_WAIT') {
+    if (me?.state_id === MEMBER_STATE.LEAVE_WAIT) {
         return (
             // 탈퇴 대기
             <Band tone="warn" title="탈퇴 대기 중이에요">

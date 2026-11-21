@@ -85,9 +85,13 @@
     color: var(--primary-strong);
 }
 
-/* 월별 표 숫자 칸 */
-.number {
+/* 월별 표 숫자 칸 — 머리 칸(th)도 값과 같이 오른쪽(공통 표의 `.table th` 왼쪽 정렬보다 세게) */
+.page th.number,
+.page td.number {
     text-align: right;
+}
+
+.number {
     font-variant-numeric: tabular-nums;
 }
 

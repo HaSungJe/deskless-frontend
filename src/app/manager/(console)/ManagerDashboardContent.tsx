@@ -1,7 +1,8 @@
 'use client';
 import { useContext, useEffect, useEffectEvent, useState } from 'react';
 import { getMyStats } from '@/contracts/stats/api';
-import { StatsMineDto, StatsMineResultDto, StatsMineSummaryResultDto } from '@/contracts/stats/dto/stats-mine.dto';
+import { StatsMineDto, StatsMineResultDto } from '@/contracts/stats/dto/stats-mine.dto';
+import { STATS_SUMMARY_ITEMS } from '@/contracts/stats/stats.constants';
 import { handleApiError } from '@/shared/api/error';
 import BarChart from '@/shared/components/chart/BarChart';
 import Button from '@/shared/components/ui/button/Button';
@@ -19,15 +20,6 @@ import styles from '@/app/css/manager/ManagerDashboardContent.module.css';
 
 /** 결제 환경 */
 type EnvironmentType = 'LIVE' | 'TEST';
-
-/** 합계 · 월별 항목 — 카드 · 표 줄 순서(시안 M2) */
-const SUMMARY_ITEMS: Array<{key: keyof StatsMineSummaryResultDto; label: string; unit: string}> = [
-    {key: 'user_count', label: '이용자 수', unit: '명'},
-    {key: 'completed_count', label: '이용 건수', unit: '건'},
-    {key: 'paid_amount', label: '결제액', unit: '원'},
-    {key: 'refund_amount', label: '환불액', unit: '원'},
-    {key: 'profit', label: '수익', unit: '원'},
-];
 
 /** 결제 환경 고르기 */
 const ENVIRONMENT_OPTIONS: Array<SegmentedOptionType<EnvironmentType>> = [{value: 'LIVE', label: '실결제'}, {value: 'TEST', label: '테스트 결제'}];
@@ -128,7 +120,7 @@ export default function ManagerDashboardContent(): React.ReactNode {
                 <>
                     {/* ③ 합계 카드 */}
                     <section className={styles.kpis} aria-label="합계">
-                        {SUMMARY_ITEMS.map((item) => (
+                        {STATS_SUMMARY_ITEMS.map((item) => (
                             <div key={item.key} className={styles.kpi}>
                                 <span className={styles.kpiLabel}>{item.label}</span>
                                 <span className={item.key === 'profit' ? `${styles.kpiValue} ${styles.profit}` : styles.kpiValue}>{NUMBER_FORMAT.format(stats.total[item.key])}<small>{item.unit}</small></span>
@@ -152,7 +144,7 @@ export default function ManagerDashboardContent(): React.ReactNode {
                                 </tr>
                             </thead>
                             <tbody>
-                                {SUMMARY_ITEMS.map((item) => (
+                                {STATS_SUMMARY_ITEMS.map((item) => (
                                     <tr key={item.key}>
                                         <th scope="row">{item.label}({item.unit})</th>
                                         {months.map((month) => <td key={month.month} className={styles.number}>{NUMBER_FORMAT.format(month[item.key])}</td>)}

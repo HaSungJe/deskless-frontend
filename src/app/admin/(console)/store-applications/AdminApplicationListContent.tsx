@@ -12,6 +12,7 @@ import Table from '@/shared/components/ui/display/Table';
 import Pagination from '@/shared/components/ui/nav/Pagination';
 import { AuthContext } from '@/shared/providers/RootLayoutProvider';
 import { formatBusinessNumber, toKst } from '@/shared/utils/format';
+import { listNumber } from '@/shared/utils/util';
 import { applicationPath, storePath } from '../admin-paths';
 import ListFilter, { FIRST_LIST_QUERY, ListQueryType } from '../_components/ListFilter';
 import styles from '@/app/css/admin/AdminList.module.css';
@@ -80,7 +81,7 @@ export default function AdminApplicationListContent(): React.ReactNode {
                     <tbody>
                         {result.list.map((item, index) => (
                             <tr key={item.store_application_id}>
-                                <td className={styles.number}>{result.pagination.content_start_number - index}</td>
+                                <td className={styles.number}>{listNumber(result.pagination, index)}</td>
                                 <td><Link href={applicationPath(item.store_application_id)}>{item.store_name}</Link></td>
                                 <td className={styles.number}>{formatBusinessNumber(item.business_number)}</td>
                                 <td>{item.owner_name}</td>

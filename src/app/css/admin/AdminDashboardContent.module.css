@@ -1,4 +1,4 @@
-/* A2 대시보드 자리 — 머리 · 준비 중 안내(Phase 17 에서 시안 A2-dashboard 로) */
+/* A2 대시보드 — 시안 admin.html A2(.pt · .ps · 조회 조건 · .kpis · .kpi · 표) · M2 대시보드와 같은 값 */
 .page {
     display: flex;
     flex-direction: column;
@@ -10,4 +10,109 @@
     margin: 0;
     font-size: 22px;
     font-weight: 700;
+}
+
+.subtitle {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* 조회 조건 — 기간 · 결제 환경 · 업체 범위 */
+.filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-end;
+    gap: 12px;
+    padding: 16px 20px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+}
+
+.tilde {
+    height: var(--control-h);
+    display: flex;
+    align-items: center;
+    color: var(--muted);
+}
+
+.filterNote {
+    flex-basis: 100%;
+    margin: 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* 합계 카드 */
+.kpis {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+    gap: 16px;
+}
+
+.kpi {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow);
+}
+
+.kpiLabel {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.kpiValue {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.3;
+    font-variant-numeric: tabular-nums;
+}
+
+.kpiValue small {
+    margin-left: 2px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.profit {
+    color: var(--primary-strong);
+}
+
+/* 음수(수익) — 위험색, 수익 색보다 먼저 */
+.negative,
+.profit.negative {
+    color: var(--danger);
+}
+
+/* 표 숫자 칸 — 머리 칸(th)도 값과 같이 오른쪽(공통 표의 `.table th` 왼쪽 정렬보다 세게) */
+.page th.number,
+.page td.number {
+    text-align: right;
+}
+
+.number {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.mono {
+    font-family: var(--mono);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.tableNote {
+    margin: 12px 0 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
 }

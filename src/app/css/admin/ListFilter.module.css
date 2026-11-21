@@ -32,3 +32,22 @@
     flex: 1;
     min-width: 0;
 }
+
+/* 거르기 묶음 — 업체 · 권한 · 상태 · SNS(시안 A5 · A6) */
+.filters {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px 20px;
+}
+
+/* 앞 글자 + 고르기 — 시안 .filter-group */
+.select {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.select > select {
+    min-width: 180px;
+}

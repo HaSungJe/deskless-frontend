@@ -16,18 +16,18 @@ src/
 │  ├─ dev/ui/                        개발 전용 — /dev/ui 공통 UI 미리보기 · UiPreviewContent.tsx (운영 404)
 │  ├─ (user)/                        이용자 `/` · 모바일 (괄호 폴더는 주소에 안 나옴)
 │  │  ├─ layout.tsx · UserLayoutContent.tsx  이용자 틀(모바일 폭 · 하단 탭 · 내 정보 Context)
-│  │  ├─ _components/                UserMeProvider · UserTopBar · UserTabBar · MemberStateBand
+│  │  ├─ _components/                UserMeProvider · UserTopBar(이전 화면 · 바로방 · 지나온 화면 › 지금 화면) · UserBackButton · user-history.ts(UserHistoryContext · canGoHistoryBack) · UserTabBar · MemberStateBand
 │  │  ├─ page.tsx · HomeContent.tsx  U1 `/`
 │  │  └─ login/ · signup/ · phone-verification/ · find-login-id/  U5
 │  ├─ manager/                       업체 관리자 `/manager` · PC 콘솔 — layout.tsx(data-area="console") · manager-auth.ts(업체코드 쿠키 · 업체 로그인 주소 · 권한 배지)
 │  │  ├─ [store_code]/login · find-login-id · password-reset   M1 업체별 로그인 · 아이디 찾기 · 비밀번호 초기화(로그인 전)
 │  │  ├─ login/ · password/          M1 업체 로그인 주소 안내(서버가 업체코드 쿠키로 보냄) · 비밀번호 변경(AuthGuard)
 │  │  └─ (console)/                  콘솔 layout + 매니저 AuthGuard · 메뉴 · 콘솔 Context(내 업체 · 계정) — M2 대시보드 ~ M8
-│  ├─ admin/                         관리자 `/admin` · PC 콘솔 — layout.tsx(data-area="console") · admin-auth.ts(로그인 뒤 주소 · 권한 배지) · login/ · (console)/(layout · 메뉴 · 첫 화면 · password/ · store-applications/ · stores/ · _components/(ListFilter · StoreFilesCard) · admin-paths.ts(관리자 화면 주소))
+│  ├─ admin/                         관리자 `/admin` · PC 콘솔 — layout.tsx(data-area="console") · admin-auth.ts(로그인 뒤 주소 · 권한 배지) · login/ · (console)/(layout · 메뉴 · 첫 화면 대시보드 · password/ · store-applications/ · stores/ · managers/ · users/ · _components/(ListFilter · FilterChips · FilterSelect · StoreFilesCard) · admin-paths.ts(관리자 화면 주소))
 │  │  └─ (console)/                  콘솔 layout + 관리자 AuthGuard — A2~A6
 │  └─ api/                           route handler — cookie/[area] · cookie/[area]/refresh (영역 토큰 쿠키) · cookie/token-cookie.ts · auth/[...nextauth] (SNS OAuth) · cookie/[area]/account (기억한 계정 읽기) · user/sns-login · user/sign (이용자 로그인 · 가입 — 백엔드까지) · manager/login · admin/login (매니저 · 관리자 로그인 — 백엔드까지) · payments/confirm (토스 결제 승인) · route-util.ts(json · isSameSiteJson · 로그인 공통 backendLogin)
 ├─ contracts/                        백엔드 계약 — 지침서 frontend/dto/*.md 의 사본 (첫 API 를 만들 때 생김)
-│  ├─ common/                        pagination.dto.ts · fail-result.dto.ts · roles.ts · sse.ts · reservation.constants.ts (지침서 사본) · lookup.ts
+│  ├─ common/                        pagination.dto.ts · fail-result.dto.ts · roles.ts · sse.ts · reservation.constants.ts (지침서 사본) · lookup.ts · store.constants.ts · member.constants.ts (여러 영역이 쓰는 백엔드 값)
 │  └─ <도메인>/                       user · manager · admin(재발급 — Phase 3) · discovery · reservation · store · room · stats
 │     ├─ dto/<파일>.dto.ts           지침서 파일 이름 그대로
 │     └─ api.ts                      그 도메인 엔드포인트 함수

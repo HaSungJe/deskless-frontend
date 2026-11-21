@@ -63,17 +63,6 @@
     margin-bottom: 6px;
 }
 
-.loginUrl code {
-    min-width: 0;
-    padding: 6px 10px;
-    border: 1px solid var(--line);
-    border-radius: var(--radius);
-    background: var(--surface-2);
-    font-family: inherit;
-    font-size: 13px;
-    overflow-wrap: anywhere;
-}
-
 .phone {
     max-width: 240px;
 }

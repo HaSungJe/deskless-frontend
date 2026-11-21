@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useEffectEvent, useState } from 'react';
 import { lookupName } from '@/contracts/common/lookup';
+import { memberStateTone } from '@/contracts/common/member.constants';
 import { getManagerStaff } from '@/contracts/manager/api';
 import { ManagerStaffDetailResultDto } from '@/contracts/manager/dto/manager-staff-detail.dto';
 import { handleApiError } from '@/shared/api/error';
@@ -12,7 +13,7 @@ import EmptyState from '@/shared/components/ui/display/EmptyState';
 import { AuthContext } from '@/shared/providers/RootLayoutProvider';
 import { MANAGER_AUTH_BADGE } from '../../../manager-auth';
 import { isHeadManager, ManagerConsoleContext } from '../../manager-console-context';
-import { HEAD_MANAGER_ONLY_TITLE, STAFF_LIST_PATH, STAFF_STATE_TONE } from '../staff-format';
+import { HEAD_MANAGER_ONLY_TITLE, STAFF_LIST_PATH } from '../staff-format';
 import StaffAccountCard from './_components/StaffAccountCard';
 import StaffInfoCard from './_components/StaffInfoCard';
 import styles from '@/app/css/manager/StaffDetailContent.module.css';
@@ -103,7 +104,7 @@ export default function StaffDetailContent({userId}: StaffDetailContentProps): R
                 <h1 className={styles.title}>
                     {staff.name}
                     {badge ? <Badge tone={badge.tone}>{badge.label}</Badge> : null}
-                    <Badge tone={STAFF_STATE_TONE[staff.state_id] ?? 'neutral'}>{lookupName('state_id', staff.state_id)}</Badge>
+                    <Badge tone={memberStateTone(staff.state_id)}>{lookupName('state_id', staff.state_id)}</Badge>
                     {staff.is_password_change_required === 1 ? <Badge tone="warn">비밀번호 변경 필요</Badge> : null}
                 </h1>
             </div>

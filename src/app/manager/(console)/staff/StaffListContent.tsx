@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useEffectEvent, useState } from 'react';
 import { lookupName } from '@/contracts/common/lookup';
+import { memberStateTone } from '@/contracts/common/member.constants';
 import { AUTH_ID } from '@/contracts/common/roles';
 import { createManagerStaff, getManagerStaffs } from '@/contracts/manager/api';
 import { ManagerStaffListDto, ManagerStaffListResultDto } from '@/contracts/manager/dto/manager-staff-list.dto';
@@ -18,11 +19,12 @@ import Modal from '@/shared/components/ui/modal/Modal';
 import Pagination from '@/shared/components/ui/nav/Pagination';
 import { AuthContext } from '@/shared/providers/RootLayoutProvider';
 import { formatPhone, toKst } from '@/shared/utils/format';
+import { listNumber } from '@/shared/utils/util';
 import { validateAction } from '@/shared/utils/validation';
 import { MANAGER_AUTH_BADGE } from '../../manager-auth';
 import { isHeadManager, ManagerConsoleContext } from '../manager-console-context';
 import StaffFields from './_components/StaffFields';
-import { EMPTY_STAFF_FORM, HEAD_MANAGER_ONLY_TITLE, STAFF_STATE_TONE, StaffFormType, staffPath } from './staff-format';
+import { EMPTY_STAFF_FORM, HEAD_MANAGER_ONLY_TITLE, StaffFormType, staffPath } from './staff-format';
 import styles from '@/app/css/manager/StaffListContent.module.css';
 
 /** 한 쪽 개수 */
@@ -167,18 +169,19 @@ export default function StaffListContent(): React.ReactNode {
             {result && result.list.length === 0 ? <EmptyState title="검색한 업체 관리자가 없습니다." /> : null}
             {result && result.list.length > 0 ? (
                 <Table>
-                    <thead><tr><th scope="col">아이디</th><th scope="col">이름</th><th scope="col">휴대폰</th><th scope="col">권한</th><th scope="col">상태</th><th scope="col">비밀번호 변경 필요</th><th scope="col">등록일</th></tr></thead>
+                    <thead><tr><th scope="col">번호</th><th scope="col">아이디</th><th scope="col">이름</th><th scope="col">휴대폰</th><th scope="col">권한</th><th scope="col">상태</th><th scope="col">비밀번호 변경 필요</th><th scope="col">등록일</th></tr></thead>
                     <tbody>
-                        {result.list.map((staff) => {
+                        {result.list.map((staff, index) => {
                             const head = staff.auth_id === AUTH_ID.HEAD_MANAGER;
                             const badge = MANAGER_AUTH_BADGE.get(staff.auth_id);
                             return (
                                 <tr key={staff.user_id} className={head ? styles.mine : undefined}>
+                                    <td className={styles.number}>{listNumber(result.pagination, index)}</td>
                                     <td>{head ? <b>{staff.login_id}</b> : <Link href={staffPath(staff.user_id)}>{staff.login_id}</Link>}</td>
                                     <td>{staff.name}</td>
                                     <td className={styles.number}>{staff.phone ? formatPhone(staff.phone) : '—'}</td>
                                     <td>{badge ? <Badge tone={badge.tone}>{badge.label}</Badge> : staff.auth_id}</td>
-                                    <td><Badge tone={STAFF_STATE_TONE[staff.state_id] ?? 'neutral'}>{lookupName('state_id', staff.state_id)}</Badge></td>
+                                    <td><Badge tone={memberStateTone(staff.state_id)}>{lookupName('state_id', staff.state_id)}</Badge></td>
                                     <td>{staff.is_password_change_required === 1 ? <Badge tone="warn">필요</Badge> : '—'}</td>
                                     <td className={styles.number}>{toKst(staff.created_at, 'YYYY-MM-DD')}</td>
                                 </tr>

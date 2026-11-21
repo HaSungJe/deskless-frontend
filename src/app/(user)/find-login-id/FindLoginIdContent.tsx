@@ -72,7 +72,7 @@ export default function FindLoginIdContent(): React.ReactNode {
         // 아이디 찾기
         <div className={styles.page}>
             {/* 상단 바 */}
-            <UserTopBar title="아이디 찾기" backHref={AREA_LOGIN_PATH.user} />
+            <UserTopBar title="아이디 찾기" parents={[{label: '로그인', href: AREA_LOGIN_PATH.user}]} />
 
             <div className={styles.body}>
                 {/* 안내 */}

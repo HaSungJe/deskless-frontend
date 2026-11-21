@@ -14,6 +14,7 @@ import ConfirmModal from '@/shared/components/ui/modal/ConfirmModal';
 import Pagination from '@/shared/components/ui/nav/Pagination';
 import { AuthContext } from '@/shared/providers/RootLayoutProvider';
 import { toKst } from '@/shared/utils/format';
+import { listNumber } from '@/shared/utils/util';
 import { validateAction } from '@/shared/utils/validation';
 import { toPeriodText } from '../store-settings-format';
 import styles from '@/app/css/manager/StoreUnavailableTab.module.css';
@@ -139,10 +140,11 @@ export default function StoreUnavailableTab(): React.ReactNode {
             {result && result.list.length === 0 ? <EmptyState title="예정된 일시 예약불가가 없습니다." /> : null}
             {result && result.list.length > 0 ? (
                 <Table>
-                    <thead><tr><th scope="col">시작</th><th scope="col">종료</th><th scope="col">메모</th><th scope="col">등록일</th><th scope="col">작업</th></tr></thead>
+                    <thead><tr><th scope="col">번호</th><th scope="col">시작</th><th scope="col">종료</th><th scope="col">메모</th><th scope="col">등록일</th><th scope="col">작업</th></tr></thead>
                     <tbody>
-                        {result.list.map((item) => (
+                        {result.list.map((item, index) => (
                             <tr key={item.store_unavailable_period_id}>
+                                <td className={styles.number}>{listNumber(result.pagination, index)}</td>
                                 <td className={styles.number}>{toKst(item.starts_at, 'YYYY-MM-DD HH:mm')}</td>
                                 <td className={styles.number}>{toKst(item.ends_at, 'YYYY-MM-DD HH:mm')}</td>
                                 <td>{item.memo ?? '-'}</td>

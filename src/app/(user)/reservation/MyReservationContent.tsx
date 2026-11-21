@@ -14,6 +14,7 @@ import Pagination from '@/shared/components/ui/nav/Pagination';
 import { AuthContext } from '@/shared/providers/RootLayoutProvider';
 import { PaginationType } from '@/shared/types/pagination';
 import { formatDateTimeRange, formatPrice } from '@/shared/utils/format';
+import UserTopBar from '../_components/UserTopBar';
 import { reservationStateTone } from './reservation-state';
 import pageStyles from '@/app/css/user/UserPage.module.css';
 import styles from '@/app/css/user/MyReservationContent.module.css';
@@ -76,8 +77,8 @@ export default function MyReservationContent(): React.ReactNode {
     return (
         // 내 예약
         <div className={pageStyles.page}>
-            {/* 머리 */}
-            <header className={pageStyles.plainHeader}><h1 className={pageStyles.plainTitle}>내 예약</h1></header>
+            {/* 머리 — 제목 · 홈으로 */}
+            <UserTopBar title="내 예약" />
 
             <div className={pageStyles.body}>
                 {/* 상태 칩 */}

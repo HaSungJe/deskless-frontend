@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { useContext, useEffect, useEffectEvent, useState } from 'react';
 import { lookupName } from '@/contracts/common/lookup';
+import { MEMBER_STATE, memberStateTone } from '@/contracts/common/member.constants';
 import { cancelLeave, leaveUser } from '@/contracts/user/api';
 import { UserLeaveDto } from '@/contracts/user/dto/user-leave.dto';
 import { handleApiError } from '@/shared/api/error';
@@ -18,14 +19,9 @@ import { formatKoreanDate, formatPhone } from '@/shared/utils/format';
 import { validateAction } from '@/shared/utils/validation';
 import MemberStateBand from '../_components/MemberStateBand';
 import { UserMeContext } from '../_components/UserMeProvider';
+import UserTopBar from '../_components/UserTopBar';
 import pageStyles from '@/app/css/user/UserPage.module.css';
 import styles from '@/app/css/user/MyPageContent.module.css';
-
-/** 회원 상태 → 배지 색(시안: 정상 ok · 탈퇴 대기 warn) */
-const MEMBER_TONE = new Map<string, 'ok' | 'warn' | 'danger'>([['ACTIVE', 'ok'], ['LEAVE_WAIT', 'warn'], ['BLOCK', 'danger']]);
-
-/** 탈퇴 대기 */
-const LEAVE_WAIT = 'LEAVE_WAIT';
 
 /** 휴대폰 인증 — 인증 뒤 이 화면으로 */
 const PHONE_VERIFY_PATH = `/phone-verification/?${RETURN_URL_KEY}=${encodeURIComponent('/me/')}`;
@@ -63,7 +59,7 @@ export default function MyPageContent(): React.ReactNode {
     const [loaded, setLoaded] = useState<boolean>(false);       // 들어올 때 다시 읽기를 마쳤는지
 
     // 계산 값
-    const leaving = me?.state_id === LEAVE_WAIT;                 // 탈퇴 대기 — 탈퇴 신청을 숨긴다
+    const leaving = me?.state_id === MEMBER_STATE.LEAVE_WAIT;                 // 탈퇴 대기 — 탈퇴 신청을 숨긴다
     const verified = me?.is_phone_verified === 1;                // 휴대폰 인증
     const unloaded = loaded && !me;                              // 내 정보를 못 읽음 — 다시 불러오기
 
@@ -121,7 +117,7 @@ export default function MyPageContent(): React.ReactNode {
             return;
         }
 
-        if (next.state_id !== LEAVE_WAIT) {
+        if (next.state_id !== MEMBER_STATE.LEAVE_WAIT) {
             showErrorPopup(QUEUE_PENDING_MESSAGE);
         }
     }
@@ -148,7 +144,7 @@ export default function MyPageContent(): React.ReactNode {
             return;
         }
 
-        if (next.state_id === LEAVE_WAIT) {
+        if (next.state_id === MEMBER_STATE.LEAVE_WAIT) {
             showErrorPopup(QUEUE_PENDING_MESSAGE);
         }
     }
@@ -169,8 +165,8 @@ export default function MyPageContent(): React.ReactNode {
     return (
         // 내 정보
         <div className={pageStyles.page}>
-            {/* 머리 */}
-            <header className={pageStyles.plainHeader}><h1 className={pageStyles.plainTitle}>내 정보</h1></header>
+            {/* 머리 — 제목 · 홈으로 */}
+            <UserTopBar title="내 정보" />
 
             {/* ③ 회원 상태 — 이용 제한 사유 · 탈퇴 대기(철회 버튼) */}
             <MemberStateBand me={me} action={<button type="button" className={styles.withdraw} disabled={busy} onClick={withdraw}>탈퇴 철회</button>} />
@@ -183,7 +179,7 @@ export default function MyPageContent(): React.ReactNode {
                             <span className={styles.avatar}>{PERSON_ICON}</span>
                             <div className={styles.profileText}>
                                 <h2 className={styles.nickname}>{me.nickname}</h2>
-                                <Badge tone={MEMBER_TONE.get(me.state_id) ?? 'neutral'}>{lookupName('state_id', me.state_id)}</Badge>
+                                <Badge tone={memberStateTone(me.state_id)}>{lookupName('state_id', me.state_id)}</Badge>
                             </div>
                         </section>
 

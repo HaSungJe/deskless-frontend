@@ -12,6 +12,7 @@ import Button, { buttonClass } from '@/shared/components/ui/button/Button';
 import Badge from '@/shared/components/ui/display/Badge';
 import { AuthContext } from '@/shared/providers/RootLayoutProvider';
 import { reservationStateTone } from '../../reservation/reservation-state';
+import UserTopBar from '../../_components/UserTopBar';
 import PaymentFailView from '../_components/PaymentFailView';
 import { paymentReturnPath } from '../payment-result';
 import styles from '@/app/css/user/UserPage.module.css';
@@ -82,8 +83,8 @@ export default function PaymentSuccessContent({paymentKey, orderId, amount, retu
     return (
         // 결제 결과
         <div className={styles.page}>
-            {/* 머리 */}
-            <header className={styles.plainHeader}><h1 className={styles.plainTitle}>결제 결과</h1></header>
+            {/* 머리 — 제목 · 홈으로 */}
+            <UserTopBar title="결제 결과" />
 
             {/* 실패 — 사유 · 오류 코드 · 다시 고르기 */}
             {view.kind === 'fail' ? <PaymentFailView message={view.message} code={view.code} backPath={backPath} /> : null}
@@ -103,16 +104,12 @@ export default function PaymentSuccessContent({paymentKey, orderId, amount, retu
                             </p>
                         </div>
 
-                        {/* 상태 · 예약 번호 */}
+                        {/* 상태 — 예약 ID 는 보이지 않는다(예약 보기로) */}
                         {view.kind === 'done' ? (
                             <section className={`${styles.card} ${styles.stretch}`}>
                                 <div className={styles.rowBetween}>
                                     <span className={styles.label}>상태</span>
                                     <Badge tone={reservationStateTone(view.stateId)}>{lookupName('reservation_state_id', view.stateId)}</Badge>
-                                </div>
-                                <div className={styles.stack}>
-                                    <span className={styles.label}>예약 번호</span>
-                                    <span className={styles.mono}>{view.reservationId}</span>
                                 </div>
                             </section>
                         ) : null}

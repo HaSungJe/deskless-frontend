@@ -1,7 +1,6 @@
 'use client';
 import Link from 'next/link';
 import { useContext, useEffect, useEffectEvent, useState } from 'react';
-import { shortStoreCode } from '@/app/manager/manager-auth';
 import { lookupName } from '@/contracts/common/lookup';
 import { STORE_STATE } from '@/contracts/common/store.constants';
 import { getStores } from '@/contracts/store/api';
@@ -13,6 +12,7 @@ import Table from '@/shared/components/ui/display/Table';
 import Pagination from '@/shared/components/ui/nav/Pagination';
 import { AuthContext } from '@/shared/providers/RootLayoutProvider';
 import { formatPhone } from '@/shared/utils/format';
+import { listNumber } from '@/shared/utils/util';
 import { storePath } from '../admin-paths';
 import ListFilter, { FIRST_LIST_QUERY, ListQueryType } from '../_components/ListFilter';
 import { businessNumberText, OPEN_BADGE, STORE_STATE_TONE } from './store-format';
@@ -78,14 +78,14 @@ export default function AdminStoreListContent(): React.ReactNode {
             {result && result.list.length === 0 ? <EmptyState title="조건에 맞는 업체가 없습니다." description='상태를 "전체" 로 바꾸거나 검색어를 지워 보세요.' /> : null}
             {result && result.list.length > 0 ? (
                 <Table>
-                    <thead><tr><th scope="col">업체코드</th><th scope="col">상호명</th><th scope="col">사업자등록번호</th><th scope="col">대표자</th><th scope="col">전화</th><th scope="col">주소</th><th scope="col">영업중</th><th scope="col">상태</th></tr></thead>
+                    <thead><tr><th scope="col">번호</th><th scope="col">상호명</th><th scope="col">사업자등록번호</th><th scope="col">대표자</th><th scope="col">전화</th><th scope="col">주소</th><th scope="col">영업중</th><th scope="col">상태</th></tr></thead>
                     <tbody>
-                        {result.list.map((store) => {
+                        {result.list.map((store, index) => {
                             const open = OPEN_BADGE[store.is_open === 1 ? 'open' : 'closed'];
                             const business = businessNumberText(store.business_number);
                             return (
                                 <tr key={store.store_id}>
-                                    <td className={styles.mono} title={store.store_code}>{shortStoreCode(store.store_code)}</td>
+                                    <td className={styles.number}>{listNumber(result.pagination, index)}</td>
                                     <td><Link href={storePath(store.store_id)}>{store.store_name}</Link></td>
                                     <td className={business.left ? `${styles.mono} ${styles.muted}` : styles.number} title={store.business_number}>{business.text}</td>
                                     <td>{store.owner_name}</td>

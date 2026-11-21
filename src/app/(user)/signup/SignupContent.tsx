@@ -89,7 +89,7 @@ export default function SignupContent({sns, returnUrl}: SignupContentProps): Rea
         // 가입
         <div className={styles.page}>
             {/* 상단 바 */}
-            <UserTopBar title="가입" backHref={loginUrl('user', returnUrl)} />
+            <UserTopBar title="가입" parents={[{label: '로그인', href: loginUrl('user', returnUrl)}]} />
 
             <div className={styles.body}>
                 {/* 안내 */}

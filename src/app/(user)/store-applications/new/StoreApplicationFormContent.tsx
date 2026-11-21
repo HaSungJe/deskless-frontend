@@ -136,7 +136,7 @@ export default function StoreApplicationFormContent(): React.ReactNode {
         // 입점 신청 작성
         <div className={pageStyles.page}>
             {/* 상단 바 */}
-            <UserTopBar title="입점 신청 작성" backHref={LIST_PATH} />
+            <UserTopBar title="입점 신청 작성" parents={[{label: '내 정보', href: '/me/'}, {label: '입점 신청', href: LIST_PATH}]} />
 
             <div className={styles.body}>
                 {/* 안내 */}

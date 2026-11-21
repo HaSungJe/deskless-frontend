@@ -5,6 +5,7 @@ import { StoreMineDoorSecretDto } from '@/contracts/store/dto/store-mine-door-se
 import { StoreMineResultDto } from '@/contracts/store/dto/store-mine.dto';
 import { handleApiError } from '@/shared/api/error';
 import Button from '@/shared/components/ui/button/Button';
+import CopyButton from '@/shared/components/ui/button/CopyButton';
 import Badge from '@/shared/components/ui/display/Badge';
 import Band from '@/shared/components/ui/display/Band';
 import Card from '@/shared/components/ui/display/Card';
@@ -75,7 +76,7 @@ export default function StoreDoorTab({store, onSaved}: StoreDoorTabProps): React
             <Card title="문 쪽 프로그램 연결">
                 <dl className={styles.dl}>
                     <dt>시크릿</dt><dd><Badge tone={isSet ? 'ok' : 'neutral'}>{isSet ? '설정함' : '설정 안 함'}</Badge></dd>
-                    <dt>업체 ID</dt><dd className={styles.mono}>{store.store_id}</dd>
+                    <dt>업체 ID</dt><dd><CopyButton text={store.store_id} label="업체 ID 복사" size="sm" /></dd>
                 </dl>
                 <p className={styles.hint}>{isSet ? '문 쪽 프로그램은 업체 ID 와 시크릿으로 접속합니다. 시크릿 원문은 다시 볼 수 없습니다 — 잊었으면 새로 정해 문 쪽 프로그램에도 넣어 주세요.' : '시크릿을 정해야 문 쪽 프로그램이 접속할 수 있습니다.'}</p>
             </Card>

@@ -2,6 +2,8 @@ import { AuthType, withAuth } from '@/shared/api/auth';
 import { callQueue } from '@/shared/api/queue';
 import { request } from '@/shared/api/request';
 import { postRoute, routeFailure } from '@/shared/api/route';
+import { ManagerAccountDetailResultDto } from './dto/manager-account-detail.dto';
+import { ManagerAccountListDto, ManagerAccountListResultDto } from './dto/manager-account-list.dto';
 import { ManagerFindLoginIdConfirmDto, ManagerFindLoginIdConfirmResultDto } from './dto/manager-find-login-id-confirm.dto';
 import { ManagerFindLoginIdDto, ManagerFindLoginIdResultDto } from './dto/manager-find-login-id.dto';
 import { ManagerLoginDto, ManagerLoginResultDto } from './dto/manager-login.dto';
@@ -25,6 +27,18 @@ const STAFF_PATH = '/admin-service/manager/staff';
  */
 function staffPath(user_id: string): string {
     return `${STAFF_PATH}/${encodeURIComponent(user_id)}`;
+}
+
+/** 업체 관리자 계정 경로 — 관리자(전체 업체) */
+const ACCOUNT_PATH = '/admin-service/manager/account';
+
+/**
+ * 업체 관리자 계정 한 명의 경로(관리자)
+ *
+ * @param user_id 회원 ID
+ */
+function accountPath(user_id: string): string {
+    return `${ACCOUNT_PATH}/${encodeURIComponent(user_id)}`;
 }
 
 /** 로그인 처리 route 결과 */
@@ -185,4 +199,36 @@ export function resetManagerStaffPassword(auth: AuthType, user_id: string): Prom
  */
 export function updateManagerStaffState(auth: AuthType, user_id: string, dto: ManagerStaffStateDto): Promise<null> {
     return withAuth(auth, (token) => callQueue<null>({method: 'PATCH', path: `${staffPath(user_id)}/state`, body: dto, token}));
+}
+
+/**
+ * 업체 관리자 목록 — 동기 · 관리자 (GET /admin-service/manager/account) — 전체 업체, 등록 최신순
+ *
+ * @param auth AuthContext 값
+ * @param query keyword · store_id · auth_id · state_id · page · size
+ * @param signal 거르기를 바꾸거나 화면을 떠날 때 취소
+ */
+export function getManagerAccounts(auth: AuthType, query: ManagerAccountListDto, signal?: AbortSignal): Promise<ManagerAccountListResultDto | null> {
+    return withAuth(auth, (token) => request<ManagerAccountListResultDto>({path: ACCOUNT_PATH, query: {keyword: query.keyword, store_id: query.store_id, auth_id: query.auth_id, state_id: query.state_id, page: query.page, size: query.size}, token, signal}));
+}
+
+/**
+ * 업체 관리자 상세 — 동기 · 관리자 (GET /admin-service/manager/account/:user_id)
+ *
+ * @param auth AuthContext 값
+ * @param user_id 회원 ID
+ * @param signal 화면을 떠날 때 취소
+ */
+export function getManagerAccount(auth: AuthType, user_id: string, signal?: AbortSignal): Promise<ManagerAccountDetailResultDto | null> {
+    return withAuth(auth, (token) => request<ManagerAccountDetailResultDto>({path: accountPath(user_id), token, signal}));
+}
+
+/**
+ * 업체 관리자 비밀번호 초기화 — 큐 · 관리자 (PATCH /admin-service/manager/account/:user_id/password-reset) — 임시 비밀번호 SMS(휴대폰 없음 · 탈퇴 업체는 400), 결과 null
+ *
+ * @param auth AuthContext 값
+ * @param user_id 회원 ID
+ */
+export function resetManagerAccountPassword(auth: AuthType, user_id: string): Promise<null> {
+    return withAuth(auth, (token) => callQueue<null>({method: 'PATCH', path: `${accountPath(user_id)}/password-reset`, token}));
 }

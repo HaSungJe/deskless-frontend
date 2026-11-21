@@ -36,7 +36,7 @@ afterEach(() => {
 });
 
 describe('StoreApplicationListContent', () => {
-    it('[SUCCESS] 대기 · 반려 · 승인 신청이 있다 → 1쪽 카드(상태 · 반려 사유 · 승인이면 업체코드 · 로그인 주소 · 복사), 카드 링크는 상세', async () => {
+    it('[SUCCESS] 대기 · 반려 · 승인 신청이 있다 → 1쪽 카드(상태 · 반려 사유 · 승인이면 로그인 주소 복사만 — 업체코드 · 주소 글자는 숨김), 카드 링크는 상세', async () => {
         getMyStoreApplications.mockResolvedValue({
             list: [
                 application('a'.repeat(32), '스테이 리프 신촌점', {}),
@@ -67,8 +67,7 @@ describe('StoreApplicationListContent', () => {
         expect(screen.getByRole('link', {name: /무인텔 온담 홍대점/}).textContent).toContain('사업자등록증 사진이 흐려 확인할 수 없습니다.');
 
         expect(screen.getByRole('link', {name: '스테이 리프 강남역점'}).getAttribute('href')).toBe(`/store-applications/${'c'.repeat(32)}/`);
-        expect(screen.getByText(`https://deskless.kr/manager/${STORE_CODE}/login/`)).toBeTruthy();
-        expect(screen.getByTitle(STORE_CODE).textContent).toBe('3f9a2c7e…');
+        expect(document.body.textContent).not.toContain(STORE_CODE.slice(0, 8));
         expect(screen.getByRole('button', {name: '로그인 주소 복사'})).toBeTruthy();
         expect(screen.getByRole('link', {name: /새 입점 신청/}).getAttribute('href')).toBe('/store-applications/new/');
     });

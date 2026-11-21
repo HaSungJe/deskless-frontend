@@ -12,7 +12,8 @@
     align-items: center;
     justify-content: space-between;
     height: 56px;
-    padding: 0 8px 0 16px;
+    /* 왼쪽 52px — 다른 화면 상단 바(UserTopBar)의 이전 화면 버튼 자리(8 + 40 + 4)만큼 비워 바로방 위치를 맞춘다 */
+    padding: 0 8px 0 52px;
     border-bottom: 1px solid var(--line);
     background: var(--surface);
 }

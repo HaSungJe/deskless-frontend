@@ -22,7 +22,7 @@ flowchart LR
   P14["Phase 14 · 대시보드·업체 관리자 (3)"]:::done
   P15["Phase 15 · 관리자 로그인 (2)"]:::done
   P16["Phase 16 · 입점 신청·업체 관리 (4)"]:::done
-  P17["Phase 17 · 통계·계정·이용자 (5)"]:::todo
+  P17["Phase 17 · 통계·계정·이용자 (5)"]:::inprog
   P2 --> P3
   P1 --> P4
   P3 --> P4
@@ -72,11 +72,11 @@ flowchart LR
 - Phase 14 — 대시보드·업체 관리자 · 유닛 3개 · 의존: Phase 10 · 푼다: Phase 17 · 파일 집합: src/app/manager/(console)/page · staff, src/contracts/stats, src/contracts/manager · done
 - Phase 15 — 관리자 로그인 · 유닛 2개 · 의존: Phase 10 · 푼다: Phase 16, Phase 17 · 파일 집합: src/app/admin/login · (console)/layout · password, src/contracts/admin · done
 - Phase 16 — 입점 신청·업체 관리 · 유닛 4개 · 의존: Phase 15, Phase 11, Phase 9 · 푼다: — · 파일 집합: src/app/admin/(console)/store-applications · stores, src/contracts/store · done
-- Phase 17 — 통계·계정·이용자 · 유닛 5개 · 의존: Phase 15, Phase 14, Phase 9 · 푼다: — · 파일 집합: src/app/admin/(console)/page · managers · users, src/contracts/stats · manager · user · todo
+- Phase 17 — 통계·계정·이용자 · 유닛 5개 · 의존: Phase 15, Phase 14, Phase 9 · 푼다: — · 파일 집합: src/app/admin/(console)/page · managers · users, src/contracts/stats · manager · user · in-progress
 
 동시 가능: Phase 1·Phase 2 / Phase 5·Phase 6 / Phase 7·Phase 9 / Phase 11·Phase 12·Phase 14 / Phase 16·Phase 17
 
-지금: 진행 중 없음 · Next up: Phase 17
+지금: Phase 17 진행 중 · Next up: Phase 17
 
 ## 지금 할 일
 Phase 17 통계·계정·이용자 시작하기
@@ -402,11 +402,11 @@ Phase 17 통계·계정·이용자 시작하기
 ### Phase 17 — 통계·계정·이용자 (A2 · A5 · A6) · depends: Phase 15, Phase 14, Phase 9
 | # | Unit | Goal | Key decision | Depends | Status |
 |---|------|------|--------------|---------|--------|
-| 57 | A2 대시보드 | `/admin` 기간 · 결제 환경 · 업체 범위 · 합계 · 월별 · 업체별 표(→ A4) | — | 48, 51 | todo |
-| 58 | A5 업체 관리자 목록 | `/admin/managers` 업체 · 권한 · 상태 거르기 · 검색 · 표 | — | 51 | todo |
-| 59 | A5 업체 관리자 상세 | `/admin/managers/[user_id]` 정보 · 비밀번호 초기화 | — | 58 | todo |
-| 60 | A6 이용자 목록 | `/admin/users` 상태 · SNS 거르기 · 검색 · 표 | — | 51 | todo |
-| 61 | A6 이용자 상세 | `/admin/users/[user_id]` 정보 · 예약 요약 · 예약 이력 · 이용 제한 / 해제 | — | 60 | todo |
+| 57 | A2 대시보드 | `/admin` 기간 · 결제 환경 · 업체 범위 · 합계 · 월별 · 업체별 표(→ A4) | — | 48, 51 | in-progress |
+| 58 | A5 업체 관리자 목록 | `/admin/managers` 업체 · 권한 · 상태 거르기 · 검색 · 표 | — | 51 | in-progress |
+| 59 | A5 업체 관리자 상세 | `/admin/managers/[user_id]` 정보 · 비밀번호 초기화 | — | 58 | in-progress |
+| 60 | A6 이용자 목록 | `/admin/users` 상태 · SNS 거르기 · 검색 · 표 | — | 51 | in-progress |
+| 61 | A6 이용자 상세 | `/admin/users/[user_id]` 정보 · 예약 요약 · 예약 이력 · 이용 제한 / 해제 | — | 60 | in-progress |
 
 **Expected pages**:
 
@@ -417,6 +417,9 @@ Phase 17 통계·계정·이용자 시작하기
 | #59 | `/admin/managers/[user_id]` | A5 · `GET …/:id` · `PATCH /password-reset` | 비밀번호 초기화 |
 | #60 | `/admin/users` | A6 · `GET user` | 이용자 목록 |
 | #61 | `/admin/users/[user_id]` | A6 · `GET user/:id` · `/reservation` · `PATCH /state` | 이용 제한 |
+
+> 결정거리 — 이용 제한은 확인 창 뒤, 월별 그래프는 M2 와 같이 결제액 · 환불액 나란히, 계산 테스트 6건(사용자 2026-11-22). spec: `.beaver/output/spec/admin/stats-accounts-spec.md` · plan: `.beaver/output/plan/admin/stats-accounts-plan.md`.
+> build 완료(2026-11-22) — report: `.beaver/output/report/admin/stats-accounts-report.md`. 회원 상태 값을 `contracts/common/member.constants.ts`, 통계 합계 항목을 `contracts/stats/stats.constants.ts` 로 함께 씀, 목록 거르기에 `FilterChips` · `FilterSelect`. 테스트 102파일 451건 통과.
 
 **Progress**: 57/62 units done (16/17 phases)
 **Next up**: Phase 17 통계·계정·이용자 — 의존(Phase 15, Phase 14, Phase 9) 모두 완료

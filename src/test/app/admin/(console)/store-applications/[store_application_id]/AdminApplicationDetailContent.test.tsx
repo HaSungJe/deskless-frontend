@@ -41,7 +41,7 @@ afterEach(() => {
 });
 
 describe('AdminApplicationDetailContent', () => {
-    it('[SUCCESS] 대기 신청을 승인한다 → 승인(큐) 1번 → 상세 다시 → 승인 띠(업체코드 · 로그인 주소 · 업체 상세 링크)', async () => {
+    it('[SUCCESS] 대기 신청을 승인한다 → 승인(큐) 1번 → 상세 다시 → 승인 띠(로그인 주소 복사 — 업체코드 · 주소 글자 숨김 · 업체 상세 링크)', async () => {
         await renderDetail();
         expect(api.getStoreApplication).toHaveBeenCalledTimes(1);
         expect(api.getStoreApplication.mock.calls[0].slice(0, 2)).toEqual([expect.objectContaining({token: 'admin-token'}), APPLICATION_ID]);
@@ -56,8 +56,13 @@ describe('AdminApplicationDetailContent', () => {
         expect(api.getStoreApplication).toHaveBeenCalledTimes(2);
         const band = within(screen.getByRole('status'));
         expect(band.getByText('입점을 승인했습니다. 대표자 휴대폰으로 승인 문자를 보냈습니다.')).toBeTruthy();
-        expect(band.getByText(STORE_CODE)).toBeTruthy();
-        expect(band.getByText(`https://deskless.kr/manager/${STORE_CODE}/login/`)).toBeTruthy();
+        expect(document.body.textContent).not.toContain(STORE_CODE);
+        const writeText = vi.fn().mockResolvedValue(undefined);
+        Object.defineProperty(navigator, 'clipboard', {value: {writeText}, configurable: true});
+        await act(async () => {
+            fireEvent.click(band.getByRole('button', {name: '로그인 주소 복사'}));
+        });
+        expect(writeText).toHaveBeenCalledWith(`https://deskless.kr/manager/${STORE_CODE}/login/`);
         expect(band.getByRole('link', {name: '업체 상세로'}).getAttribute('href')).toBe(`/admin/stores/${STORE_ID}/`);
         expect(screen.queryByRole('button', {name: '승인'})).toBeNull();
     });

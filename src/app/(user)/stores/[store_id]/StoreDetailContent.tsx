@@ -101,7 +101,7 @@ export default function StoreDetailContent({storeId}: StoreDetailContentProps): 
         // 업체 상세
         <div className={styles.page}>
             {/* 상단 바 */}
-            <UserTopBar title="업체 상세" backHref="/" />
+            <UserTopBar title="업체 상세" />
 
             {store ? (
                 <>

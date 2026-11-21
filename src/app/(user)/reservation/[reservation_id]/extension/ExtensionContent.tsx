@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useEffectEvent, useState } from 'react';
+import { BOOKING_BLOCKED_STATES } from '@/contracts/common/member.constants';
 import { RESERVATION_PAYMENT_PENDING_MINUTES } from '@/contracts/common/reservation.constants';
 import { getExtension, getReservation, requestExtension } from '@/contracts/reservation/api';
 import { ReservationDetailResultDto } from '@/contracts/reservation/dto/reservation-detail.dto';
@@ -25,9 +26,6 @@ import styles from '@/app/css/user/ExtensionContent.module.css';
 type ExtensionContentProps = {
     reservationId: string; // 주소의 예약 ID
 };
-
-/** 연장을 막는 회원 상태 — 이용 제한 · 탈퇴 대기(서버도 400) */
-const BLOCKED_MEMBER_STATES = ['BLOCK', 'LEAVE_WAIT'];
 
 /** 요금 상품 → 글자(DTO — HOURLY 시간 이용 요금, NIGHT 1박 요금) */
 const RATE_LABEL = new Map<string, string>([['HOURLY', '시간 이용 요금'], ['NIGHT', '1박 요금']]);
@@ -64,7 +62,7 @@ export default function ExtensionContent({reservationId}: ExtensionContentProps)
     const [payment, setPayment] = useState<ReservationExtendResultDto | null>(null);          // 연장 결제 — 있으면 결제 칸
 
     // 계산 값
-    const blocked = BLOCKED_MEMBER_STATES.includes(me?.state_id ?? '');                       // 이용 제한 · 탈퇴 대기
+    const blocked = BOOKING_BLOCKED_STATES.includes(me?.state_id ?? '');                       // 이용 제한 · 탈퇴 대기
     const available = extension?.is_extendable === 1;                                         // 연장할 수 있는지
     const startDate = extension?.start_at ? toKst(extension.start_at, 'YYYY-MM-DD') : '';     // 지금 끝 날짜
 
@@ -144,7 +142,7 @@ export default function ExtensionContent({reservationId}: ExtensionContentProps)
         // 연장
         <div className={pageStyles.page}>
             {/* 상단 바 */}
-            <UserTopBar title="연장" backHref={detailPath} />
+            <UserTopBar title="연장" parents={[{label: '내 예약', href: '/reservation/'}, {label: '예약 상세', href: detailPath}]} />
 
             {/* 연장 조회 실패 */}
             {detail && !extension && extensionFailed ? (

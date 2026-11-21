@@ -2,6 +2,7 @@
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useContext, useEffect, useEffectEvent, useState } from 'react';
+import { BOOKING_BLOCKED_STATES } from '@/contracts/common/member.constants';
 import { getStoreDetail } from '@/contracts/discovery/api';
 import { DiscoveryStoreDetailResultDto, DiscoveryStorePlanResultDto } from '@/contracts/discovery/dto/discovery-store-detail.dto';
 import { createReservation, getAvailability } from '@/contracts/reservation/api';
@@ -41,9 +42,6 @@ type BookedType = {
     planName: string;              // 상품 이름
 };
 
-/** 예약을 막는 회원 상태 — 이용 제한 · 탈퇴 대기(서버도 400) */
-const BLOCKED_MEMBER_STATES = ['BLOCK', 'LEAVE_WAIT'];
-
 /**
  * U3 예약 — 상품 · 날짜 · 그룹 · 시간대 · 호수를 골라 예약(큐)하고 결제위젯을 연다
  *
@@ -55,7 +53,7 @@ export default function BookingContent({storeId, roomGroupId}: BookingContentPro
     const router = useRouter();                                            // 로그인 · 없는 업체로 이동
     const auth = useContext(AuthContext);                                  // 예약은 이용자만
     const {me} = useContext(UserMeContext);                                // 회원 상태 — 이용 제한이면 막음
-    const storePath = `/stores/${encodeURIComponent(storeId)}/`;           // U2 — 뒤로
+    const storePath = `/stores/${encodeURIComponent(storeId)}/`;           // U2 — 위 단계(상단 바)
     const bookingPath = `${storePath}booking/`;                            // 이 화면 — 로그인 · 결제 뒤 돌아올 곳
     const leaveNotFound = useEffectEvent((): void => {
         showErrorPopup(STORE_NOT_FOUND_MESSAGE);
@@ -87,7 +85,7 @@ export default function BookingContent({storeId, roomGroupId}: BookingContentPro
     const group = groups[groupIndex] ?? null;                                                           // 고른 그룹
     const slot = group?.slots.find((item) => item.start_at === slotStart) ?? null;                      // 고른 시간대
     const room = slot?.rooms.find((item) => item.room_id === roomId) ?? null;                           // 고른 호수
-    const blocked = BLOCKED_MEMBER_STATES.includes(me?.state_id ?? '');                                 // 이용 제한 · 탈퇴 대기
+    const blocked = BOOKING_BLOCKED_STATES.includes(me?.state_id ?? '');                                 // 이용 제한 · 탈퇴 대기
     const canSubmit = !auth.isLogin || (room !== null && !blocked && !submitting);                      // 예약하기(로그인 안 했으면 로그인으로)
     const summary = group && slot && room ? `${group.room_group_name} · ${room.room_name} · ${formatDateTimeRange(slot.start_at, slot.end_at)}` : '시간대와 호수를 골라 주세요'; // 아래 요약
     const viewGroupId = group?.room_group_id ?? roomGroupId;                                            // 보던 그룹 — 로그인 뒤 그 그룹으로
@@ -281,7 +279,7 @@ export default function BookingContent({storeId, roomGroupId}: BookingContentPro
         // 예약
         <div className={pageStyles.page}>
             {/* 상단 바 */}
-            <UserTopBar title="예약" backHref={storePath} />
+            <UserTopBar title="예약" parents={[{label: '업체 상세', href: storePath}]} />
 
             {/* 결제 대기 */}
             {store && booked ? (

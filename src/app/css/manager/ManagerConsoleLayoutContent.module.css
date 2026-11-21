@@ -2,10 +2,3 @@
 .storeName {
     font-size: 16px;
 }
-
-.storeCode {
-    font-size: 12px;
-    color: var(--muted);
-    font-variant-numeric: tabular-nums;
-    word-break: break-all;
-}

@@ -168,12 +168,10 @@ export default function HomeContent(): React.ReactNode {
     return (
         // 지도 · 주변 업체
         <div className={styles.home}>
-            {/* 머리 — 서비스 이름 · 로그인 / 내 예약 */}
+            {/* 머리 — 서비스 이름 · 로그인(로그인 전만 — 내 예약 · 내 정보는 하단 탭, 머리 오른쪽은 다른 화면에서 "지금 위치" 자리라 바로가기를 두지 않는다) */}
             <header className={styles.header}>
                 <strong className={styles.brand}>{SITE_NAME}</strong>
-                {auth.isLogin
-                    ? <Link href="/reservation/" className={styles.headerLink}>내 예약</Link>
-                    : <Link href={loginUrl('user', '/')} className={styles.headerLink}>로그인</Link>}
+                {auth.isLogin ? null : <Link href={loginUrl('user', '/')} className={styles.headerLink}>로그인</Link>}
             </header>
 
             {/* 지도 · 반경 */}

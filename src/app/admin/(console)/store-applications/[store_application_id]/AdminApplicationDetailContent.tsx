@@ -160,10 +160,7 @@ export default function AdminApplicationDetailContent({applicationId}: AdminAppl
             {/* ④ 승인 결과 */}
             {bandStore ? (
                 <Band tone="ok" role="status" title="입점을 승인했습니다. 대표자 휴대폰으로 승인 문자를 보냈습니다.">
-                    <dl className={styles.bandDl}>
-                        <dt>업체코드</dt><dd className={styles.mono}>{bandStore.store_code}</dd>
-                        <dt>업체 관리자 콘솔 로그인 주소</dt><dd className={styles.mono}>{consoleUrl}</dd>
-                    </dl>
+                    <span>업체 관리자 콘솔 로그인 주소를 복사해 대표자에게 전할 수 있습니다.</span>
                     <div className={styles.bandActions}><CopyButton text={consoleUrl} label="로그인 주소 복사" size="sm" /><Link href={storePath(bandStore.store_id)} className={buttonClass({size: 'sm'})}>업체 상세로</Link></div>
                 </Band>
             ) : null}
@@ -205,7 +202,6 @@ export default function AdminApplicationDetailContent({applicationId}: AdminAppl
                         <dl className={styles.dl}>
                             <dt>상태</dt><dd><Badge tone={applicationStateTone(detail.store_application_state_id)}>{lookupName('store_application_state_id', detail.store_application_state_id)}</Badge></dd>
                             <dt>처리일시</dt><dd className={styles.mono}>{detail.reviewed_at ? toKst(detail.reviewed_at, 'YYYY-MM-DD HH:mm') : '—'}</dd>
-                            <dt>업체코드</dt><dd className={styles.mono}>{detail.store_code ?? '— (승인 뒤 생김)'}</dd>
                             <dt>반려 사유</dt><dd>{detail.reject_comment ?? '—'}</dd>
                         </dl>
                     </Card>

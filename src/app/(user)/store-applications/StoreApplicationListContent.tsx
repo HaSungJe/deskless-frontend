@@ -62,7 +62,7 @@ export default function StoreApplicationListContent(): React.ReactNode {
         // 입점 신청 목록
         <div className={pageStyles.page}>
             {/* 상단 바 */}
-            <UserTopBar title="입점 신청" backHref="/me/" />
+            <UserTopBar title="입점 신청" parents={[{label: '내 정보', href: '/me/'}]} />
 
             <div className={pageStyles.body}>
                 {/* ② 새 입점 신청 */}

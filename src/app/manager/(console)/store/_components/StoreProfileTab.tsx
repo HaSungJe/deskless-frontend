@@ -82,10 +82,9 @@ export default function StoreProfileTab({store, onSaved}: StoreProfileTabProps):
             {/* ② 업체 정보 — 읽기만 */}
             <Card title="업체 정보">
                 <dl className={styles.dl}>
-                    <dt>업체코드</dt><dd className={styles.mono}>{store.store_code}</dd>
                     <dt>업체 로그인 주소</dt>
                     <dd>
-                        <div className={styles.loginUrl}><code>{loginUrl}</code><CopyButton text={loginUrl} label="로그인 주소 복사" size="sm" /></div>
+                        <div className={styles.loginUrl}><CopyButton text={loginUrl} label="로그인 주소 복사" size="sm" /></div>
                         <p className={styles.hint}>업체 관리자에게 이 주소를 알려 주세요 — 업체 관리자 등록 문자에는 업체코드만 가고 로그인 주소는 가지 않습니다.</p>
                     </dd>
                     <dt>상태</dt><dd><Badge tone={suspended ? 'danger' : 'ok'}>{lookupName('store_state_id', store.store_state_id)}</Badge></dd>

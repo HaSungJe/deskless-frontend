@@ -9,9 +9,9 @@
 .head {
     display: flex;
     flex-wrap: wrap;
-    align-items: flex-start;
+    align-items: flex-end;
     justify-content: space-between;
-    gap: 12px;
+    gap: 16px;
 }
 
 .crumb {
@@ -41,14 +41,27 @@
     gap: 8px;
 }
 
-/* 업체코드 · 로그인 주소 줄 */
-.copyRow {
+/* 머리 아래 등록 · 수정일 — 라벨은 흐리게, 값은 고정폭 숫자 */
+.meta {
     display: flex;
     flex-wrap: wrap;
-    align-items: center;
-    gap: 8px;
-    margin-top: 8px;
+    gap: 4px 16px;
+    margin: 8px 0 0;
     font-size: 13px;
+}
+
+.meta > div {
+    display: flex;
+    gap: 6px;
+}
+
+.meta dt {
+    color: var(--muted);
+}
+
+.meta dd {
+    margin: 0;
+    font-variant-numeric: tabular-nums;
 }
 
 /* 두 칸 — 좁으면 한 칸 */
@@ -62,6 +75,20 @@
 .cols > * {
     flex: 1 1 420px;
     min-width: 0;
+}
+
+/* 넓은 칸 2 : 좁은 칸 1 — 시안 .col-2 · .col-1 */
+.cols > .colWide {
+    flex: 2 1 520px;
+}
+
+.cols > .colNarrow {
+    flex: 1 1 300px;
+}
+
+/* 나란한 카드를 같은 높이로 */
+.cols.even {
+    align-items: stretch;
 }
 
 .stack {
@@ -102,17 +129,6 @@
 }
 
 /* 승인 결과 띠 안 */
-.bandDl {
-    display: grid;
-    grid-template-columns: auto minmax(0, 1fr);
-    gap: 4px 12px;
-    margin: 6px 0 0;
-}
-
-.bandDl dd {
-    margin: 0;
-}
-
 .bandActions {
     display: flex;
     flex-wrap: wrap;
@@ -161,4 +177,67 @@
 .cardActions {
     display: flex;
     justify-content: flex-end;
+}
+
+/* 카드 안 — 시안 .card.pad.stack.g16(초기화 · 이용 제한) */
+.cardBody {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* dd 안 글자 + 배지 · 복사 — 한 줄 */
+.inline {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+}
+
+/* 참고 목록 */
+.notes {
+    margin: 0;
+    padding-left: 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+}
+
+/* 예약 요약 — 시안 .kpis · .kpi */
+.tiles {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 16px;
+    margin-bottom: 12px;
+}
+
+.tile {
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    background: var(--surface-2);
+    border: 1px solid var(--line);
+    border-radius: var(--radius-lg);
+}
+
+.tileValue {
+    font-size: 24px;
+    font-weight: 700;
+    line-height: 1.3;
+    font-variant-numeric: tabular-nums;
+}
+
+.tileValue small {
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.tileNote {
+    font-size: 12px;
+    color: var(--muted);
 }

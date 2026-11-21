@@ -77,31 +77,6 @@
     background: var(--ok-soft);
 }
 
-.approvedRow {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    gap: 8px;
-}
-
-.approvedLabel {
-    font-size: 12px;
-    font-weight: 700;
-    color: var(--ok);
-}
-
-.code {
-    font-family: var(--mono);
-    font-size: 14px;
-    font-weight: 700;
-}
-
-.url {
-    font-family: var(--mono);
-    font-size: 12px;
-    word-break: break-all;
-}
-
 .approvedText {
     margin: 0;
     font-size: 13px;

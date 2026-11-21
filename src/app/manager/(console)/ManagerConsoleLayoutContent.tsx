@@ -10,7 +10,7 @@ import { visibleMenu } from '@/shared/components/console/console-menu';
 import Badge from '@/shared/components/ui/display/Badge';
 import useConsoleLogout from '@/shared/hooks/useConsoleLogout';
 import { AuthContext } from '@/shared/providers/RootLayoutProvider';
-import { MANAGER_AUTH_BADGE, shortStoreCode } from '../manager-auth';
+import { MANAGER_AUTH_BADGE } from '../manager-auth';
 import { ManagerConsoleContext } from './manager-console-context';
 import { MANAGER_MENU } from './manager-menu';
 import styles from '@/app/css/manager/ManagerConsoleLayoutContent.module.css';
@@ -87,7 +87,7 @@ export default function ManagerConsoleLayoutContent({children}: ManagerConsoleLa
                 areaName="업체 관리자 콘솔"
                 menu={menu}
                 pathname={pathname}
-                heading={store ? <><b className={styles.storeName}>{store.store_name}</b><span className={styles.storeCode}>업체코드 {shortStoreCode(store.store_code)}</span></> : null}
+                heading={store ? <b className={styles.storeName}>{store.store_name}</b> : null}
                 account={account ? <><span>{account.login_id}</span>{badge ? <Badge tone={badge.tone}>{badge.label}</Badge> : null}</> : null}
                 passwordHref={PASSWORD_PATH}
                 loggingOut={loggingOut}

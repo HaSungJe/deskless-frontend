@@ -18,7 +18,7 @@ import Modal from '@/shared/components/ui/modal/Modal';
 import Pagination from '@/shared/components/ui/nav/Pagination';
 import { AuthContext } from '@/shared/providers/RootLayoutProvider';
 import { formatPrice } from '@/shared/utils/format';
-import { numberOf } from '@/shared/utils/util';
+import { listNumber, numberOf } from '@/shared/utils/util';
 import { resetValidationError, validateActionChildren } from '@/shared/utils/validation';
 import styles from '@/app/css/manager/RoomGroupPrices.module.css';
 
@@ -189,10 +189,11 @@ export default function RoomGroupPrices({roomGroupId, plans, type, onTypeChange,
                 {result && result.list.length === 0 ? <EmptyState title="기간 가격이 없습니다." /> : null}
                 {result && result.list.length > 0 ? (
                     <Table>
-                        <thead><tr><th scope="col">기간</th><th scope="col">요금</th><th scope="col">메모</th><th scope="col"><span className={styles.srOnly}>작업</span></th></tr></thead>
+                        <thead><tr><th scope="col">번호</th><th scope="col">기간</th><th scope="col">요금</th><th scope="col">메모</th><th scope="col"><span className={styles.srOnly}>작업</span></th></tr></thead>
                         <tbody>
-                            {result.list.map((item) => (
+                            {result.list.map((item, index) => (
                                 <tr key={item.room_group_plan_price_id}>
+                                    <td className={styles.number}>{listNumber(result.pagination, index)}</td>
                                     <td className={styles.number}>{item.start_date} ~ {item.end_date}</td>
                                     <td className={styles.number}>{formatPrice(item.price)}</td>
                                     <td>{item.memo ?? '-'}</td>

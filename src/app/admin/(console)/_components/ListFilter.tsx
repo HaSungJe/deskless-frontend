@@ -1,8 +1,8 @@
 'use client';
 import { useState } from 'react';
 import Button from '@/shared/components/ui/button/Button';
-import Chip from '@/shared/components/ui/form/Chip';
 import Input from '@/shared/components/ui/form/Input';
+import FilterChips, { FilterOptionType } from './FilterChips';
 import styles from '@/app/css/admin/ListFilter.module.css';
 
 /** 목록 거르기 · 쪽 — 상태(null 이 전체) · 제출한 검색어 · 쪽 */
@@ -15,24 +15,26 @@ export type ListQueryType = {
 /** 처음 목록 — 전체 · 검색어 없음 · 1쪽 */
 export const FIRST_LIST_QUERY: ListQueryType = {state: null, keyword: '', page: 1};
 
-/** 검색어 최대 글자 수 — StoreApplicationListDto · StoreListDto */
+/** 검색어 최대 글자 수 — 목록 DTO 의 keyword(입점 신청 · 업체 · 업체 관리자 · 이용자) */
 const KEYWORD_MAX = 100;
 
-type ListFilterProps = {
-    stateLabel: string;                                            // 칩 묶음 이름 — "신청 상태"
-    states: ReadonlyArray<{value: string | null; label: string}>; // 칩(null 이 전체)
-    placeholder: string;                                           // 검색 칸 안내 — "상호명 · 사업자등록번호"
-    query: ListQueryType;                                          // 지금 거르기
-    onChange: (next: ListQueryType) => void;                       // 바뀐 거르기 — 쪽은 1로
+type ListFilterProps<T extends ListQueryType> = {
+    stateLabel: string;                      // 상태 칩 묶음 이름 — "신청 상태"
+    states: ReadonlyArray<FilterOptionType>; // 상태 칩(null 이 전체)
+    placeholder: string;                     // 검색 칸 안내 — "상호명 · 사업자등록번호"
+    query: T;                                // 지금 거르기 — 화면이 더한 값(업체 · 권한 · SNS)도 함께
+    onChange: (next: T) => void;             // 바뀐 거르기 — 쪽은 1로
+    leading?: React.ReactNode;               // 상태 칩 앞 거르기 — 업체 · 권한(A5)
+    trailing?: React.ReactNode;              // 상태 칩 뒤 거르기 — SNS(A6)
 };
 
 /**
- * 관리자 목록 거르기 — 상태 칩 · 검색어(시안 A3 · A4 목록 위 줄)
+ * 관리자 목록 거르기 — (앞 거르기) · 상태 칩 · (뒤 거르기) · 검색어(시안 A3 · A4 · A5 · A6 목록 위 줄)
  *
  * @param param0
  * @returns
  */
-export default function ListFilter({stateLabel, states, placeholder, query, onChange}: ListFilterProps): React.ReactNode {
+export default function ListFilter<T extends ListQueryType>({stateLabel, states, placeholder, query, onChange, leading, trailing}: ListFilterProps<T>): React.ReactNode {
     // 상태
     const [keywordInput, setKeywordInput] = useState<string>(query.keyword); // 검색 칸
 
@@ -51,10 +53,11 @@ export default function ListFilter({stateLabel, states, placeholder, query, onCh
     return (
         // 거르기 줄
         <div className={styles.bar}>
-            {/* 상태 칩 */}
-            <div role="group" aria-label={stateLabel} className={styles.chips}>
-                <span className={styles.label}>상태</span>
-                {states.map((option) => <Chip key={option.label} pressed={query.state === option.value} onClick={() => pickState(option.value)}>{option.label}</Chip>)}
+            {/* 거르기 — 앞 · 상태 칩 · 뒤 */}
+            <div className={styles.filters}>
+                {leading}
+                <FilterChips label="상태" groupLabel={stateLabel} options={states} value={query.state} onPick={pickState} />
+                {trailing}
             </div>
 
             {/* 검색 */}

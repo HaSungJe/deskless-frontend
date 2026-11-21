@@ -14,6 +14,7 @@ import Select from '@/shared/components/ui/form/Select';
 import ConfirmModal from '@/shared/components/ui/modal/ConfirmModal';
 import Pagination from '@/shared/components/ui/nav/Pagination';
 import { AuthContext } from '@/shared/providers/RootLayoutProvider';
+import { listNumber } from '@/shared/utils/util';
 import RoomFormModal from './_components/RoomFormModal';
 import RoomStateModal from './_components/RoomStateModal';
 import { floorLabel, ROOM_STATE_TONE } from '../room-display';
@@ -205,10 +206,11 @@ export default function RoomsContent(): React.ReactNode {
             {result && result.list.length === 0 ? <EmptyState title="호실이 없습니다." /> : null}
             {result && result.list.length > 0 ? (
                 <Table>
-                    <thead><tr><th scope="col">호실</th><th scope="col">층</th><th scope="col">객실 그룹</th><th scope="col">호실 상태</th><th scope="col">마지막으로 연 시각</th><th scope="col">작업</th></tr></thead>
+                    <thead><tr><th scope="col">번호</th><th scope="col">호실</th><th scope="col">층</th><th scope="col">객실 그룹</th><th scope="col">호실 상태</th><th scope="col">마지막으로 연 시각</th><th scope="col">작업</th></tr></thead>
                     <tbody>
-                        {result.list.map((room) => (
+                        {result.list.map((room, index) => (
                             <tr key={room.room_id}>
+                                <td className={styles.number}>{listNumber(result.pagination, index)}</td>
                                 <td><b>{room.room_name}</b></td>
                                 <td>{floorLabel(room.floor)}</td>
                                 <td>{room.room_group_name}</td>

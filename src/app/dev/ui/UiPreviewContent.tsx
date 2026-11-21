@@ -12,6 +12,7 @@ import EmptyState from '@/shared/components/ui/display/EmptyState';
 import Field from '@/shared/components/ui/form/Field';
 import Input from '@/shared/components/ui/form/Input';
 import ReasonModal from '@/shared/components/ui/modal/ReasonModal';
+import SearchSelect, { SearchSelectOptionType } from '@/shared/components/ui/form/SearchSelect';
 import Segmented, { SegmentedOptionType } from '@/shared/components/ui/form/Segmented';
 import Select from '@/shared/components/ui/form/Select';
 import Switch from '@/shared/components/ui/form/Switch';
@@ -48,6 +49,14 @@ const RADIUS_OPTIONS: Array<SegmentedOptionType<RadiusType>> = [
     {value: '5', label: '5km'},
     {value: '10', label: '10km'},
     {value: '20', label: '20km'},
+];
+
+/** 검색 고르기 예시 — 업체(맨 앞 빈 값이 전체) */
+const STORE_OPTIONS: Array<SearchSelectOptionType> = [
+    {value: '', label: '전체 업체'},
+    {value: 'gangnam', label: '스테이 리프 강남역점'},
+    {value: 'jamsil', label: '리프룸 잠실새내점'},
+    {value: 'seomyeon', label: '슬립인 서면점'},
 ];
 
 const STORE_TABS: Array<TabItemType<StoreTabType>> = [
@@ -112,6 +121,7 @@ function Gallery({area, title}: GalleryProps): React.ReactNode {
     const [reasonOpen, setReasonOpen] = useState<boolean>(false);    // 사유 입력 모달 열림
     const [lastReason, setLastReason] = useState<string>('');        // 사유 입력 모달에서 받은 사유
     const [page, setPage] = useState<string>('2');                   // 페이지 탭 예시 — 현재 페이지
+    const [storeValue, setStoreValue] = useState<string>('');        // 검색 고르기 예시 — 고른 업체
 
     // 계산 값
     const pagination = previewPagination(Number(page)); // 페이지 탭 예시 값
@@ -192,6 +202,9 @@ function Gallery({area, title}: GalleryProps): React.ReactNode {
                         <option value="standard">스탠다드 더블</option>
                         <option value="deluxe">디럭스 트윈</option>
                     </Select>
+                </Field>
+                <Field label="업체(검색 고르기)" name={`${area}_store_id`} htmlFor={`${area}_store_id_input`}>
+                    <SearchSelect id={`${area}_store_id_input`} label="업체" options={STORE_OPTIONS} value={storeValue} placeholder="업체 검색" onChange={setStoreValue} />
                 </Field>
                 <div className={styles.row}>
                     <Button size="sm" onClick={showError}>오류 표시</Button>

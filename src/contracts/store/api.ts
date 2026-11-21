@@ -352,11 +352,11 @@ export function rejectStoreApplication(auth: AuthType, store_application_id: str
  * 업체 목록 — 동기 · 관리자 (GET /admin-service/store) — 등록일 최신순
  *
  * @param auth AuthContext 값
- * @param query 상태 · 검색어 · 페이지
+ * @param query 상태 · 검색어 · 페이지 · 전부 읽기(all_search_yn Y — 업체 관리자 목록의 업체 고르기)
  * @param signal 거르기를 바꾸거나 화면을 떠날 때 취소
  */
 export function getStores(auth: AuthType, query: StoreListDto, signal?: AbortSignal): Promise<StoreListResultDto | null> {
-    return withAuth(auth, (token) => request<StoreListResultDto>({path: ADMIN_STORE_PATH, query: {store_state_id: query.store_state_id, keyword: query.keyword, page: query.page, size: query.size}, token, signal}));
+    return withAuth(auth, (token) => request<StoreListResultDto>({path: ADMIN_STORE_PATH, query: {all_search_yn: query.all_search_yn, store_state_id: query.store_state_id, keyword: query.keyword, page: query.page, size: query.size}, token, signal}));
 }
 
 /**

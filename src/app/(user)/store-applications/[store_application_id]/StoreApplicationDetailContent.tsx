@@ -211,7 +211,7 @@ export default function StoreApplicationDetailContent({applicationId}: StoreAppl
         // 입점 신청 상세
         <div className={pageStyles.page}>
             {/* 상단 바 */}
-            <UserTopBar title="입점 신청 상세" backHref={LIST_PATH} />
+            <UserTopBar title="입점 신청 상세" parents={[{label: '내 정보', href: '/me/'}, {label: '입점 신청', href: LIST_PATH}]} />
 
             {detail ? (
                 <>
@@ -227,22 +227,14 @@ export default function StoreApplicationDetailContent({applicationId}: StoreAppl
                     {/* ② 상태 띠 — 대기 · 사업자등록증 없음 / 반려 사유 / 승인 */}
                     {editable && licenses.length === 0 ? <Band tone="warn" title="사업자등록증 사진이 아직 없어요.">사진이 있어야 관리자가 승인할 수 있어요.</Band> : null}
                     {state === STORE_APPLICATION_STATE.REJECTED ? <Band tone="danger" title="반려된 신청이에요">{detail.reject_comment ?? '반려 사유가 없어요.'}</Band> : null}
-                    {detail.store_code ? <Band tone="ok" title="입점이 승인되었어요.">아래 주소에서 업체 관리자 콘솔에 로그인할 수 있어요.</Band> : null}
+                    {detail.store_code ? <Band tone="ok" title="입점이 승인되었어요.">아래 "로그인 주소 복사"로 업체 관리자 콘솔 주소를 받을 수 있어요.</Band> : null}
 
                     <div className={pageStyles.body}>
                         {/* ② 업체 관리자 콘솔(승인) */}
                         {detail.store_code ? (
                             <section className={pageStyles.card} aria-labelledby="application-console-title">
                                 <h2 id="application-console-title" className={pageStyles.cardTitle}>업체 관리자 콘솔</h2>
-                                <div className={pageStyles.stack}>
-                                    <span className={styles.fieldLabel}>업체코드</span>
-                                    <span className={pageStyles.mono}>{detail.store_code}</span>
-                                </div>
-                                <div className={pageStyles.stack}>
-                                    <span className={styles.fieldLabel}>업체 관리자 콘솔 로그인 주소</span>
-                                    <span className={styles.urlBox}>{consoleUrl}</span>
-                                </div>
-                                <p className={styles.text}>이 주소에서 신청 때 정한 아이디 · 비밀번호로 로그인하세요.</p>
+                                <p className={styles.text}>로그인 주소를 복사해, 신청 때 정한 아이디 · 비밀번호로 로그인하세요.</p>
                                 <CopyButton text={consoleUrl} label="로그인 주소 복사" size="md" variant="primary" full />
                             </section>
                         ) : null}

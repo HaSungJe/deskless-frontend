@@ -37,7 +37,7 @@ beforeEach(() => {
 });
 
 describe('PaymentSuccessContent', () => {
-    it('[SUCCESS] 토스가 승인하고 결제 확인이 된다 → "예약이 확정되었어요" · 상태 배지 · 예약 보기', async () => {
+    it('[SUCCESS] 토스가 승인하고 결제 확인이 된다 → "예약이 확정되었어요" · 상태 배지 · 예약 보기(예약 ID 글자는 숨김)', async () => {
         requestTossConfirm.mockResolvedValue({success: true});
         confirmPayment.mockResolvedValue({reservation_id: RESERVATION_ID, reservation_state_id: 'CONFIRMED'});
 
@@ -51,7 +51,7 @@ describe('PaymentSuccessContent', () => {
 
         expect(screen.getByText('예약이 확정되었어요')).toBeTruthy();
         expect(screen.getByText('예약 확정')).toBeTruthy();
-        expect(screen.getByText(RESERVATION_ID)).toBeTruthy();
+        expect(document.body.textContent).not.toContain(RESERVATION_ID);
         expect(screen.getByRole('link', {name: '예약 보기'}).getAttribute('href')).toBe(`/reservation/${RESERVATION_ID}/`);
     });
 

@@ -88,7 +88,7 @@ export default function PhoneVerificationContent({returnUrl}: PhoneVerificationC
         // 휴대폰 인증
         <div className={styles.page}>
             {/* 상단 바 */}
-            <UserTopBar title="휴대폰 인증" backHref="/" />
+            <UserTopBar title="휴대폰 인증" />
 
             <div className={styles.body}>
                 {/* 안내 */}
