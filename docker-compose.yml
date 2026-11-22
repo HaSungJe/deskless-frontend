@@ -1,15 +1,24 @@
 services:
-  frontend:
+  web: # 서비스 이름 = 백엔드 Prometheus job 이름 = 지표 service 라벨(web) — 바꾸면 백엔드와 다시 맞춘다(frontend/changes/2026-11-22-monitoring-web.md)
     build:
       context: .
       secrets:
         - dotenv
     image: deskless-frontend
-    container_name: deskless-frontend
+    container_name: deskless-frontend # 인스턴스를 여러 대로 늘리려면(--scale) 이 줄과 ports 를 빼야 한다
     env_file: .env.production
+    environment:
+      METRICS_PORT: '9464' # 지표 서버 — Docker 안은 9464 고정
+      METRICS_HOST: '0.0.0.0' # 모니터링 내부망에서만 닿는다(ports 로 호스트에 열지 않는다)
     ports:
       - "5000:5000"
+    networks: [default, monitoring] # 기존 네트워크는 그대로 두고 모니터링 망을 더한다
     restart: unless-stopped
+
+networks:
+  monitoring:
+    name: deskless-monitoring
+    external: true # 백엔드 npm run docker:network 가 만든다 — 없으면 이 compose 가 뜨지 않으니 백엔드 묶음을 먼저 한 번 띄운 서버에서 실행
 
 secrets:
   dotenv:

@@ -22,4 +22,4 @@ docker compose up -d --build      # http://localhost:5000
 ```
 
 - `NEXT_PUBLIC_*` 값은 빌드할 때 코드에 박힌다 — 바꾸면 `--build` 로 다시 빌드한다.
-- 로그 확인: `docker compose logs -f frontend`
+- 로그 확인: `docker compose logs -f web`
