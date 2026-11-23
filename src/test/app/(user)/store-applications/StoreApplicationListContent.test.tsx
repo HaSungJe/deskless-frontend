@@ -3,6 +3,7 @@ import { act, render, screen } from '@testing-library/react';
 import StoreApplicationListContent from '@/app/(user)/store-applications/StoreApplicationListContent';
 import { StoreMyApplicationItemResultDto, StoreMyApplicationListDto } from '@/contracts/store/dto/store-my-application-list.dto';
 import RootLayoutProvider, { AuthContextType } from '@/shared/providers/RootLayoutProvider';
+import { applyPublicEnv } from '@/shared/utils/public-env';
 
 const {getMyStoreApplications} = vi.hoisted(() => ({getMyStoreApplications: vi.fn()}));
 
@@ -26,7 +27,7 @@ function application(id: string, name: string, extra: Partial<StoreMyApplication
 }
 
 beforeEach(() => {
-    vi.stubEnv('NEXT_PUBLIC_SERVER_URL', 'https://deskless.kr');
+    applyPublicEnv({NEXT_PUBLIC_SERVER_URL: 'https://deskless.kr'}); // 루트 layout 이 넘기는 공개 값
     vi.stubEnv('NEXT_PUBLIC_LOCAL_SERVER_PREFIX', '');
     getMyStoreApplications.mockReset();
 });

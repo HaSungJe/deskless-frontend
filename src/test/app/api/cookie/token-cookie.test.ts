@@ -2,7 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { GET, POST } from '@/app/api/cookie/[area]/route';
 import { ACCESS_EARLY_EXPIRE_MS, refreshTokens, setTokenCookies, TokenSetType } from '@/app/api/cookie/token-cookie';
-import { API_BASE_URL } from '@/shared/api/request';
+import { apiBaseUrl } from '@/shared/api/request';
 
 type FakeCookieStoreType = {
     get: ReturnType<typeof vi.fn>;
@@ -114,7 +114,7 @@ describe('token-cookie', () => {
 
             expect(result).toEqual({state: 'ok', tokens: TOKENS});
             expect(fetchMock).toHaveBeenCalledTimes(1);
-            expect(fetchMock.mock.calls[0][0]).toBe(`${API_BASE_URL}${path}`);
+            expect(fetchMock.mock.calls[0][0]).toBe(`${apiBaseUrl()}${path}`);
             expect(fetchMock.mock.calls[0][1].method).toBe('POST');
             expect(fetchMock.mock.calls[0][1].body).toBe('{"refresh_token":"r"}');
         }

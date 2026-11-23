@@ -70,7 +70,7 @@ src/
 - 한 화면에서만 쓰면 그 화면 폴더(`page.tsx` 옆)에 둔다. 두 곳 이상에서 쓰게 되면 그때 `contracts` · `shared` 로 옮긴다.
 
 ## Data Layer
-- 백엔드 호출은 fetch 하나 — 조회 · 로그인 같은 동기는 `request<T>({method, path, query, body, token})`, 상태를 바꾸는 쓰기는 큐 `callQueue<T>({method, path, body, token})` (`src/shared/api/request.ts` · `queue.ts`). 주소는 `${NEXT_PUBLIC_API_URL}/api/v1${path}` — 게이트웨이 하나만 부른다(로컬 `http://localhost:3000` · Swagger `/swagger`, 내부 3010 · 3020 은 직접 부르지 않음 — docs/architecture.md "로컬 포트").
+- 백엔드 호출은 fetch 하나 — 조회 · 로그인 같은 동기는 `request<T>({method, path, query, body, token})`, 상태를 바꾸는 쓰기는 큐 `callQueue<T>({method, path, body, token})` (`src/shared/api/request.ts` · `queue.ts`). 주소는 `${NEXT_PUBLIC_API_URL}/api/v1${path}`(`apiBaseUrl()` — 부를 때 실행 값으로) — 게이트웨이 하나만 부른다(로컬 `http://localhost:3000` · Swagger `/swagger`, 내부 3010 · 3020 은 직접 부르지 않음 — docs/architecture.md "로컬 포트").
 - 큐 결과는 `done` → data, `pending` · 결과 없이 끝남 → `null`(그 리소스를 다시 조회).
 - 로그인이 필요한 API 는 `withAuth(auth, (token) => request · callQueue(…))` (`src/shared/api/auth.ts:31`) — 401 이면 그 영역 재발급 한 번 · 재시도, 또 401 이면 그 영역 로그인 화면. 재발급이 일시 실패(네트워크 · 백엔드 5xx)면 로그아웃하지 않고 `NetworkError`. 응답이 없는 실패는 `NetworkError`.
 - 토큰은 영역마다 httpOnly 쿠키 `<area>_access_token` · `<area>_refresh_token` 으로 route handler(`src/app/api/cookie/[area]/` · `[area]/refresh/`)가 쓰고 읽는다 (`src/app/api/cookie/token-cookie.ts:88`). 매니저 · 관리자는 로그인 때 받은 계정(아이디 · 권한)을 `<area>_account` 쿠키에 같이 두고(토큰과 같이 지움 — `clearTokenCookies`) `getAreaAccount(area)` 로 읽는다. 저장(`POST`)은 같은 사이트 JSON 요청만 받는다(`isSameSiteJson` — 다른 사이트 form 이 토큰을 심는 것 막기). 클라이언트는 `src/shared/api/cookie.ts` 로만 접근한다.
@@ -111,7 +111,7 @@ src/
 ## Key Patterns
 - `window` 를 쓰는 라이브러리는 `next/dynamic` + `ssr: false` 로 감싼다 (`src/shared/components/Editor.tsx:6`, `chart/Chart.tsx:5`).
 - 외부 스크립트는 id 로 한 번만 붙이고 Promise 로 로드를 기다린다 (`src/shared/utils/kakao-map.ts:15`, `src/shared/utils/address.ts:35`). npm 으로 들인 SDK(토스)는 효과 안에서 `import()` (`src/shared/components/payment/TossPaymentWidget.tsx`).
-- `NEXT_PUBLIC_*` · `basePath` 는 빌드할 때 박힌다. 운영 이미지는 `output: "standalone"` (`next.config.ts:34`) — 빌드 때 `.env.production` 을 빌드 secret(`dotenv`)으로 붙이고, 실행 env 는 deskless 차트(Secret)가 넣는다. 배포(인스턴스 수 · 포트 노출 · 네트워크 · 지표 수집 · 프로브)는 deskless 저장소(쿠버네티스)가 맡고, 이 저장소는 앱 코드 + `Dockerfile` 만. 지표 · 헬스 체크는 전용 포트 서버 `src/metrics-server.ts`(`/metrics` · `/health/live` · `/health/ready` — 쿠버네티스 9464 · 로컬 9468, Next.js 라우트로 열지 않는다).
+- 공개 값(`NEXT_PUBLIC_*`)은 **실행 때** 읽는다 — `getPublicEnv(key)`(`src/shared/utils/public-env.ts`) 한 곳: 서버는 요청 때 `process.env`, 브라우저는 루트 layout(요청 때 렌더 — `await connection()`)이 허용 목록(`publicEnvValues` — `NEXT_PUBLIC_*` 중 basePath 뺌)만 `RootLayoutContent` 로 넘겨 처음 그릴 때 둔 값. 정적 참조 `process.env.NEXT_PUBLIC_X` 는 쓰지 않는다(빌드 값으로 박힌다) — 예외는 basePath(`NEXT_PUBLIC_LOCAL_SERVER_PREFIX`). 빌드에 남는 값은 basePath · 이미지 호스트(`NEXT_IMAGE_*` — next.config)뿐이라 이미지 하나로 모든 환경을 띄운다(frontend/changes/2026-11-24-runtime-public-env.md). 운영 이미지는 `output: "standalone"` (`next.config.ts:34`) — 빌드 때 `.env.production` 을 빌드 secret(`dotenv`)으로 붙이고, 실행 env 는 deskless 차트(Secret)가 넣는다. 배포(인스턴스 수 · 포트 노출 · 네트워크 · 지표 수집 · 프로브)는 deskless 저장소(쿠버네티스)가 맡고, 이 저장소는 앱 코드 + `Dockerfile` 만. 지표 · 헬스 체크는 전용 포트 서버 `src/metrics-server.ts`(`/metrics` · `/health/live` · `/health/ready` — 쿠버네티스 9464 · 로컬 9468, Next.js 라우트로 열지 않는다).
 - basePath(하위 경로 배포)는 `<Link>` · router · `redirect()` 만 Next 가 붙인다 — route handler `fetch` · next-auth 주소(callbackUrl · `pages` · 로그인 화면 `SessionProvider basePath`) · 메타데이터 주소 · 직접 만든 `Location` · 밖에서 돌아올 주소는 `withBasePath(path)`, 문서를 새로 여는 이동(로그아웃 뒤)은 `replaceDocument(path)` (`src/shared/utils/base-path.ts`). basePath 를 쓰면 `NEXTAUTH_URL` 도 `<origin><basePath>/api/auth` 까지(.env.example).
 - 주소가 있어야 하는 팝업은 경로 모달 — 루트 슬롯 `src/app/@modal/(.)<주소>/page.tsx` 에서 `<RouteModal>` 로 감싸고, 같은 주소의 보통 페이지도 둔다. 화면 내용은 보통 페이지 폴더에 두고 가로채기 page 가 `@/app/<영역 경로>/<주소>/<화면>Content` 로 가져온다. 주소가 필요 없는 확인 · 사유 입력은 `ConfirmModal` · `ReasonModal`. → [docs/architecture.md](docs/architecture.md) "경로 모달"
 
@@ -132,6 +132,7 @@ Vitest 5 + Testing Library + jsdom (`vitest.config.mts`) (선택: 사용자). �
 - [ ] 로그인이 필요한 영역 layout(이용자는 그 화면 page)은 `<AuthGuard>` 로 감싸고, 로그인이 필요한 API 는 `withAuth(auth, …)` 로 부른다
 - [ ] `window` 를 쓰는 라이브러리는 `next/dynamic` + `ssr: false`
 - [ ] 시크릿(`NEXTAUTH_SECRET` · `TOSS_SECRET_KEY`)은 서버 코드(route handler)에서만 — `NEXT_PUBLIC_` 을 붙이지 않는다, SNS 계정은 브라우저에 내보내지 않는다
+- [ ] 공개 값은 `getPublicEnv(key)` 로 읽는다 — `process.env.NEXT_PUBLIC_X` 정적 참조는 basePath 만
 - [ ] 지도 · 주소 · 인증번호 · 파일 · 결제는 `shared` 연동 부품에 화면의 contracts 함수만 넘긴다 — 토스 시크릿 키는 결제 승인 route handler 에서만 (docs/integrations.md)
 - [ ] 내부 링크는 `/` 로 끝난다 (`trailingSlash`)
 - [ ] 스타일은 `<Name>.module.css` 를 css 폴더에(화면 `src/app/css/<영역>/`, 공통 부품 `src/shared/css/…`), 색 · 크기는 `globals.css` 토큰 `var(--…)` 만 (값 직접 쓰지 않음 — 부품 고유 치수 · 간격 · 글자 크기 예외는 docs/conventions.md "스타일")

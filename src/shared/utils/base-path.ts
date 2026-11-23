@@ -2,7 +2,7 @@
  * 앱 안 주소에 basePath(하위 경로 배포 prefix — next.config.ts 의 basePath = NEXT_PUBLIC_LOCAL_SERVER_PREFIX)를 붙인다
  * - Next 가 붙여 주는 곳(<Link> · router · redirect())에는 쓰지 않는다 — 두 번 붙는다
  * - 직접 붙여야 하는 곳: route handler fetch · next-auth 주소(callbackUrl · pages · 클라이언트 basePath) · 메타데이터 주소 · 직접 만든 Location 헤더 · 밖에서 돌아올 주소
- * - 빌드할 때 박히는 값(NEXT_PUBLIC_) — 비어 있으면 그대로
+ * - 빌드할 때 박히는 값(공개 값 중 basePath 만 빌드 값 — next.config 가 정한다, 나머지는 getPublicEnv) — 비어 있으면 그대로
  *
  * @param path '/' 로 시작하는 앱 안 주소
  */

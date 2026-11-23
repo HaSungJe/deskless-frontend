@@ -5,6 +5,7 @@ import { StoreMyApplicationResultDto } from '@/contracts/store/dto/store-my-appl
 import { ApiError } from '@/shared/api/request';
 import { UploadStepsType } from '@/shared/api/upload';
 import RootLayoutProvider, { AuthContextType } from '@/shared/providers/RootLayoutProvider';
+import { applyPublicEnv } from '@/shared/utils/public-env';
 
 const {getMyStoreApplication, issueStoreApplicationFileUrl, registerStoreApplicationFile, deleteStoreApplicationFile, cancelStoreApplication, uploadFile, replace, showErrorPopup} = vi.hoisted(() => ({
     getMyStoreApplication: vi.fn(),
@@ -74,7 +75,7 @@ async function renderDetail(): Promise<HTMLElement> {
 }
 
 beforeEach(() => {
-    vi.stubEnv('NEXT_PUBLIC_SERVER_URL', 'https://deskless.kr');
+    applyPublicEnv({NEXT_PUBLIC_SERVER_URL: 'https://deskless.kr'}); // 루트 layout 이 넘기는 공개 값
     vi.stubEnv('NEXT_PUBLIC_LOCAL_SERVER_PREFIX', '');
     getMyStoreApplication.mockReset();
     issueStoreApplicationFileUrl.mockReset().mockResolvedValue({file_key: 'k', upload_url: 'https://s3/put', expires_at: '2026-11-08T03:10:00.000Z'});

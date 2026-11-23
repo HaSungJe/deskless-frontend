@@ -7,10 +7,12 @@ import Scripts from '@/shared/components/Scripts';
 import ErrorPopup from '@/shared/components/ui/modal/ErrorPopup';
 import RootLayoutProvider from '@/shared/providers/RootLayoutProvider';
 import { AreaType, areaOf, loginUrl } from '@/shared/utils/area';
+import { applyPublicEnv, PublicEnvType } from '@/shared/utils/public-env';
 
 type RootLayoutContentProps = {
     children: React.ReactNode;
-    modal?: React.ReactNode; // 경로 모달 — Provider 안에서 그려 Context 를 쓸 수 있게
+    modal?: React.ReactNode;    // 경로 모달 — Provider 안에서 그려 Context 를 쓸 수 있게
+    publicEnv: PublicEnvType;   // 공개 값 — 루트 layout 이 요청 때 읽어 넘긴다(getPublicEnv 가 브라우저에서 읽는다)
 };
 
 type AreaTokenType = {
@@ -26,11 +28,12 @@ type CurrentType = {
 
 /**
  * 루트 — 주소가 바뀔 때마다 그 영역 로그인 상태를 확인해 Context 로, 오류 팝업 하나
+ * - 공개 값은 처음 그릴 때(아래 화면이 그리기 전) 브라우저에 둔다 — 화면 · 연동 부품이 getPublicEnv 로 읽는다
  *
  * @param param0
  * @returns
  */
-export default function RootLayoutContent({children, modal}: RootLayoutContentProps): React.ReactNode {
+export default function RootLayoutContent({children, modal, publicEnv}: RootLayoutContentProps): React.ReactNode {
     // 변수
     const pathname = usePathname();                                  // 지금 주소 — 바뀔 때마다 그 영역 토큰을 다시 확인
     const router = useRouter();                                      // 로그인 만료 때 이동
@@ -38,6 +41,7 @@ export default function RootLayoutContent({children, modal}: RootLayoutContentPr
     const currentRef = useRef<CurrentType>({area, pathname});        // 지금 영역 · 주소 — 늦게 끝난 재발급 · 만료 처리가 옛 영역에 쓰지 않게
 
     // 상태
+    useState<void>(() => applyPublicEnv(publicEnv));                                                  // 공개 값 — 처음 그릴 때 한 번(아래 화면보다 먼저)
     const [areaToken, setAreaToken] = useState<AreaTokenType>({area: null, path: null, token: null}); // 확인한 영역 · 주소 · 토큰
 
     // 계산 값

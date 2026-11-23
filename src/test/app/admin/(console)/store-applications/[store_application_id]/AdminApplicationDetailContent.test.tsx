@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, fireEvent, screen, within } from '@testing-library/react';
 import AdminApplicationDetailContent from '@/app/admin/(console)/store-applications/[store_application_id]/AdminApplicationDetailContent';
+import { applyPublicEnv } from '@/shared/utils/public-env';
 import { APPLICATION_ID, applicationDetail, renderWithAdmin, STORE_CODE, STORE_ID } from '../../admin-fixture';
 
 const api = vi.hoisted(() => ({
@@ -28,7 +29,7 @@ function dialog(): ReturnType<typeof within> {
 }
 
 beforeEach(() => {
-    vi.stubEnv('NEXT_PUBLIC_SERVER_URL', 'https://deskless.kr');
+    applyPublicEnv({NEXT_PUBLIC_SERVER_URL: 'https://deskless.kr'}); // 루트 layout 이 넘기는 공개 값
     vi.stubEnv('NEXT_PUBLIC_LOCAL_SERVER_PREFIX', '');
     Object.values(api).forEach((fn) => fn.mockReset());
     api.getStoreApplication.mockResolvedValue(applicationDetail());

@@ -12,7 +12,7 @@
 | 타입 | `type` 별칭 + `Type` 접미사 (`interface` 쓰지 않음) | `PaginationType` (`src/shared/types/pagination.ts:11`), `AuthContextType` (`src/shared/providers/RootLayoutProvider.tsx:6`) |
 | Context | `<Name>Context` | `AuthContext` (`src/shared/providers/RootLayoutProvider.tsx:18`) |
 | 함수 | camelCase 동사 | `createQueryString` (`src/shared/utils/util.ts:7`), `loadAddressSearchScript` (`src/shared/utils/address.ts:35`) |
-| 상수 | UPPER_SNAKE | `API_BASE_URL` (`src/shared/api/request.ts:5`), `KAKAO_MAP_SCRIPT_ID` (`src/shared/utils/kakao-map.ts:8`) |
+| 상수 | UPPER_SNAKE | `UNREADABLE_FAIL_MESSAGE` (`src/shared/api/request.ts`), `KAKAO_MAP_SCRIPT_ID` (`src/shared/utils/kakao-map.ts`) |
 | 화면 DTO | `<동작>Dto` class, 화면 폴더의 `dto.ts` | (지금 없음 — 첫 입력 화면 Phase 5) |
 | 백엔드 DTO | 지침서 이름 그대로 — `<도메인><기능>Dto` · 응답 `…ResultDto` · path `…ParamDto` | `UserFindLoginIdDto` / `UserFindLoginIdResultDto` (지침서: frontend/dto/user.md:128,138) |
 | 백엔드 키 | snake_case 그대로 (변환하지 않음) | `refresh_token`, `access_token_expires_at` (`src/contracts/user/dto/user-token-refresh.dto.ts:6,17`) |

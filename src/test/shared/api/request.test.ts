@@ -1,6 +1,6 @@
 // @vitest-environment node
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
-import { API_BASE_URL, ApiError, NetworkError, request, UNREADABLE_FAIL_MESSAGE } from '@/shared/api/request';
+import { apiBaseUrl, ApiError, NetworkError, request, UNREADABLE_FAIL_MESSAGE } from '@/shared/api/request';
 
 const fetchMock = vi.fn();
 
@@ -41,7 +41,7 @@ describe('request', () => {
         expect(result).toEqual(body);
         expect(fetchMock).toHaveBeenCalledTimes(1);
         const {url, init} = fetchCall();
-        expect(url).toBe(`${API_BASE_URL}/user-service/discovery/stores?page=1`);
+        expect(url).toBe(`${apiBaseUrl()}/user-service/discovery/stores?page=1`);
         expect(init.method).toBe('GET');
         expect(init.body).toBeUndefined();
         expect(init.headers).toEqual({Accept: 'application/json'});

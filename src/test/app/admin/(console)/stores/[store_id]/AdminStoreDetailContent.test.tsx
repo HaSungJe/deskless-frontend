@@ -1,6 +1,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { act, fireEvent, screen, within } from '@testing-library/react';
 import AdminStoreDetailContent from '@/app/admin/(console)/stores/[store_id]/AdminStoreDetailContent';
+import { applyPublicEnv } from '@/shared/utils/public-env';
 import { renderWithAdmin, STORE_ID, storeDetail } from '../../admin-fixture';
 
 const api = vi.hoisted(() => ({
@@ -29,7 +30,7 @@ async function renderDetail(): Promise<HTMLElement> {
 }
 
 beforeEach(() => {
-    vi.stubEnv('NEXT_PUBLIC_SERVER_URL', 'https://deskless.kr');
+    applyPublicEnv({NEXT_PUBLIC_SERVER_URL: 'https://deskless.kr'}); // 루트 layout 이 넘기는 공개 값
     Object.values(api).forEach((fn) => fn.mockReset());
     api.getStore.mockResolvedValue(storeDetail());
     api.updateStore.mockResolvedValue(null);

@@ -12,7 +12,7 @@
 
 ## 지도 · 주소
 
-- 카카오 SDK 는 `loadKakaoMap()` 하나로 붙인다 — `autoload=false&libraries=services`(지도 · 지오코더가 같은 스크립트). 키 `NEXT_PUBLIC_DAUM_MAP_API_KEY`, 카카오 디벨로퍼스에 사이트 도메인 등록.
+- 카카오 SDK 는 `loadKakaoMap()` 하나로 붙인다 — `autoload=false&libraries=services`(지도 · 지오코더가 같은 스크립트). 키 `NEXT_PUBLIC_DAUM_MAP_API_KEY`(실행 값 — `getPublicEnv`), 카카오 디벨로퍼스에 사이트 도메인 등록.
 - `StoreMap` — `center` · `markers`(`{id, latitude, longitude, title, label?, muted?}`) · `level` · `radiusKm?` · `myLocation?` · `locked?` · `onIdle(center)` · `onMarkerClick(id)`.
   - `idle` 은 처음 그릴 때 · `center` 로 옮겼을 때 · 반경에 맞춰 확대했을 때 · 사용자가 움직이고 멈췄을 때 온다 → 화면은 `onIdle` 에서만 조회한다. `onIdle` 값을 `center` 로 되돌려 넣지 않는다.
   - 핀은 시안 모양의 `CustomOverlay`(기본 마커 아님) — 위에 이름표(`label`, 길면 말줄임), `muted` 면 회색(지금 영업 안 함). 글자는 `textContent` 로만 넣는다(업체 이름이 HTML 로 읽히지 않게). `onMarkerClick` 이 있으면 버튼(탭 순서에서는 뺀다 — 같은 업체로 가는 목록 링크가 키보드 길), 없으면 `span`(U2 위치). 핀은 내용(id · 좌표 · 회색 · 이름표) 키가 바뀔 때만 다시 찍는다 — `markers` 배열이 새로 만들어져도 그대로.
@@ -57,7 +57,7 @@ await uploadFile(file, {
 
 ## 결제 — 토스 결제위젯
 
-사용자 결정(2026-11-16): 결제위젯 · npm `@tosspayments/tosspayments-sdk` · 구매자 키 `ANONYMOUS`. 키는 "결제위젯 연동 키" — 클라이언트 `NEXT_PUBLIC_TOSS_CLIENT_KEY`(`gck`), 시크릿 `TOSS_SECRET_KEY`(`gsk`, `NEXT_PUBLIC_` 없음).
+사용자 결정(2026-11-16): 결제위젯 · npm `@tosspayments/tosspayments-sdk` · 구매자 키 `ANONYMOUS`. 키는 "결제위젯 연동 키" — 클라이언트 `NEXT_PUBLIC_TOSS_CLIENT_KEY`(`gck` — 실행 값, `getPublicEnv`), 시크릿 `TOSS_SECRET_KEY`(`gsk`, `NEXT_PUBLIC_` 없음).
 
 1. 예약 생성 · 연장 신청(큐) done → `{payment_id, order_name, amount, expires_at}` → `<TossPaymentWidget payment returnUrl? onExpired?>` — 결제 마감 남은 시간 · 결제수단 · 약관 · "결제하기". SDK 는 효과 안에서 `import()`(서버 렌더 밖). `payment` 가 바뀌면(새 결제 · 새 마감) 만료를 풀고, 금액이 바뀌면 위젯을 다시 그릴 때까지 "결제하기"를 막는다.
    - 결제하는 곳 — U3 예약, U7 결제하기(결제 대기 구간 · 주문명 "업체 호실" — 상세 응답에 주문명이 없다), U9 연장. `returnUrl` 은 셋 다 **그 예약 1건**(`/reservation/<id>/` — 사용자 결정 2026-11-18): 결제창에서 실패 · 취소해도 결제 대기 예약 · 연장 구간은 남아 있고, 예약 1건 화면에서만 다시 결제하거나 취소할 수 있다(예약 · 연장 화면은 처음부터 다시 시작한다).

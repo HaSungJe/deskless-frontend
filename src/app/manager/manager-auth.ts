@@ -1,5 +1,6 @@
 import { AUTH_ID } from '@/contracts/common/roles';
 import { RETURN_URL_KEY, safeReturnPath, toSamePath } from '@/shared/utils/area';
+import { getPublicEnv } from '@/shared/utils/public-env';
 
 /** 업체코드 쿠키 — 로그인 처리가 쓰고 업체 로그인 주소 안내가 읽는다(로그아웃해도 남는다) */
 export const STORE_CODE_COOKIE = 'manager_store_code';
@@ -71,10 +72,10 @@ export function managerLoginUrl(storeCode: string, serverUrl: string, basePath: 
 }
 
 /**
- * 이 배포의 업체 콘솔 로그인 주소 — 빌드 때 박히는 NEXT_PUBLIC_SERVER_URL · NEXT_PUBLIC_LOCAL_SERVER_PREFIX 로
+ * 이 배포의 업체 콘솔 로그인 주소 — 실행 때 읽는 NEXT_PUBLIC_SERVER_URL(getPublicEnv) · 빌드 값 basePath(NEXT_PUBLIC_LOCAL_SERVER_PREFIX)로
  *
  * @param storeCode 업체코드
  */
 export function storeConsoleLoginUrl(storeCode: string): string {
-    return managerLoginUrl(storeCode, process.env.NEXT_PUBLIC_SERVER_URL ?? '', process.env.NEXT_PUBLIC_LOCAL_SERVER_PREFIX ?? '');
+    return managerLoginUrl(storeCode, getPublicEnv('NEXT_PUBLIC_SERVER_URL') ?? '', process.env.NEXT_PUBLIC_LOCAL_SERVER_PREFIX ?? '');
 }

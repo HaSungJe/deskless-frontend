@@ -1,3 +1,5 @@
+import { getPublicEnv } from './public-env';
+
 declare global {
     interface Window {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any -- 카카오 지도 SDK 전역(타입 패키지 없음)
@@ -23,7 +25,7 @@ export function loadKakaoMap(): Promise<void> {
         if (!script) {
             script = document.createElement('script');
             script.id = KAKAO_MAP_SCRIPT_ID;
-            script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${process.env.NEXT_PUBLIC_DAUM_MAP_API_KEY}&autoload=false&libraries=services`;
+            script.src = `https://dapi.kakao.com/v2/maps/sdk.js?appkey=${getPublicEnv('NEXT_PUBLIC_DAUM_MAP_API_KEY') ?? ''}&autoload=false&libraries=services`;
             script.async = true;
             document.head.appendChild(script);
         }

@@ -1,7 +1,7 @@
 // @vitest-environment node
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { callQueue } from '@/shared/api/queue';
-import { API_BASE_URL, ApiError, ApiFailBodyType, NetworkError } from '@/shared/api/request';
+import { apiBaseUrl, ApiError, ApiFailBodyType, NetworkError } from '@/shared/api/request';
 
 const fetchMock = vi.fn();
 
@@ -64,7 +64,7 @@ describe('callQueue', () => {
         expect(result).toEqual({store_id: 1});
         expect(fetchMock).toHaveBeenCalledTimes(1);
         const {url, init} = fetchCall();
-        expect(url).toBe(`${API_BASE_URL}/admin-service/room/rooms`);
+        expect(url).toBe(`${apiBaseUrl()}/admin-service/room/rooms`);
         expect(init.method).toBe('POST');
         expect(init.headers).toEqual({Accept: 'text/event-stream', 'Content-Type': 'application/json', Authorization: 'Bearer t'});
         expect(init.body).toBe('{"room_name":"101호"}');

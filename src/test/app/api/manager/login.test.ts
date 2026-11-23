@@ -2,7 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { NextRequest } from 'next/server';
 import { POST } from '@/app/api/manager/login/route';
-import { API_BASE_URL } from '@/shared/api/request';
+import { apiBaseUrl } from '@/shared/api/request';
 
 const {cookiesMock} = vi.hoisted(() => ({cookiesMock: vi.fn()}));
 
@@ -84,7 +84,7 @@ describe('POST /api/manager/login', () => {
 
         expect(await response.json()).toEqual({success: true, data: {is_password_change_required: 0}});
         expect(fetchMock).toHaveBeenCalledTimes(1);
-        expect(fetchMock.mock.calls[0][0]).toBe(`${API_BASE_URL}/admin-service/manager/login`);
+        expect(fetchMock.mock.calls[0][0]).toBe(`${apiBaseUrl()}/admin-service/manager/login`);
         expect(fetchMock.mock.calls[0][1].method).toBe('POST');
         expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual(FORM);
         expect(setCall(store, 'manager_access_token')?.[0]).toBe('manager-access');

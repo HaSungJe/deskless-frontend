@@ -1,4 +1,5 @@
 import { ClipLoader } from 'react-spinners';
+import { getPublicEnv } from '@/shared/utils/public-env';
 import styles from '@/shared/css/Loading.module.css';
 
 type LoadingProps = {
@@ -7,14 +8,14 @@ type LoadingProps = {
 }
 
 /**
- * 로딩 표시 — NEXT_PUBLIC_LOADING 이 '1' 일 때만 보인다
+ * 로딩 표시 — NEXT_PUBLIC_LOADING 이 '1' 일 때만 보인다(실행 값 — getPublicEnv)
  *
  * @param param0
  * @returns
  */
 export default function Loading({size = 150, height = 100}: LoadingProps): React.ReactNode {
     // 변수
-    const visible = process.env.NEXT_PUBLIC_LOADING === '1'; // 로딩 표시를 켰는지
+    const visible = getPublicEnv('NEXT_PUBLIC_LOADING') === '1'; // 로딩 표시를 켰는지
 
     if (!visible) {
         return null;

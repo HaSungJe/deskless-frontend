@@ -7,6 +7,7 @@ import { RETURN_URL_KEY, toSamePath } from '@/shared/utils/area';
 import { withBasePath } from '@/shared/utils/base-path';
 import { showErrorPopup } from '@/shared/utils/error-popup';
 import { formatPrice } from '@/shared/utils/format';
+import { getPublicEnv } from '@/shared/utils/public-env';
 import styles from '@/shared/css/payment/TossPaymentWidget.module.css';
 
 /** 그린 위젯(결제수단 · 약관) — destroy() 로 지운다 */
@@ -26,8 +27,12 @@ type TossPaymentWidgetProps = {
     onExpired?: () => void;    // 결제 마감이 지나면
 };
 
-/** 결제위젯 연동 클라이언트 키(빌드 때 박힌다) */
-const TOSS_CLIENT_KEY = process.env.NEXT_PUBLIC_TOSS_CLIENT_KEY ?? '';
+/**
+ * 결제위젯 연동 클라이언트 키 — 실행 값(getPublicEnv — 서버는 요청 때, 브라우저는 루트 layout 이 넘긴 값). 없으면 ''
+ */
+function tossClientKey(): string {
+    return getPublicEnv('NEXT_PUBLIC_TOSS_CLIENT_KEY') ?? '';
+}
 
 /** 사용자가 결제창을 닫음 — 조용히 */
 const USER_CANCEL_CODE = 'USER_CANCEL';
@@ -76,7 +81,7 @@ export default function TossPaymentWidget({payment, returnUrl = null, onExpired}
         // 결제위젯을 불러와 금액 · 결제수단 · 약관을 그린다 — 효과마다 새 자리에 그리고(개발 모드 두 번 실행에도 겹치지 않게), 사라지면 지운다
         const methodsBox = methodsRef.current;
         const agreementBox = agreementRef.current;
-        if (!TOSS_CLIENT_KEY || !methodsBox || !agreementBox) {
+        if (!tossClientKey() || !methodsBox || !agreementBox) {
             return;
         }
 
@@ -144,7 +149,7 @@ export default function TossPaymentWidget({payment, returnUrl = null, onExpired}
         onExpired?.();
     }
 
-    if (!TOSS_CLIENT_KEY) {
+    if (!tossClientKey()) {
         return (
             // 결제 설정 없음
             <p className={styles.notice} role="alert">{PAYMENT_CONFIG_MESSAGE}</p>
@@ -184,7 +189,7 @@ export default function TossPaymentWidget({payment, returnUrl = null, onExpired}
  */
 async function renderWidgets(amount: number, methodsId: string, agreementId: string, rendered: Array<TossRenderedType>): Promise<TossPaymentsWidgets> {
     const {ANONYMOUS, loadTossPayments} = await import('@tosspayments/tosspayments-sdk');
-    const tossPayments = await loadTossPayments(TOSS_CLIENT_KEY);
+    const tossPayments = await loadTossPayments(tossClientKey());
     const widgets = tossPayments.widgets({customerKey: ANONYMOUS});
 
     await widgets.setAmount({currency: 'KRW', value: amount});

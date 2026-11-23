@@ -1,8 +1,14 @@
+import { getPublicEnv } from '@/shared/utils/public-env';
 import { createQueryString } from '@/shared/utils/util';
 import { ValidationErrorType } from '@/shared/utils/validation';
 
-/** 게이트웨이 API 주소 — `${NEXT_PUBLIC_API_URL}/api/v1` (로컬 http://localhost:3000, 내부 3010 · 3020 은 부르지 않는다) */
-export const API_BASE_URL = `${process.env.NEXT_PUBLIC_API_URL ?? ''}/api/v1`;
+/**
+ * 게이트웨이 API 주소 — `${NEXT_PUBLIC_API_URL}/api/v1` (로컬 http://localhost:3000, 내부 3010 · 3020 은 부르지 않는다)
+ * - 공개 값을 실행 때 읽으므로(getPublicEnv) 상수가 아니라 부를 때마다 읽는다
+ */
+export function apiBaseUrl(): string {
+    return `${getPublicEnv('NEXT_PUBLIC_API_URL') ?? ''}/api/v1`;
+}
 
 /** 실패 본문을 읽지 못했을 때(JSON 이 아님) 보여 줄 문구 */
 export const UNREADABLE_FAIL_MESSAGE = '서버 응답을 읽을 수 없습니다.';
@@ -95,13 +101,13 @@ export async function sendRequest(url: string, init: RequestInit): Promise<Respo
 }
 
 /**
- * 요청 주소 — API_BASE_URL + path + query
+ * 요청 주소 — apiBaseUrl() + path + query
  *
  * @param path /api/v1 뒤 경로 ('/' 로 시작). 경로 값은 부르는 쪽이 encodeURIComponent 한다
  * @param query query 값
  */
 export function buildUrl(path: string, query?: Record<string, unknown>): string {
-    return `${API_BASE_URL}${path}${query ? createQueryString(query) : ''}`;
+    return `${apiBaseUrl()}${path}${query ? createQueryString(query) : ''}`;
 }
 
 /**

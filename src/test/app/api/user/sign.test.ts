@@ -2,7 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { NextRequest } from 'next/server';
 import { POST } from '@/app/api/user/sign/route';
-import { API_BASE_URL } from '@/shared/api/request';
+import { apiBaseUrl } from '@/shared/api/request';
 
 const {cookiesMock, getTokenMock} = vi.hoisted(() => ({cookiesMock: vi.fn(), getTokenMock: vi.fn()}));
 
@@ -95,7 +95,7 @@ describe('POST /api/user/sign', () => {
 
         expect(await response.json()).toEqual({success: true, data: {is_phone_verified: 0}});
         expect(fetchMock).toHaveBeenCalledTimes(1);
-        expect(fetchMock.mock.calls[0][0]).toBe(`${API_BASE_URL}/user-service/user/sign`);
+        expect(fetchMock.mock.calls[0][0]).toBe(`${apiBaseUrl()}/user-service/user/sign`);
         expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({sns_id: 'NAVER', sns_user_id: 'aBc-123_xyz', ...FORM});
         expect(store.set.mock.calls.map((call) => call[0])).toEqual(['user_access_token', 'user_refresh_token']);
         expect(store.delete).toHaveBeenCalledWith({name: 'next-auth.session-token', path: '/', secure: false});
@@ -159,7 +159,7 @@ describe('POST /api/user/sign', () => {
 
         expect(await response.json()).toEqual({success: false, message: '처리가 늦어지고 있어요. 잠시 뒤 다시 시도해 주세요.', retry: true});
         expect(fetchMock).toHaveBeenCalledTimes(2);
-        expect(fetchMock.mock.calls[1][0]).toBe(`${API_BASE_URL}/user-service/user/login`);
+        expect(fetchMock.mock.calls[1][0]).toBe(`${apiBaseUrl()}/user-service/user/login`);
         expect(JSON.parse(fetchMock.mock.calls[1][1].body)).toEqual({sns_id: 'KAKAO', sns_user_id: '1234567890'});
         expect(store.set).not.toHaveBeenCalled();
         expect(store.delete).not.toHaveBeenCalled();

@@ -2,7 +2,7 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { NextRequest } from 'next/server';
 import { GET } from '@/app/api/user/sns-login/route';
-import { API_BASE_URL } from '@/shared/api/request';
+import { apiBaseUrl } from '@/shared/api/request';
 
 const {cookiesMock, getTokenMock} = vi.hoisted(() => ({cookiesMock: vi.fn(), getTokenMock: vi.fn()}));
 
@@ -88,7 +88,7 @@ describe('GET /api/user/sns-login', () => {
         expect(response.headers.get('Location')).toBe('/phone-verification/?return_url=%2Fstores%2F1%2F');
         expect(getTokenMock).toHaveBeenCalledWith({req: request, secret: 'test-secret'});
         expect(fetchMock).toHaveBeenCalledTimes(1);
-        expect(fetchMock.mock.calls[0][0]).toBe(`${API_BASE_URL}/user-service/user/login`);
+        expect(fetchMock.mock.calls[0][0]).toBe(`${apiBaseUrl()}/user-service/user/login`);
         expect(JSON.parse(fetchMock.mock.calls[0][1].body)).toEqual({sns_id: 'KAKAO', sns_user_id: '1234567890'});
         expect(store.set.mock.calls.map((call) => call[0])).toEqual(['user_access_token', 'user_refresh_token']);
         expect(store.delete.mock.calls.map((call) => call[0])).toEqual(NEXT_AUTH_COOKIES.map((name) => ({name, path: '/', secure: false})));

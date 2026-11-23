@@ -3,7 +3,7 @@ import { act, fireEvent, render, screen, waitFor } from '@testing-library/react'
 import { useContext } from 'react';
 import UserMeProvider, { UserMeContext } from '@/app/(user)/_components/UserMeProvider';
 import { UserMeResultDto } from '@/contracts/user/dto/user-me.dto';
-import { API_BASE_URL } from '@/shared/api/request';
+import { apiBaseUrl } from '@/shared/api/request';
 import RootLayoutProvider, { AuthContextType } from '@/shared/providers/RootLayoutProvider';
 
 const fetchMock = vi.fn();
@@ -60,7 +60,7 @@ describe('UserMeProvider', () => {
 
         await waitFor(() => expect(screen.getByText('여행하는고양이')).toBeTruthy());
         expect(fetchMock).toHaveBeenCalledTimes(1);
-        expect(fetchMock.mock.calls[0][0]).toBe(`${API_BASE_URL}/user-service/user/me`);
+        expect(fetchMock.mock.calls[0][0]).toBe(`${apiBaseUrl()}/user-service/user/me`);
         expect(fetchMock.mock.calls[0][1].headers.Authorization).toBe('Bearer tok');
     });
 
