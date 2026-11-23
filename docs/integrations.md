@@ -12,7 +12,8 @@
 
 ## 지도 · 주소
 
-- 카카오 SDK 는 `loadKakaoMap()` 하나로 붙인다 — `autoload=false&libraries=services`(지도 · 지오코더가 같은 스크립트). 키 `NEXT_PUBLIC_DAUM_MAP_API_KEY`(실행 값 — `getPublicEnv`), 카카오 디벨로퍼스에 사이트 도메인 등록.
+- 카카오 SDK 는 `loadKakaoMap()` 하나로 붙인다 — `autoload=false&libraries=services`(지도 · 지오코더가 같은 스크립트). 키 `NEXT_PUBLIC_DAUM_MAP_API_KEY`(실행 값 — `getPublicEnv`) — JavaScript 키.
+  - 화면을 띄우는 주소마다 카카오 디벨로퍼스 `[앱] > [플랫폼 키] > [JavaScript 키]` 의 **JavaScript SDK 도메인**에 등록한다 — 프로토콜 · 포트까지 그대로(로컬 `http://localhost:5000`, 쿠버네티스 `http://localhost:15000`, 운영 도메인). `[제품 링크 관리] > [웹 도메인]`(카카오톡 공유용)은 지도가 보지 않는다. 빠지면 sdk.js 가 401 `domain mismatched! caller=<주소>` → 콘솔에 "카카오 지도 스크립트를 불러오지 못했습니다."
 - `StoreMap` — `center` · `markers`(`{id, latitude, longitude, title, label?, muted?}`) · `level` · `radiusKm?` · `myLocation?` · `locked?` · `onIdle(center)` · `onMarkerClick(id)`.
   - `idle` 은 처음 그릴 때 · `center` 로 옮겼을 때 · 반경에 맞춰 확대했을 때 · 사용자가 움직이고 멈췄을 때 온다 → 화면은 `onIdle` 에서만 조회한다. `onIdle` 값을 `center` 로 되돌려 넣지 않는다.
   - 핀은 시안 모양의 `CustomOverlay`(기본 마커 아님) — 위에 이름표(`label`, 길면 말줄임), `muted` 면 회색(지금 영업 안 함). 글자는 `textContent` 로만 넣는다(업체 이름이 HTML 로 읽히지 않게). `onMarkerClick` 이 있으면 버튼(탭 순서에서는 뺀다 — 같은 업체로 가는 목록 링크가 키보드 길), 없으면 `span`(U2 위치). 핀은 내용(id · 좌표 · 회색 · 이름표) 키가 바뀔 때만 다시 찍는다 — `markers` 배열이 새로 만들어져도 그대로.
