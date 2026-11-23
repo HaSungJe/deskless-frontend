@@ -3,7 +3,7 @@
 deskless(서비스 이름 바로방) 이용자 · 업체 관리자 · 관리자 화면. 규칙의 근거는 `경로:줄`(측정), `(선택: 사용자)`, `(표준: Next.js 권장)`, `(지침서: frontend/…)` 로 표시한다.
 
 ## ⚠️ 주의사항
-- `npm run dev` · `npm run build` · `npm run start` · `npm run lint`, `docker compose` 는 **사용자만 실행** (Claude 실행 금지) (선택: 사용자).
+- `npm run dev` · `npm run build` · `npm run start` · `npm run lint`, `docker compose`(`npm run docker:up` · `docker:down`) 는 **사용자만 실행** (Claude 실행 금지) (선택: 사용자).
 - 테스트(`npx vitest run`, `/beaver:test`)와 타입 체크(`npx next typegen && npx tsc --noEmit`)는 Claude 가 실행해도 된다 (선택: 사용자).
 - `.env*` 파일은 읽거나 커밋하지 않는다 — 변수 목록은 [.env.example](.env.example) (`.gitignore`).
 

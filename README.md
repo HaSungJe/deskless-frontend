@@ -18,8 +18,10 @@ npm run dev                  # http://localhost:5000
 
 ```bash
 cp .env.example .env.production   # 운영 값 채우기
-docker compose up -d --build      # http://localhost:5000
+npm run docker:up                 # 빌드 + 올리기(docker compose up -d --build) — http://localhost:5000
+npm run docker:down               # 내리기(docker compose down — 백엔드 모니터링 망은 그대로)
 ```
 
-- `NEXT_PUBLIC_*` 값은 빌드할 때 코드에 박힌다 — 바꾸면 `--build` 로 다시 빌드한다.
+- `NEXT_PUBLIC_*` 값은 빌드할 때 코드에 박힌다 — `docker:up` 이 매번 다시 빌드한다.
+- 백엔드 모니터링 망(`deskless-monitoring`)이 있어야 뜬다 — 백엔드 묶음(`npm run docker:up`)을 먼저 한 번 띄운 서버에서 실행한다.
 - 로그 확인: `docker compose logs -f web`
