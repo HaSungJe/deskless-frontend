@@ -3,11 +3,15 @@ import { createQueryString } from '@/shared/utils/util';
 import { ValidationErrorType } from '@/shared/utils/validation';
 
 /**
- * 게이트웨이 API 주소 — `${NEXT_PUBLIC_API_URL}/api/v1` (로컬 http://localhost:3000, 내부 3010 · 3020 은 부르지 않는다)
- * - 공개 값을 실행 때 읽으므로(getPublicEnv) 상수가 아니라 부를 때마다 읽는다
+ * 게이트웨이 API 주소 — `${게이트웨이}/api/v1` (로컬 http://localhost:3000, 내부 3010 · 3020 은 부르지 않는다)
+ * - 서버(route handler · 서버 컴포넌트)는 `API_INTERNAL_URL` 이 있으면 그 주소(쿠버네티스 — 파드 안에서 닿는 http://gateway:3000), 없으면 공개 주소
+ * - 브라우저는 늘 공개 주소 `NEXT_PUBLIC_API_URL`(서버 전용 값은 브라우저로 넘기지 않는다 — frontend/changes/2026-11-24-api-internal-url.md)
+ * - 실행 때 읽으므로(getPublicEnv) 상수가 아니라 부를 때마다 읽는다. 끝의 `/` 는 뗀다
  */
 export function apiBaseUrl(): string {
-    return `${getPublicEnv('NEXT_PUBLIC_API_URL') ?? ''}/api/v1`;
+    const internal = typeof window === 'undefined' ? process.env.API_INTERNAL_URL : undefined; // 서버에서만 — 파드 안 게이트웨이 주소
+    const gateway = internal || getPublicEnv('NEXT_PUBLIC_API_URL') || '';
+    return `${gateway.replace(/\/+$/, '')}/api/v1`;
 }
 
 /** 실패 본문을 읽지 못했을 때(JSON 이 아님) 보여 줄 문구 */

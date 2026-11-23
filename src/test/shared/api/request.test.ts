@@ -1,6 +1,7 @@
 // @vitest-environment node
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { apiBaseUrl, ApiError, NetworkError, request, UNREADABLE_FAIL_MESSAGE } from '@/shared/api/request';
+import { applyPublicEnv } from '@/shared/utils/public-env';
 
 const fetchMock = vi.fn();
 
@@ -29,6 +30,31 @@ beforeEach(() => {
 
 afterEach(() => {
     vi.unstubAllGlobals();
+    vi.unstubAllEnvs();
+});
+
+describe('apiBaseUrl — 게이트웨이 주소 고르기', () => {
+    it('[SUCCESS] 서버에서 API_INTERNAL_URL 이 있으면 그 주소(파드 안 게이트웨이) — 끝의 / 는 뗀다', () => {
+        vi.stubEnv('NEXT_PUBLIC_API_URL', 'http://localhost:13000');
+        vi.stubEnv('API_INTERNAL_URL', 'http://gateway:3000/');
+
+        expect(apiBaseUrl()).toBe('http://gateway:3000/api/v1');
+    });
+
+    it('[SUCCESS] 서버에서 API_INTERNAL_URL 이 비었으면 공개 주소(로컬 npm run dev 는 그대로)', () => {
+        vi.stubEnv('NEXT_PUBLIC_API_URL', 'http://localhost:3000');
+        vi.stubEnv('API_INTERNAL_URL', '');
+
+        expect(apiBaseUrl()).toBe('http://localhost:3000/api/v1');
+    });
+
+    it('[FAIL:browser] 브라우저는 API_INTERNAL_URL 이 있어도 공개 주소만(서버 전용 값을 쓰지 않는다)', () => {
+        vi.stubGlobal('window', {});
+        vi.stubEnv('API_INTERNAL_URL', 'http://gateway:3000');
+        applyPublicEnv({NEXT_PUBLIC_API_URL: 'http://localhost:13000'});
+
+        expect(apiBaseUrl()).toBe('http://localhost:13000/api/v1');
+    });
 });
 
 describe('request', () => {

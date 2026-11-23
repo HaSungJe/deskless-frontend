@@ -2,7 +2,7 @@
 # 운영 이미지 — deskless(쿠버네티스 · Helm 차트)가 이 파일로 빌드해 띄운다 (Node 24.22.3 — 로컬 .nvmrc · package.json engines 와 같은 버전)
 # 환경변수
 #  - 빌드: .env.production 을 BuildKit secret(dotenv)으로 잠깐 붙여 next build 가 읽는다 — 빌드에 남는 값은 basePath · 이미지 호스트뿐(공개 값 NEXT_PUBLIC_* 는 실행 때 읽어 이미지 하나로 모든 환경)
-#  - 실행: deskless 차트가 넣는다(서버에서만 쓰는 값 · METRICS_PORT · METRICS_HOST) — 이미지 안에 .env 는 남지 않는다
+#  - 실행: deskless 차트가 넣는다(공개 값 · 서버에서만 쓰는 값 · API_INTERNAL_URL · METRICS_PORT · METRICS_HOST) — 이미지 안에 .env 는 남지 않는다
 
 FROM node:24.22.3-alpine AS base
 
