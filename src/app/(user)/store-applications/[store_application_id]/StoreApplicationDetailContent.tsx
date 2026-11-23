@@ -227,7 +227,7 @@ export default function StoreApplicationDetailContent({applicationId}: StoreAppl
                     {/* ② 상태 띠 — 대기 · 사업자등록증 없음 / 반려 사유 / 승인 */}
                     {editable && licenses.length === 0 ? <Band tone="warn" title="사업자등록증 사진이 아직 없어요.">사진이 있어야 관리자가 승인할 수 있어요.</Band> : null}
                     {state === STORE_APPLICATION_STATE.REJECTED ? <Band tone="danger" title="반려된 신청이에요">{detail.reject_comment ?? '반려 사유가 없어요.'}</Band> : null}
-                    {detail.store_code ? <Band tone="ok" title="입점이 승인되었어요.">아래 "로그인 주소 복사"로 업체 관리자 콘솔 주소를 받을 수 있어요.</Band> : null}
+                    {detail.store_code ? <Band tone="ok" title="입점이 승인되었어요.">아래 “로그인 주소 복사”로 업체 관리자 콘솔 주소를 받을 수 있어요.</Band> : null}
 
                     <div className={pageStyles.body}>
                         {/* ② 업체 관리자 콘솔(승인) */}
