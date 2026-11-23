@@ -3,7 +3,7 @@
 deskless(서비스 이름 바로방) 이용자 · 업체 관리자 · 관리자 화면. 규칙의 근거는 `경로:줄`(측정), `(선택: 사용자)`, `(표준: Next.js 권장)`, `(지침서: frontend/…)` 로 표시한다.
 
 ## ⚠️ 주의사항
-- `npm run dev` · `npm run build` · `npm run start` · `npm run lint`, `docker compose`(`npm run docker:up` · `docker:down`) 는 **사용자만 실행** (Claude 실행 금지) (선택: 사용자).
+- `npm run dev` · `npm run build` · `npm run start` · `npm run lint` 는 **사용자만 실행** (Claude 실행 금지) (선택: 사용자). 이미지 빌드 · 배포는 deskless 저장소(쿠버네티스)가 맡는다 — 이 저장소에는 compose 가 없다.
 - 테스트(`npx vitest run`, `/beaver:test`)와 타입 체크(`npx next typegen && npx tsc --noEmit`)는 Claude 가 실행해도 된다 (선택: 사용자).
 - `.env*` 파일은 읽거나 커밋하지 않는다 — 변수 목록은 [.env.example](.env.example) (`.gitignore`).
 
@@ -111,7 +111,7 @@ src/
 ## Key Patterns
 - `window` 를 쓰는 라이브러리는 `next/dynamic` + `ssr: false` 로 감싼다 (`src/shared/components/Editor.tsx:6`, `chart/Chart.tsx:5`).
 - 외부 스크립트는 id 로 한 번만 붙이고 Promise 로 로드를 기다린다 (`src/shared/utils/kakao-map.ts:15`, `src/shared/utils/address.ts:35`). npm 으로 들인 SDK(토스)는 효과 안에서 `import()` (`src/shared/components/payment/TossPaymentWidget.tsx`).
-- `NEXT_PUBLIC_*` · `basePath` 는 빌드할 때 박힌다. Docker 운영 이미지는 `output: "standalone"` (`next.config.ts:34`) + `.env.production` 하나로 빌드 · 실행.
+- `NEXT_PUBLIC_*` · `basePath` 는 빌드할 때 박힌다. 운영 이미지는 `output: "standalone"` (`next.config.ts:34`) — 빌드 때 `.env.production` 을 빌드 secret(`dotenv`)으로 붙이고, 실행 env 는 deskless 차트(Secret)가 넣는다. 배포(인스턴스 수 · 포트 노출 · 네트워크 · 지표 수집 · 프로브)는 deskless 저장소(쿠버네티스)가 맡고, 이 저장소는 앱 코드 + `Dockerfile` 만. 지표 · 헬스 체크는 전용 포트 서버 `src/metrics-server.ts`(`/metrics` · `/health/live` · `/health/ready` — 쿠버네티스 9464 · 로컬 9468, Next.js 라우트로 열지 않는다).
 - basePath(하위 경로 배포)는 `<Link>` · router · `redirect()` 만 Next 가 붙인다 — route handler `fetch` · next-auth 주소(callbackUrl · `pages` · 로그인 화면 `SessionProvider basePath`) · 메타데이터 주소 · 직접 만든 `Location` · 밖에서 돌아올 주소는 `withBasePath(path)`, 문서를 새로 여는 이동(로그아웃 뒤)은 `replaceDocument(path)` (`src/shared/utils/base-path.ts`). basePath 를 쓰면 `NEXTAUTH_URL` 도 `<origin><basePath>/api/auth` 까지(.env.example).
 - 주소가 있어야 하는 팝업은 경로 모달 — 루트 슬롯 `src/app/@modal/(.)<주소>/page.tsx` 에서 `<RouteModal>` 로 감싸고, 같은 주소의 보통 페이지도 둔다. 화면 내용은 보통 페이지 폴더에 두고 가로채기 page 가 `@/app/<영역 경로>/<주소>/<화면>Content` 로 가져온다. 주소가 필요 없는 확인 · 사유 입력은 `ConfirmModal` · `ReasonModal`. → [docs/architecture.md](docs/architecture.md) "경로 모달"
 

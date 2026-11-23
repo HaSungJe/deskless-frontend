@@ -14,14 +14,10 @@ npm install
 npm run dev                  # http://localhost:5000
 ```
 
-## Docker (운영)
+## 배포
 
-```bash
-cp .env.example .env.production   # 운영 값 채우기
-npm run docker:up                 # 빌드 + 올리기(docker compose up -d --build) — http://localhost:5000
-npm run docker:down               # 내리기(docker compose down — 백엔드 모니터링 망은 그대로)
-```
+배포는 deskless 저장소(쿠버네티스 — k3s · Helm 차트)가 맡는다. 이 저장소는 앱 코드와 `Dockerfile` 만 갖고(compose 없음), deskless 가 이 `Dockerfile` 로 이미지를 빌드해 띄운다.
 
-- `NEXT_PUBLIC_*` 값은 빌드할 때 코드에 박힌다 — `docker:up` 이 매번 다시 빌드한다.
-- 백엔드 모니터링 망(`deskless-monitoring`)이 있어야 뜬다 — 백엔드 묶음(`npm run docker:up`)을 먼저 한 번 띄운 서버에서 실행한다.
-- 로그 확인: `docker compose logs -f web`
+- 빌드: `.env.production` 을 빌드 secret `dotenv` 로 넘긴다 — `NEXT_PUBLIC_*` · basePath · 이미지 호스트가 빌드할 때 코드에 박히므로 환경마다 이미지를 따로 빌드한다.
+- 실행: 서버 env(시크릿 · `METRICS_PORT` · `METRICS_HOST`)는 deskless 차트가 넣는다. 앱 포트 5000.
+- 지표 · 헬스 체크: 전용 포트(쿠버네티스 9464 · 로컬 9468)의 `/metrics` · `/health/live` · `/health/ready` — 공개 주소로는 열지 않고, 수집 · 프로브는 deskless 가 한다.

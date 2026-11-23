@@ -5,14 +5,13 @@ npm-debug.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# 환경변수는 BuildKit secret · env_file 로만 넘긴다
+# 환경변수는 빌드 secret(dotenv) · 실행 환경(deskless 차트)으로만 넘긴다
 .env*
 
 # 이미지에 필요 없는 것
 frontend
 *.md
 Dockerfile
-docker-compose.yml
 .dockerignore
 .claude
 .vscode

@@ -91,16 +91,16 @@ src/contracts/<도메인>/api.ts                      (처음 쓰는 API 면) �
 ### Boundary / Environment
 - **서버 전용**: `cookies()` · `headers()`(`next/headers`), `getToken`(`next-auth/jwt` — SNS 세션), SNS · 결제 시크릿은 route handler 에서만 (`src/app/api/cookie/token-cookie.ts:1`, `src/app/api/auth/[...nextauth]/route.ts`). 클라이언트 코드는 `src/shared/api/cookie.ts` 로 route handler 를 거친다.
 - **`NEXT_PUBLIC_*`** 는 빌드할 때 서버 · 클라이언트 번들에 박힌다. 시크릿(`NEXTAUTH_SECRET` · `TOSS_SECRET_KEY`)에는 `NEXT_PUBLIC_` 을 붙이지 않는다 — 붙이면 브라우저 번들에 들어간다.
-- **환경 파일**: 로컬 개발 `.env.local`(`npm run dev`, 5000 포트 — `package.json:6`), Docker 운영 `.env.production`. 목록 · 빌드/실행 시점 구분은 [.env.example](../.env.example).
+- **환경 파일**: 로컬 개발 `.env.local`(`npm run dev`, 5000 포트 — `package.json:6`), 운영 이미지 빌드 `.env.production`(deskless 가 빌드 secret `dotenv` 로 넘긴다), 운영 실행 env 는 deskless 차트. 목록 · 빌드/실행 시점 구분은 [.env.example](../.env.example).
 - **로컬 포트** (백엔드 안내 2026-11-15):
   - 프론트 `http://localhost:5000` — 이용자 `/` · 업체 관리자 `/manager` · 관리자 `/admin` 이 한 서버.
   - 백엔드 게이트웨이 `http://localhost:3000` — **프론트는 이 주소만 부른다**(`NEXT_PUBLIC_API_URL`). API `/api/v1/...`, 문서 Swagger `/swagger`, 사진 `/sample/...`(테스트 데이터) · `/files/...`(S3 없는 서버에 올린 사진).
   - 이용자 서비스 3010 · 관리자 서비스 3020 은 백엔드 내부용 — 프론트가 직접 부르지 않는다.
   - 백엔드 CORS 는 `http://localhost:5000` 을 허용하도록 맞춰져 있다 — 프론트를 다른 포트로 띄우면 브라우저 호출이 막힐 수 있다.
   - `next/image` 는 `localhost:3000` 사진을 허용해 둔다(`next.config.ts:11-16`, 포트는 `NEXT_IMAGE_PORT`).
-- **Docker = 운영**: `output: "standalone"` (`next.config.ts:34`). 빌드 때 BuildKit secret 으로 `.env.production` 을 붙이고(`Dockerfile:22`), 실행 때 `env_file` (`docker-compose.yml`). 이미지 안에 `.env` 는 남지 않는다.
-- **모니터링**: compose 서비스 이름은 `web`(백엔드 Prometheus job · 지표 `service` 라벨과 같다). 서버가 뜰 때 `src/instrumentation.ts` 가 Node 런타임에서만 `src/metrics-server.ts` 의 지표 서버(`GET /metrics` — prom-client 기본 지표 + `nodejs_eventloop_time_seconds{state}`)를 연다 — 전용 포트(Docker 9464 · 로컬 9468)로만, Next.js 라우트로 열지 않는다. 모니터링 내부망 `deskless-monitoring`(external — 백엔드가 만든다)에 붙어 있어 그 망이 없는 PC 에서는 compose 가 뜨지 않는다 (지침서: frontend/changes/2026-11-22-monitoring-web.md).
-- **basePath**: `NEXT_PUBLIC_LOCAL_SERVER_PREFIX` (`next.config.ts:41`) — Nginx 하위 경로 배포용. Next 가 붙이는 곳은 `<Link>` · router · `redirect()` 뿐이고, 나머지 앱 안 주소는 `withBasePath` (`src/shared/utils/base-path.ts`)로 붙인다:
+- **Docker 이미지 = 운영**: `output: "standalone"` (`next.config.ts:34`). 빌드 때 BuildKit secret(`dotenv`)으로 `.env.production` 을 붙이고(`Dockerfile:22`), 실행 env 는 deskless 차트(Secret)가 넣는다. 이미지 안에 `.env` 는 남지 않는다. 이미지 빌드 · 배포(인스턴스 수 · 포트 노출 · 네트워크 · 지표 수집 · 프로브)는 deskless 저장소(쿠버네티스 — k3s · Helm)가 맡는다 — 이 저장소에는 compose 가 없다 (지침서: frontend/changes/2026-11-23-k8s-cleanup.md).
+- **지표 · 헬스 체크**: 서버가 뜰 때 `src/instrumentation.ts` 가 Node 런타임에서만 `src/metrics-server.ts` 의 전용 포트 서버(쿠버네티스 9464 · 로컬 9468)를 연다 — `GET /metrics`(prom-client 기본 지표 + `nodejs_eventloop_time_seconds{state}`, 모든 지표에 `service="web"` — deskless 의 수집 대상 이름) · `GET /health/live`(늘 200) · `GET /health/ready`(`register()` 가 끝난 뒤 200, 그 전 503 — 백엔드 API 는 보지 않는다, 종료 때 503 전환은 두지 않고 종료 전 대기는 deskless 차트). Next.js 라우트로 열지 않는다(공개 주소에 노출). 수집 · 프로브는 deskless (지침서: frontend/changes/2026-11-22-monitoring-web.md · 2026-11-23-k8s-cleanup.md).
+- **basePath**: `NEXT_PUBLIC_LOCAL_SERVER_PREFIX` (`next.config.ts:41`) — 하위 경로 배포용(deskless Ingress). Next 가 붙이는 곳은 `<Link>` · router · `redirect()` 뿐이고, 나머지 앱 안 주소는 `withBasePath` (`src/shared/utils/base-path.ts`)로 붙인다:
   - route handler `fetch` — `src/shared/api/cookie.ts` · `payment.ts`, `src/contracts/user/api.ts`(`signWithSns`).
   - next-auth — callbackUrl(`src/app/(user)/login/login-flow.ts` `snsLoginCallbackUrl`), `pages.signIn` · `pages.error`(`src/app/api/auth/[...nextauth]/route.ts`), 클라이언트 `signIn` 의 API 주소(로그인 화면 `SessionProvider basePath` — `session={null}` 이라 세션은 부르지 않는다). 서버 쪽은 `NEXTAUTH_URL` 을 `<origin><basePath>/api/auth` 까지 적는다.
   - 메타데이터 주소(`src/app/layout.tsx` 아이콘 · og 이미지), 직접 만든 `Location`(`src/app/api/user/sns-login/route.ts`), 토스 결제창이 돌아올 주소(`TossPaymentWidget`).

@@ -1,8 +1,8 @@
 # syntax=docker/dockerfile:1
-# 운영 이미지 — npm run docker:up(docker compose up -d --build) · 내리기 npm run docker:down (Node 24.22.3 — 로컬 .nvmrc · package.json engines 와 같은 버전)
-# 환경변수는 .env.production 하나로 관리한다
-#  - 빌드: BuildKit secret 으로 잠깐 붙여 next build 가 읽는다(NEXT_PUBLIC_* · basePath · 이미지 호스트는 빌드할 때 코드에 박힌다)
-#  - 실행: docker-compose.yml 의 env_file 로 넘긴다(서버에서만 쓰는 값)
+# 운영 이미지 — deskless(쿠버네티스 · Helm 차트)가 이 파일로 빌드해 띄운다 (Node 24.22.3 — 로컬 .nvmrc · package.json engines 와 같은 버전)
+# 환경변수
+#  - 빌드: .env.production 을 BuildKit secret(dotenv)으로 잠깐 붙여 next build 가 읽는다(NEXT_PUBLIC_* · basePath · 이미지 호스트는 빌드할 때 코드에 박힌다)
+#  - 실행: deskless 차트가 넣는다(서버에서만 쓰는 값 · METRICS_PORT · METRICS_HOST) — 이미지 안에 .env 는 남지 않는다
 
 FROM node:24.22.3-alpine AS base
 
