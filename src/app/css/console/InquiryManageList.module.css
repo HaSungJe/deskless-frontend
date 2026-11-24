@@ -1,0 +1,33 @@
+/* 문의 관리 목록(업체 관리자 · 관리자 같은 화면) — 머리 · 표 칸은 관리자 목록(AdminList)과 같은 값 */
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+}
+
+.title {
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.subtitle {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* 표 */
+.number {
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+/* 제목 칸 — 길면 말줄임 */
+.titleCell {
+    max-width: 360px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}

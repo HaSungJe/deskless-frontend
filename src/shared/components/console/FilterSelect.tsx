@@ -1,7 +1,7 @@
 'use client';
 import Select from '@/shared/components/ui/form/Select';
 import { FilterOptionType } from './FilterChips';
-import styles from '@/app/css/admin/ListFilter.module.css';
+import styles from '@/shared/css/console/ListFilter.module.css';
 
 type FilterSelectProps = {
     id: string;                               // 고르기 상자 id — 앞 글자가 가리킨다
@@ -12,7 +12,7 @@ type FilterSelectProps = {
 };
 
 /**
- * 관리자 목록 고르기 상자 — 앞 글자 · 고르기(업체 · SNS). 전체는 빈 값 option
+ * 콘솔 목록 고르기 상자 — 앞 글자 · 고르기(업체 · SNS · 카테고리). 전체는 빈 값 option
  *
  * @param param0
  * @returns

@@ -1,6 +1,6 @@
 'use client';
 import Chip from '@/shared/components/ui/form/Chip';
-import styles from '@/app/css/admin/ListFilter.module.css';
+import styles from '@/shared/css/console/ListFilter.module.css';
 
 /** 거르기 값 하나 — 값(null 이 전체) · 이름 */
 export type FilterOptionType = {
@@ -17,7 +17,7 @@ type FilterChipsProps = {
 };
 
 /**
- * 관리자 목록 칩 묶음 — 앞 글자 · 칩(시안 목록 위 줄)
+ * 콘솔 목록 칩 묶음 — 앞 글자 · 칩(시안 목록 위 줄)
  *
  * @param param0
  * @returns

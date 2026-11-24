@@ -52,7 +52,7 @@ describe('ManagerConsoleLayoutContent', () => {
         expect(top.getByText('업체 총관리자')).toBeTruthy();
         expect(top.getByRole('link', {name: '비밀번호 변경'}).getAttribute('href')).toBe('/manager/password/');
         const menu = within(screen.getByRole('navigation'));
-        expect(menu.getAllByRole('link').map((link) => link.textContent)).toEqual(['대시보드', '예약 현황', '호실', '객실 그룹', '상품 설정', '내 업체 설정', '업체 관리자']);
+        expect(menu.getAllByRole('link').map((link) => link.textContent)).toEqual(['대시보드', '예약 현황', '문의', '호실', '객실 그룹', '상품 설정', '내 업체 설정', '업체 관리자']);
         expect(menu.getByRole('link', {name: '대시보드'}).getAttribute('aria-current')).toBe('page');
         expect(screen.getByText('대시보드 자리')).toBeTruthy();
 

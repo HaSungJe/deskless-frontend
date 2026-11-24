@@ -1,0 +1,39 @@
+/* 내 문의 상세 — 시안 없음(요청서 — 화면 배치는 프론트), 카드 · dl 은 UserPage 공통 */
+.head {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.category {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+.title {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+/* 줄바꿈 그대로 */
+.content {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.answeredAt {
+    font-size: 13px;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}
+
+.muted {
+    margin: 0;
+    font-size: 14px;
+    color: var(--muted);
+}

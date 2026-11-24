@@ -1,0 +1,85 @@
+/* 문의하기 — 시안 없음(요청서 — 화면 배치는 프론트), 구역은 입점 신청 작성과 같은 값 */
+.body {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    padding: 16px;
+    background: var(--surface);
+}
+
+.sectionTitle {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+/* 카테고리 칩 — 줄바꿈 */
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+/* 동의 체크 · 내용 보기 한 줄 */
+.consent {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+}
+
+.check {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 15px;
+}
+
+.check > input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary);
+}
+
+.consentToggle {
+    flex-shrink: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--primary);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.consentItems {
+    display: grid;
+    gap: 6px;
+    margin: 0;
+    padding: 12px;
+    border-radius: var(--radius);
+    background: var(--surface-2);
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.consentItems > div {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr);
+    gap: 8px;
+}
+
+.consentItems dt {
+    color: var(--muted);
+}
+
+.consentItems dd {
+    margin: 0;
+}

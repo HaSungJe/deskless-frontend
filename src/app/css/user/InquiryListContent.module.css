@@ -1,0 +1,51 @@
+/* 내 문의 목록 — 시안 없음(요청서 — 화면 배치는 프론트), 칩 줄은 내 예약 · 카드는 입점 신청 목록과 같은 값 */
+.chips {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+}
+
+.chips > * {
+    flex-shrink: 0;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 16px;
+    border-radius: var(--radius-lg);
+    background: var(--surface);
+    box-shadow: var(--shadow);
+    color: var(--fg);
+    text-decoration: none;
+}
+
+.head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.title {
+    overflow: hidden;
+    min-width: 0;
+    font-size: 16px;
+    font-weight: 700;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.meta {
+    font-size: 14px;
+    color: var(--fg);
+}
+
+.date {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+    font-variant-numeric: tabular-nums;
+}

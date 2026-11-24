@@ -3,6 +3,7 @@ import { DiscoveryRoomGroupDetailFilterListResultDto } from './dto/discovery-roo
 import { DiscoveryRoomGroupListResultDto } from './dto/discovery-room-group-list.dto';
 import { DiscoveryStoreDetailResultDto } from './dto/discovery-store-detail.dto';
 import { DiscoveryStoreListDto, DiscoveryStoreListResultDto } from './dto/discovery-store-list.dto';
+import { DiscoveryStoreSearchDto, DiscoveryStoreSearchResultDto } from './dto/discovery-store-search.dto';
 
 /**
  * 반경 업체 조회 — 동기 · 공개 (GET /user-service/discovery/store) — 반경 ALL 은 거리 제한 없이 가까운 순 300개, 추가정보 필터는 고른 조건을 모두 갖춘 객실 그룹이 있는 업체만(frontend/changes/2026-11-22-discovery-filter.md)
@@ -45,4 +46,14 @@ export function getStoreDetail(store_id: string, signal?: AbortSignal): Promise<
  */
 export function getStoreRoomGroups(store_id: string, signal?: AbortSignal): Promise<DiscoveryRoomGroupListResultDto | null> {
     return request<DiscoveryRoomGroupListResultDto>({path: `/user-service/discovery/store/${encodeURIComponent(store_id)}/room-group`, signal});
+}
+
+/**
+ * 업체 이름 검색 — 동기 · 공개 (GET /user-service/discovery/store-search) — 문의할 업체 고르기, 상호명 부분 일치 · 영업 중 · 영업중지 업체 상호명 순 최대 20건(frontend/changes/2026-11-24-inquiry.md)
+ *
+ * @param query 검색어(50자까지)
+ * @param signal 화면을 떠날 때 취소
+ */
+export function searchStores(query: DiscoveryStoreSearchDto, signal?: AbortSignal): Promise<DiscoveryStoreSearchResultDto | null> {
+    return request<DiscoveryStoreSearchResultDto>({path: '/user-service/discovery/store-search', query: {keyword: query.keyword}, signal});
 }

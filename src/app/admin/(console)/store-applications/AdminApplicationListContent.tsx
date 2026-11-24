@@ -6,6 +6,7 @@ import { applicationStateTone, STORE_APPLICATION_STATE } from '@/contracts/commo
 import { getStoreApplications } from '@/contracts/store/api';
 import { StoreApplicationListDto, StoreApplicationListResultDto } from '@/contracts/store/dto/store-application-list.dto';
 import { handleApiError } from '@/shared/api/error';
+import ListFilter, { FIRST_LIST_QUERY, ListQueryType } from '@/shared/components/console/ListFilter';
 import Badge from '@/shared/components/ui/display/Badge';
 import EmptyState from '@/shared/components/ui/display/EmptyState';
 import Table from '@/shared/components/ui/display/Table';
@@ -14,7 +15,6 @@ import { AuthContext } from '@/shared/providers/RootLayoutProvider';
 import { formatBusinessNumber, toKst } from '@/shared/utils/format';
 import { listNumber } from '@/shared/utils/util';
 import { applicationPath, storePath } from '../admin-paths';
-import ListFilter, { FIRST_LIST_QUERY, ListQueryType } from '../_components/ListFilter';
 import styles from '@/app/css/admin/AdminList.module.css';
 
 /** 한 쪽 개수 */

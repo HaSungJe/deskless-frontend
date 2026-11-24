@@ -10,6 +10,9 @@ export const MANAGER_LIST_PATH = '/admin/managers/';
 /** 이용자 목록 */
 export const USER_LIST_PATH = '/admin/users/';
 
+/** 바로방 문의 목록 */
+export const INQUIRY_LIST_PATH = '/admin/inquiries/';
+
 /**
  * 입점 신청 상세
  *

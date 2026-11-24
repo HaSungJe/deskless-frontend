@@ -44,7 +44,7 @@ describe('AdminConsoleLayoutContent', () => {
         expect(passwordLink.getAttribute('href')).toBe('/admin/password/');
         expect(passwordLink.getAttribute('aria-current')).toBeNull();
         const menu = within(screen.getByRole('navigation'));
-        expect(menu.getAllByRole('link').map((link) => link.textContent)).toEqual(['대시보드', '입점 신청', '업체', '업체 관리자', '이용자']);
+        expect(menu.getAllByRole('link').map((link) => link.textContent)).toEqual(['대시보드', '입점 신청', '업체', '업체 관리자', '이용자', '문의']);
         expect(menu.getByRole('link', {name: '대시보드'}).getAttribute('aria-current')).toBe('page');
         expect(screen.getByText('대시보드 자리')).toBeTruthy();
 

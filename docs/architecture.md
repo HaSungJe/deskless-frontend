@@ -10,7 +10,7 @@ src/
 │  ├─ layout.tsx                     루트 html · metadata · 글꼴 · css/globals.css · RootLayoutContent · modal 슬롯
 │  ├─ css/                           css 모음 (주소가 되지 않음 — page.tsx 없음)
 │  │  ├─ globals.css                 디자인 토큰(색 한 벌 · 영역별 크기) · 기본 스타일
-│  │  └─ <영역>/                      화면 css — <화면>Content.module.css (user · manager · admin · dev)
+│  │  └─ <영역>/                      화면 css — <화면>Content.module.css (user · manager · admin · console(두 콘솔 공통 화면) · dev)
 │  ├─ RootLayoutContent.tsx          ('use client') 영역 판별 · 그 영역 토큰 확인 + Provider + TopLoader + ErrorPopup
 │  ├─ @modal/                        경로 모달 슬롯(루트 하나) — default · [...catchAll] · (.)<주소>/page.tsx
 │  ├─ dev/ui/                        개발 전용 — /dev/ui 공통 UI 미리보기 · UiPreviewContent.tsx (운영 404)
@@ -18,22 +18,24 @@ src/
 │  │  ├─ layout.tsx · UserLayoutContent.tsx  이용자 틀(모바일 폭 · 하단 탭 · 내 정보 Context)
 │  │  ├─ _components/                UserMeProvider · UserTopBar(이전 화면 · 바로방 · 지나온 화면 › 지금 화면) · UserBackButton · UserHistoryProvider(referrer · 이동 → canGoBack) · user-history.ts(UserHistoryContext · canGoHistoryBack) · UserTabBar · MemberStateBand
 │  │  ├─ page.tsx · HomeContent.tsx  U1 `/`
-│  │  └─ login/ · signup/ · phone-verification/ · find-login-id/  U5
+│  │  ├─ login/ · signup/ · phone-verification/ · find-login-id/  U5
+│  │  └─ inquiries/                 문의(screens.md 밖) — 내 문의 목록 · new/(문의하기 · _components/ StorePicker · StoreMapModal) · [inquiry_id]/ · inquiry-format.ts(주소 · 문의 대상 이름)
 │  ├─ manager/                       업체 관리자 `/manager` · PC 콘솔 — layout.tsx(data-area="console") · manager-auth.ts(업체코드 쿠키 · 업체 로그인 주소 · 권한 배지)
 │  │  ├─ [store_code]/login · find-login-id · password-reset   M1 업체별 로그인 · 아이디 찾기 · 비밀번호 초기화(로그인 전)
 │  │  ├─ login/ · password/          M1 업체 로그인 주소 안내(서버가 업체코드 쿠키로 보냄) · 비밀번호 변경(AuthGuard)
-│  │  └─ (console)/                  콘솔 layout + 매니저 AuthGuard · 메뉴 · 콘솔 Context(내 업체 · 계정) — M2 대시보드 ~ M8
-│  ├─ admin/                         관리자 `/admin` · PC 콘솔 — layout.tsx(data-area="console") · admin-auth.ts(로그인 뒤 주소 · 권한 배지) · login/ · (console)/(layout · 메뉴 · 첫 화면 대시보드 · password/ · store-applications/ · stores/ · managers/ · users/ · _components/(ListFilter · FilterChips · FilterSelect · StoreFilesCard) · admin-paths.ts(관리자 화면 주소))
+│  │  └─ (console)/                  콘솔 layout + 매니저 AuthGuard · 메뉴 · 콘솔 Context(내 업체 · 계정) — M2 대시보드 ~ M8 · inquiries/(문의 — _console 한 벌에 scope="manager")
+│  ├─ admin/                         관리자 `/admin` · PC 콘솔 — layout.tsx(data-area="console") · admin-auth.ts(로그인 뒤 주소 · 권한 배지) · login/ · (console)/(layout · 메뉴 · 첫 화면 대시보드 · password/ · store-applications/ · stores/ · managers/ · users/ · inquiries/(문의 — _console 한 벌에 scope="admin") · _components/(StoreFilesCard) · admin-paths.ts(관리자 화면 주소))
 │  │  └─ (console)/                  콘솔 layout + 관리자 AuthGuard — A2~A6
+│  ├─ _console/                      두 콘솔이 같이 쓰는 화면(밑줄 폴더 — 주소가 되지 않음) — inquiries/(InquiryManageList · InquiryManageDetail · inquiry-manage.ts 영역별 API · 주소 · 할 수 있는 일)
 │  └─ api/                           route handler — cookie/[area] · cookie/[area]/refresh (영역 토큰 쿠키) · cookie/token-cookie.ts · auth/[...nextauth] (SNS OAuth) · cookie/[area]/account (기억한 계정 읽기) · user/sns-login · user/sign (이용자 로그인 · 가입 — 백엔드까지) · manager/login · admin/login (매니저 · 관리자 로그인 — 백엔드까지) · payments/confirm (토스 결제 승인) · route-util.ts(json · isSameSiteJson · 로그인 공통 backendLogin)
 ├─ contracts/                        백엔드 계약 — 지침서 frontend/dto/*.md 의 사본 (첫 API 를 만들 때 생김)
 │  ├─ common/                        pagination.dto.ts · fail-result.dto.ts · roles.ts · sse.ts · reservation.constants.ts (지침서 사본) · lookup.ts · store.constants.ts · member.constants.ts (여러 영역이 쓰는 백엔드 값)
-│  └─ <도메인>/                       user · manager · admin(재발급 — Phase 3) · discovery · reservation · store · room · stats
+│  └─ <도메인>/                       user · manager · admin(재발급 — Phase 3) · discovery · reservation · store · room · stats · inquiry
 │     ├─ dto/<파일>.dto.ts           지침서 파일 이름 그대로
 │     └─ api.ts                      그 도메인 엔드포인트 함수
 ├─ shared/                           도메인을 모르는 공통
    ├─ api/                           request.ts(동기 · ApiError · NetworkError) · queue.ts(큐 SSE) · sse.ts · auth.ts(withAuth) · error.ts(handleApiError) · cookie.ts(영역 토큰 쿠키 route handler 부르기) · route.ts(가입 · 로그인 route 부르기 postRoute · routeFailure · loginFailureOf) · upload.ts(uploadFile) · payment.ts(requestTossConfirm)
-   ├─ components/                    AuthGuard · Editor · Loading · Timer · Scripts · chart/ · 외부 연동 map/(StoreMap) · sms/(SmsVerification) · upload/(ImageUploader) · payment/(TossPaymentWidget) (docs/integrations.md)
+   ├─ components/                    AuthGuard · Editor · Loading · Timer · Scripts · chart/ · console/(ConsoleShell · ConsoleAuthFrame · ConsoleAuthCard · console-menu.ts · 목록 거르기 ListFilter · FilterChips · FilterSelect) · 외부 연동 map/(StoreMap) · sms/(SmsVerification) · upload/(ImageUploader) · payment/(TossPaymentWidget) (docs/integrations.md)
    │  └─ ui/                         공통 UI 부품 — button/ · form/ · display/ · nav/(Tabs · Pagination) · modal/(… · ErrorPopup) (docs/conventions.md 스타일)
    ├─ css/                           공통 부품 css — components/ 와 같은 경로 (ui/form/Input.module.css · Loading.module.css)
    ├─ hooks/                         useInput · useInputNumber · useInputFloat · useInputDate · useInputTime · useCheckboxGroup · useMyLocation · useConsoleLogout
@@ -73,7 +75,7 @@ src/contracts/<도메인>/api.ts                      (처음 쓰는 API 면) �
 ## Procedure for Adding a New Screen
 
 1. `frontend/screens.md` 에서 화면 키(U · M · A)의 주소 · 구성 · 쓰는 API 를 읽고, 시안(`frontend/design/<영역>.html`)에서 같은 키의 화면을 찾는다.
-2. 주소대로 `src/app/` 아래 page 를 만든다 — 이용자는 `(user)/`, 매니저 · 관리자 콘솔은 `manager/(console)/` · `admin/(console)/`. `useSearchParams` 를 쓰면 page 에서 `<Suspense>` 로 감싼다.
+2. 주소대로 `src/app/` 아래 page 를 만든다 — 이용자는 `(user)/`, 매니저 · 관리자 콘솔은 `manager/(console)/` · `admin/(console)/`. 두 콘솔이 부르는 경로만 다른 같은 화면이면 몸통을 `src/app/_console/<주소>/` 에 한 벌(`scope` 를 받는다) 두고 두 영역의 Content 가 `scope` 만 넘긴다(`src/app/_console/inquiries/`). `useSearchParams` 를 쓰면 page 에서 `<Suspense>` 로 감싼다.
 3. 쓰는 API 의 DTO 를 `frontend/dto/<도메인>.md` 에서 `src/contracts/<도메인>/dto/` 로 옮기고, 엔드포인트 함수를 `contracts/<도메인>/api.ts` 에 만든다.
 4. 그 `page.tsx` 옆에 `<화면>Content.tsx` 로 화면을 만든다.
 5. 로그인이 필요한 영역이면 그 영역 layout 이 `<AuthGuard>` 로 감싸는지 확인한다(영역 로그인 주소는 주소로 안다).

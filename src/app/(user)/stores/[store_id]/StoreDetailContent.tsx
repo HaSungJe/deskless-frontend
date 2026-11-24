@@ -15,6 +15,7 @@ import { MapMarkerType } from '@/shared/types/map';
 import { showErrorPopup } from '@/shared/utils/error-popup';
 import { DAY_NAMES, formatPrice, todayKst } from '@/shared/utils/format';
 import UserTopBar from '../../_components/UserTopBar';
+import { storeInquiryPath } from '../../inquiries/inquiry-format';
 import StoreImageSlider from './_components/StoreImageSlider';
 import { isStoreNotFound, STORE_NOT_FOUND_MESSAGE } from './store-not-found';
 import { describeBookingPolicy, describePlan, formatHourRange, formatPeriodPrice, planPriceLabel, roomOptionLabels } from './store-detail-format';
@@ -119,6 +120,8 @@ export default function StoreDetailContent({storeId}: StoreDetailContentProps): 
                                     <span className={styles.contactRow}>{PLACE_ICON}{address}</span>
                                     <a className={styles.phone} href={`tel:${store.phone}`}>{PHONE_ICON}{store.phone}</a>
                                 </div>
+                                {/* 이 업체에 문의 — 로그인 전이면 문의하기의 AuthGuard 가 로그인을 거쳐 돌아온다 */}
+                                <div><Link href={storeInquiryPath(store.store_id)} className={buttonClass({size: 'sm'})}>이 업체에 문의</Link></div>
                                 {store.introduction ? <p className={styles.intro}>{store.introduction}</p> : null}
                                 <div className={styles.locationMap}>
                                     <StoreMap center={{latitude: store.latitude, longitude: store.longitude}} markers={storeMarkers} level={LOCATION_MAP_LEVEL} locked />

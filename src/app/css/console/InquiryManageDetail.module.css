@@ -1,0 +1,91 @@
+/* 문의 관리 상세(업체 관리자 · 관리자 같은 화면) — 머리 · 두 칸 · dl 은 관리자 상세(AdminDetail)와 같은 값 */
+.page {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-width: 0;
+}
+
+.crumb {
+    margin: 0 0 6px;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.title {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 0;
+    font-size: 22px;
+    font-weight: 700;
+}
+
+.sub {
+    margin: 6px 0 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* 두 칸 — 좁으면 한 칸 */
+.cols {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: flex-start;
+}
+
+.cols > * {
+    flex: 1 1 420px;
+    min-width: 0;
+}
+
+.dl {
+    display: grid;
+    grid-template-columns: 140px minmax(0, 1fr);
+    gap: 10px 16px;
+    margin: 0;
+    font-size: 14px;
+}
+
+.dl dt {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+.dl dd {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.mono {
+    font-family: var(--mono);
+    font-size: 13px;
+    overflow-wrap: anywhere;
+}
+
+.muted {
+    margin: 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* 카드 안 */
+.cardBody {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* 문의 내용 — 줄바꿈 그대로 */
+.content {
+    margin: 0;
+    padding-top: 16px;
+    border-top: 1px solid var(--line);
+    font-size: 14px;
+    line-height: 1.6;
+    white-space: pre-wrap;
+    word-break: break-word;
+}

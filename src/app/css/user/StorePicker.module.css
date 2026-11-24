@@ -1,0 +1,92 @@
+/* 문의할 업체 고르기 · 위치 팝업 — 사진은 홈 업체 카드와 같은 모양(56px) */
+.picker {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+/* 검색 칸 + 버튼 한 줄 — 입점 신청 주소 찾기 줄과 같은 값 */
+.search {
+    display: flex;
+    gap: 8px;
+}
+
+.search > :first-child {
+    flex: 1;
+    min-width: 0;
+}
+
+.results {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+}
+
+.thumb {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--neutral-bg);
+    color: var(--neutral-fg);
+}
+
+.thumbImg {
+    object-fit: cover;
+}
+
+.info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.name {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.address {
+    margin: 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.actions {
+    display: flex;
+    flex-shrink: 0;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.empty {
+    margin: 0;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+/* 팝업 지도 */
+.map {
+    --store-map-h: 280px;
+    margin-top: 8px;
+}

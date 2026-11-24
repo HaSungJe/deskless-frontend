@@ -20,6 +20,7 @@ import { validateAction } from '@/shared/utils/validation';
 import MemberStateBand from '../_components/MemberStateBand';
 import { UserMeContext } from '../_components/UserMeProvider';
 import UserTopBar from '../_components/UserTopBar';
+import { INQUIRY_LIST_PATH } from '../inquiries/inquiry-format';
 import pageStyles from '@/app/css/user/UserPage.module.css';
 import styles from '@/app/css/user/MyPageContent.module.css';
 
@@ -203,6 +204,7 @@ export default function MyPageContent(): React.ReactNode {
                         <nav className={styles.menu} aria-label="내 정보 메뉴">
                             <Link href="/reservation/" className={styles.menuRow}>내 예약{CHEVRON_ICON}</Link>
                             <Link href="/store-applications/" className={styles.menuRow}>입점 신청{CHEVRON_ICON}</Link>
+                            <Link href={INQUIRY_LIST_PATH} className={styles.menuRow}>문의{CHEVRON_ICON}</Link>
                         </nav>
                     </>
                 ) : null}

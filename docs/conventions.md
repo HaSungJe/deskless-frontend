@@ -21,7 +21,7 @@
 
 ## Files / Directories
 
-- 화면: 그 주소의 `page.tsx` 옆에 `<화면>Content.tsx` · `dto.ts` · `*.test.tsx` 를 같이 둔다(`src/app/(user)/login/`). 화면 css 는 `src/app/css/<영역>/<화면>Content.module.css` — 영역은 `user` · `manager` · `admin` · `dev` (선택: 사용자). 전용 부품이 여럿이면 `_components/` 로 묶는다 — 밑줄 폴더는 주소가 되지 않는다. 별도 `features/` 폴더는 두지 않는다 (선택: 사용자).
+- 화면: 그 주소의 `page.tsx` 옆에 `<화면>Content.tsx` · `dto.ts` · `*.test.tsx` 를 같이 둔다(`src/app/(user)/login/`). 화면 css 는 `src/app/css/<영역>/<화면>Content.module.css` — 영역은 `user` · `manager` · `admin` · `console`(두 콘솔이 같이 쓰는 화면) · `dev` (선택: 사용자). 전용 부품이 여럿이면 `_components/` 로 묶는다 — 밑줄 폴더는 주소가 되지 않는다. 별도 `features/` 폴더는 두지 않는다 (선택: 사용자).
 - 여러 단어 파일은 kebab-case (`src/contracts/common/fail-result.dto.ts`), 한 단어는 소문자 (`util.ts`, `address.ts`, `cookie.ts`).
 - 백엔드 DTO 는 `src/contracts/<도메인>/dto/<지침서 파일 이름>` — 파일을 나누거나 합치지 않는다(changes/ 문서가 파일 단위로 온다 — frontend/changes/README.md).
 - 한 곳에서만 쓰는 것은 그 화면 폴더에, 두 곳 이상이면 `shared/`(도메인 무관) 또는 `contracts/`(백엔드 계약)로.
@@ -31,6 +31,7 @@
 - 주소는 지침서 그대로 — `frontend/screens.md` 의 화면 목록. ★ 표시 주소(`/reservation/[reservation_id]` 등)는 백엔드 SMS 링크라 바꾸지 않는다 (지침서: frontend/screens.md).
 - 정적 세그먼트 kebab-case(`find-login-id`, `store-applications`), 동적 세그먼트 `[snake_case]`(`[store_id]`, `[reservation_id]`) (지침서: frontend/screens.md).
 - 영역 layout 은 route group 으로 — 이용자 `(user)/`, 콘솔 `manager/(console)/` · `admin/(console)/`. 괄호 폴더는 주소에 나오지 않는다.
+- 업체 관리자 · 관리자가 부르는 경로(`/mine` 유무)만 다른 같은 화면은 몸통을 `src/app/_console/<주소>/` 에 한 벌 둔다 — `scope: 'manager' | 'admin'` 을 받아 영역별 표(`INQUIRY_MANAGE[scope]` — 부를 contracts 함수 · 목록 주소 · 안내)에서 고르고, 토큰은 `AuthContext` 가 주소의 영역으로 이미 고른다. 두 영역 page 옆 `<영역><화면>Content`(`ManagerInquiryListContent` · `AdminInquiryListContent`)는 `scope` 만 넘긴다. contracts 함수는 경로마다 따로 둔다(`getStoreInquiries` · `getInquiries` — `getMyStats` · `getStats` 와 같이) (`src/app/_console/inquiries/`).
 - `trailingSlash: true` (`next.config.ts:36`) — 내부 링크 · `router.push` 주소는 `/` 로 끝나게 쓴다.
 - query 키도 snake_case (`search_type`, `all_search_yn` — 지침서: frontend/api.md "목록").
 
@@ -66,7 +67,7 @@
   - 줄 단위 검사 — 같은 DTO 가 여러 줄을 한 번에 보내면 `validateActionRows(dtos, path)`(`src/shared/utils/validation.ts`): 줄마다 검사하고 칸 이름을 `<path>.<줄>.<필드>`(백엔드 점 경로 — `hours.3.close_time`)로 붙인다. 부모 DTO 를 `validateAction` 하면 중첩 오류는 칸에 붙지 않는다(`constraints` 가 없어 건너뛴다).
   - 키로 나누는 검사 — 같은 이름의 칸이 한 화면에 여럿이고 카드 · 줄마다 따로 저장하면(상품 카드 3개 · 그룹 상품 줄 3개 · 기간 가격 대화상자의 `price` 와 그룹 상품 줄의 `price`), 또는 중첩 DTO 하나(`room_group_detail`)면 키로 나눈다. 칸은 `<Field dataKey={key}>` · `<FieldError dataKey={key}>`, 검사는 `resetValidationError()` 뒤 `validateActionChildren(dto, key)`(지우지 않으므로 먼저 지운다), 받은 오류는 `handleApiError(error, true, key)` — 키가 없으면 이름만으로 찾아 같은 이름의 첫 칸에 붙는다. 중첩 DTO 는 부모를 `validateAction`(그룹명 · 설명) + 안쪽을 `validateActionChildren`(방 개수)으로 둘 다 본다(`src/app/manager/(console)/room-groups/room-group-format.ts` `validateRoomGroup`).
   - 숫자 칸 → DTO 숫자는 `numberOf(value)`(`src/shared/utils/util.ts` — 빈 칸 undefined → IsNotEmpty 문구, 숫자가 아니면 NaN → IsInt 문구).
-  - 콘솔(`src/shared/components/console/`) — `ConsoleShell`(왼쪽 메뉴 232px · 상단 바 · 본문 — 메뉴 · 글자는 영역 layout 이 넘긴다, `console-menu.ts` 의 `visibleMenu`(권한별) · `activeMenuHref`(지금 메뉴, `exact` 는 첫 화면만)) · `ConsoleAuthFrame` + `ConsoleAuthCard`(로그인 계열 — 메뉴 없는 바탕 + 가운데 카드)
+  - 콘솔(`src/shared/components/console/`) — `ConsoleShell`(왼쪽 메뉴 232px · 상단 바 · 본문 — 메뉴 · 글자는 영역 layout 이 넘긴다, `console-menu.ts` 의 `visibleMenu`(권한별) · `activeMenuHref`(지금 메뉴, `exact` 는 첫 화면만)) · `ConsoleAuthFrame` + `ConsoleAuthCard`(로그인 계열 — 메뉴 없는 바탕 + 가운데 카드) · `ListFilter`(목록 위 거르기 줄 — 앞 · 상태 칩(`FilterChips`) · 뒤 · 검색어, 앞뒤 자리에 `FilterSelect`(카테고리 · SNS) — 관리자 목록 4개 · 문의 목록)
   - `display/` — `Badge` · `Band`(상태 안내 띠 — `info` · `warn` · `danger` · `ok`) · `Card` · `Table` · `EmptyState`
     - `Table` 의 머리 칸은 `.table th { text-align: left }` 라 화면 css 의 클래스 하나(`.number`)로는 머리 칸이 따라오지 않는다 — 숫자 열을 오른쪽에 맞추려면 `.page th.number, .page td.number` 처럼 한 단계 세게 써서 머리 칸과 값 칸을 같이 맞춘다(`src/app/css/admin/AdminDashboardContent.module.css`).
   - `nav/` — `Tabs` · `Pagination`(`‹ 번호 ›`, 목록 응답의 `pagination` 을 그대로)

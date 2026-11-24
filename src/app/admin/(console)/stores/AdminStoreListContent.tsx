@@ -6,6 +6,7 @@ import { STORE_STATE } from '@/contracts/common/store.constants';
 import { getStores } from '@/contracts/store/api';
 import { StoreListDto, StoreListResultDto } from '@/contracts/store/dto/store-list.dto';
 import { handleApiError } from '@/shared/api/error';
+import ListFilter, { FIRST_LIST_QUERY, ListQueryType } from '@/shared/components/console/ListFilter';
 import Badge from '@/shared/components/ui/display/Badge';
 import EmptyState from '@/shared/components/ui/display/EmptyState';
 import Table from '@/shared/components/ui/display/Table';
@@ -14,7 +15,6 @@ import { AuthContext } from '@/shared/providers/RootLayoutProvider';
 import { formatPhone } from '@/shared/utils/format';
 import { listNumber } from '@/shared/utils/util';
 import { storePath } from '../admin-paths';
-import ListFilter, { FIRST_LIST_QUERY, ListQueryType } from '../_components/ListFilter';
 import { businessNumberText, OPEN_BADGE, STORE_STATE_TONE } from './store-format';
 import styles from '@/app/css/admin/AdminList.module.css';
 

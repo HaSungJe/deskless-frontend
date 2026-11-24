@@ -18,6 +18,7 @@ export const LOOKUP = {
     cancel_request_state_id: {REQUESTED: '요청 중', APPROVED: '승인', REJECTED: '거절', EXPIRED: '만료'},
     payment_state_id: {READY: '결제 대기', DONE: '결제 완료', FAILED: '결제 실패', EXPIRED: '결제 만료', REFUND_REQUESTED: '환불 신청', REFUNDED: '환불 완료', REFUND_FAILED: '환불 실패'},
     environment: {LIVE: '실결제', TEST: '테스트 결제'},
+    inquiry_state_id: {RECEIVED: '접수', ANSWERED: '답변완료', BLIND: '블라인드'},
 } as const;
 
 /** 룩업 구분 — 응답 필드 이름 */

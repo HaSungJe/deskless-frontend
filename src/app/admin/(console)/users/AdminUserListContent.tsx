@@ -6,6 +6,9 @@ import { MEMBER_STATE, memberStateTone } from '@/contracts/common/member.constan
 import { getUsers } from '@/contracts/user/api';
 import { UserListDto, UserListResultDto } from '@/contracts/user/dto/user-list.dto';
 import { handleApiError } from '@/shared/api/error';
+import { FilterOptionType } from '@/shared/components/console/FilterChips';
+import FilterSelect from '@/shared/components/console/FilterSelect';
+import ListFilter, { FIRST_LIST_QUERY, ListQueryType } from '@/shared/components/console/ListFilter';
 import Badge from '@/shared/components/ui/display/Badge';
 import EmptyState from '@/shared/components/ui/display/EmptyState';
 import Table from '@/shared/components/ui/display/Table';
@@ -14,9 +17,6 @@ import { AuthContext } from '@/shared/providers/RootLayoutProvider';
 import { formatPhone, toKst } from '@/shared/utils/format';
 import { listNumber } from '@/shared/utils/util';
 import { userPath } from '../admin-paths';
-import { FilterOptionType } from '../_components/FilterChips';
-import FilterSelect from '../_components/FilterSelect';
-import ListFilter, { FIRST_LIST_QUERY, ListQueryType } from '../_components/ListFilter';
 import styles from '@/app/css/admin/AdminList.module.css';
 
 /** 이용자 목록 거르기 — 상태 · 검색어 · 쪽 + SNS */
