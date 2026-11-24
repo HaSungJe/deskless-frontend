@@ -10,6 +10,7 @@ import { showErrorPopup } from '@/shared/utils/error-popup';
 import { toKst } from '@/shared/utils/format';
 import { isHeadManager, isStoreSuspended, ManagerConsoleContext } from '../manager-console-context';
 import StoreDoorTab from './_components/StoreDoorTab';
+import StoreFacilityTab from './_components/StoreFacilityTab';
 import StoreHoursTab from './_components/StoreHoursTab';
 import StorePhotosTab from './_components/StorePhotosTab';
 import StorePolicyTab from './_components/StorePolicyTab';
@@ -22,7 +23,7 @@ import styles from '@/app/css/manager/StoreSettingsContent.module.css';
 const RELOAD_FAILED_MESSAGE = '저장했지만 내 업체 정보를 다시 불러오지 못했어요. 잠시 뒤 다시 들어와 확인해 주세요.';
 
 /**
- * M7 내 업체 설정 — 머리(상태 · 영업중 · 마지막 수정) · 영업중지 띠 · 탭 6개(문 연동은 업체 총관리자만)
+ * M7 내 업체 설정 — 머리(상태 · 영업중 · 마지막 수정) · 영업중지 띠 · 탭 7개(문 연동은 업체 총관리자만)
  * - 내 업체 상세는 콘솔 틀이 읽은 값, 저장 뒤 reloadStore — 상단 바 · 대시보드도 같은 값을 본다
  *
  * @returns
@@ -85,6 +86,7 @@ export default function StoreSettingsContent(): React.ReactNode {
 
             {/* 지금 탭 */}
             {activeTab === 'profile' ? <StoreProfileTab store={store} onSaved={onSaved} /> : null}
+            {activeTab === 'facility' ? <StoreFacilityTab store={store} onSaved={onSaved} /> : null}
             {activeTab === 'photos' ? <StorePhotosTab store={store} onSaved={onSaved} /> : null}
             {activeTab === 'hours' ? <StoreHoursTab store={store} onSaved={onSaved} /> : null}
             {activeTab === 'policy' ? <StorePolicyTab store={store} onSaved={onSaved} /> : null}

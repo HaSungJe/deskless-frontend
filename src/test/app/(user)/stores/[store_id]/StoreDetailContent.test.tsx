@@ -31,6 +31,7 @@ const DETAIL: DiscoveryStoreDetailResultDto = {
     latitude: 37.501,
     longitude: 127.031,
     introduction: '강남역 3번 출구 도보 5분',
+    store_detail: {has_convenience_store: 0, has_cafe: 0, has_hot_spring: 0, is_pet_allowed: 0, has_meal: 0, is_delivery_allowed: 0, has_parking: 0},
     is_open: 1,
     is_always_open: 1,
     booking_open_hours: 72,
@@ -99,7 +100,19 @@ describe('StoreDetailContent', () => {
         expect(screen.getByText('59,000원')).toBeTruthy();
         expect(screen.getByText('기간 가격 · 12월 24일 ~ 12월 25일 1박 79,000원 (성탄 연휴)')).toBeTruthy();
         expect(screen.getByRole('link', {name: '예약하기'}).getAttribute('href')).toBe(`/stores/${STORE_ID}/booking/`);
+        expect(screen.queryByRole('group', {name: '편의시설'})).toBeNull();
         expect(showErrorPopup).not.toHaveBeenCalled();
+    });
+
+    it('[SUCCESS] 편의점 · 주차만 있는 업체를 연다 → 소개 아래 "편의시설" 칸에 "편의점" · "주차" 칩(정한 순서)', async () => {
+        getStoreDetail.mockResolvedValue({...DETAIL, store_detail: {...DETAIL.store_detail, has_parking: 1, has_convenience_store: 1}});
+        getStoreRoomGroups.mockResolvedValue(GROUPS);
+
+        await renderDetail();
+
+        const facilities = screen.getByRole('group', {name: '편의시설'});
+        expect(Array.from(facilities.children).map((chip) => chip.textContent)).toEqual(['편의점', '주차']);
+        expect(screen.getByText('강남역 3번 출구 도보 5분').nextElementSibling).toBe(facilities);
     });
 
     it('[FAIL:not-found] 상세가 404 면 안내 뒤 첫 화면으로', async () => {

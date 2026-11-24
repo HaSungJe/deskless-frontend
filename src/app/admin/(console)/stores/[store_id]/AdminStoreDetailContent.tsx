@@ -3,7 +3,7 @@ import Link from 'next/link';
 import { useContext, useEffect, useEffectEvent, useState } from 'react';
 import { storeConsoleLoginUrl } from '@/app/manager/manager-auth';
 import { lookupName } from '@/contracts/common/lookup';
-import { STORE_STATE } from '@/contracts/common/store.constants';
+import { STORE_STATE, storeFacilityLabels } from '@/contracts/common/store.constants';
 import { getStore } from '@/contracts/store/api';
 import { StoreDetailResultDto } from '@/contracts/store/dto/store-detail.dto';
 import { handleApiError } from '@/shared/api/error';
@@ -130,6 +130,7 @@ export default function AdminStoreDetailContent({storeId}: AdminStoreDetailConte
                         <dt>100% 환불 마감</dt><dd>이용 시작 {store.refund_deadline_minutes}분 전까지</dd>
                         <dt>마감 뒤 환불 비율</dt><dd>{store.late_refund_percent}%</dd>
                         <dt>업체 소개</dt><dd>{store.introduction ?? '—'}</dd>
+                        <dt>편의시설</dt><dd>{storeFacilityLabels(store.store_detail).join(' · ') || '—'}</dd>
                     </dl>
                 </Card>
                 <StoreFilesCard files={store.files} markFirst />

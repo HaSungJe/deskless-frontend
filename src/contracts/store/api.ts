@@ -12,6 +12,7 @@ import { StoreDetailResultDto } from './dto/store-detail.dto';
 import { StoreListDto, StoreListResultDto } from './dto/store-list.dto';
 import { StoreLoginStoreResultDto } from './dto/store-login-store.dto';
 import { StoreMineBreaksDto } from './dto/store-mine-breaks.dto';
+import { StoreMineDetailDto } from './dto/store-mine-detail.dto';
 import { StoreMineDoorSecretDto } from './dto/store-mine-door-secret.dto';
 import { StoreMineFileOrderDto } from './dto/store-mine-file-order.dto';
 import { StoreMineFileUploadUrlDto, StoreMineFileUploadUrlResultDto } from './dto/store-mine-file-upload-url.dto';
@@ -146,6 +147,16 @@ const MY_STORE_PATH = '/admin-service/store/mine';
  */
 export function updateMyStoreProfile(auth: AuthType, dto: StoreMineProfileDto): Promise<null> {
     return withAuth(auth, (token) => callQueue<null>({method: 'PATCH', path: `${MY_STORE_PATH}/profile`, body: dto, token}));
+}
+
+/**
+ * 내 업체 편의시설 설정 — 큐 · 매니저 (PUT /admin-service/store/mine/detail) — 통째로 교체(빠진 항목은 0), 결과 null
+ *
+ * @param auth AuthContext 값
+ * @param dto 편의시설 7개(0 · 1)
+ */
+export function updateMyStoreFacility(auth: AuthType, dto: StoreMineDetailDto): Promise<null> {
+    return withAuth(auth, (token) => callQueue<null>({method: 'PUT', path: `${MY_STORE_PATH}/detail`, body: dto, token}));
 }
 
 /**

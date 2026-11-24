@@ -6,7 +6,7 @@ export const ROOM_STATE = {AVAILABLE: 'AVAILABLE', RESERVED: 'RESERVED', IN_USE:
 
 /**
  * 객실 옵션 — 객실 그룹 상세정보(room_group_detail)의 켜고 끄는 항목(0 · 1), 이 순서로 보인다 — 업체 관리자 그룹 칸 · 이용자 업체 상세
- * - 백엔드가 항목을 더하면(frontend/changes — 반려동물 동반 · 배달 가능 등) 여기 한 줄과 DTO 사본에 필드를 더한다
+ * - 백엔드가 객실 항목을 더하면(frontend/changes) 여기 한 줄과 DTO 사본에 필드를 더한다 — 업체 단위 시설은 store.constants.ts STORE_FACILITY_OPTIONS
  */
 export const ROOM_GROUP_OPTIONS = [
     {key: 'has_shower', label: '샤워실'},

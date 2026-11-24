@@ -1,0 +1,25 @@
+/* M7 편의시설 탭 — 시안 없음(요청서 — 배치는 프론트), 안내 · 버튼 줄은 기본 정보 탭과 같은 값 */
+.body {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.hint {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--muted);
+}
+
+/* 스위치 7개 — 넓으면 여러 칸, 좁으면 한 칸 */
+.switches {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 12px 24px;
+}
+
+.actions {
+    display: flex;
+    justify-content: flex-end;
+}

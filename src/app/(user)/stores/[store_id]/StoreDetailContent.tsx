@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { Fragment, useEffect, useEffectEvent, useState } from 'react';
+import { storeFacilityLabels } from '@/contracts/common/store.constants';
 import { getStoreDetail, getStoreRoomGroups } from '@/contracts/discovery/api';
 import { DiscoveryRoomGroupItemResultDto } from '@/contracts/discovery/dto/discovery-room-group-list.dto';
 import { DiscoveryStoreDetailResultDto } from '@/contracts/discovery/dto/discovery-store-detail.dto';
@@ -58,6 +59,7 @@ export default function StoreDetailContent({storeId}: StoreDetailContentProps): 
     const address = store?.address_detail ? `${store.address}, ${store.address_detail}` : store?.address ?? '';   // 주소 + 상세주소
     const policies = store ? describeBookingPolicy(store) : [];                                                    // 예약 · 환불 규정 문장
     const storeMarkers: Array<MapMarkerType> = store ? [{id: store.store_id, title: store.store_name, latitude: store.latitude, longitude: store.longitude}] : []; // 위치 핀 하나
+    const facilities = store ? storeFacilityLabels(store.store_detail) : [];                                      // ② 켜진 편의시설 이름(정한 순서)
 
     // 효과
     useEffect(() => {
@@ -123,6 +125,12 @@ export default function StoreDetailContent({storeId}: StoreDetailContentProps): 
                                 {/* 이 업체에 문의 — 로그인 전이면 문의하기의 AuthGuard 가 로그인을 거쳐 돌아온다 */}
                                 <div><Link href={storeInquiryPath(store.store_id)} className={buttonClass({size: 'sm'})}>이 업체에 문의</Link></div>
                                 {store.introduction ? <p className={styles.intro}>{store.introduction}</p> : null}
+                                {/* ③ 편의시설 — 켜진 것만(객실 옵션 칩과 같은 모양), 없으면 칸 숨김 */}
+                                {facilities.length > 0 ? (
+                                    <div className={styles.options} role="group" aria-label="편의시설">
+                                        {facilities.map((label) => <span key={label} className={styles.option}>{label}</span>)}
+                                    </div>
+                                ) : null}
                                 <div className={styles.locationMap}>
                                     <StoreMap center={{latitude: store.latitude, longitude: store.longitude}} markers={storeMarkers} level={LOCATION_MAP_LEVEL} locked />
                                 </div>

@@ -53,37 +53,19 @@
     font-size: 14px;
 }
 
-/* 반경 칩 줄 — 칩 사이 · 오른쪽 빈 곳은 지도를 끌고 핀을 누를 수 있게 통과 */
-.radius {
+/* 검색필터 줄 — 지도 왼쪽 위 칩 하나, 빈 곳은 지도를 끌고 핀을 누를 수 있게 통과 */
+.filterBar {
     position: absolute;
     top: 12px;
     right: 0;
     left: 0;
     z-index: 2;
     display: flex;
-    gap: 8px;
-    padding: 0 16px 2px;
-    overflow-x: auto;
-    scrollbar-width: none;
+    padding: 0 16px;
     pointer-events: none;
 }
 
-.radius::-webkit-scrollbar {
-    display: none;
-}
-
-/* 추가정보 칩 · 반경 칩 묶음 — 한 줄, 좁으면 가로로 밀어 본다 */
-.radius > *,
-.radiusChips > * {
-    flex-shrink: 0;
-}
-
-.radiusChips {
-    display: flex;
-    gap: 8px;
-}
-
-.radius > * {
+.filterBar > * {
     pointer-events: auto;
 }
 

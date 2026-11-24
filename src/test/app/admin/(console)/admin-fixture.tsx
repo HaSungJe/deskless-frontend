@@ -120,6 +120,7 @@ export function storeDetail(extra: Partial<StoreDetailResultDto> = {}): StoreDet
         latitude: 37.497942,
         longitude: 127.027621,
         introduction: '강남역 11번 출구에서 걸어서 3분.',
+        store_detail: {has_convenience_store: 0, has_cafe: 0, has_hot_spring: 0, is_pet_allowed: 0, has_meal: 0, is_delivery_allowed: 0, has_parking: 0},
         is_always_open: 0,
         is_open: 1,
         maintenance_minutes: 30,

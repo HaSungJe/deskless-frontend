@@ -79,6 +79,9 @@ export class StoreDetailResultDto {
     /** 업체 소개 */
     introduction: string | null;
 
+    /** 편의시설 (편의점 · 카페 · 온천 · 반려동물 동반 · 식사 제공 · 배달 음식 · 주차 — 0: 없음, 1: 있음) */
+    store_detail: StoreDetailFacilityResultDto;
+
     /** 24시간 연중무휴 여부 (0 · 1) */
     is_always_open: number;
 
@@ -108,4 +111,30 @@ export class StoreDetailResultDto {
 
     /** 업체 정보 파일 (용도 · 정렬 순서) */
     files: StoreDetailFileResultDto[];
+}
+
+/**
+ * 업체 편의시설 (관리자 업체 상세 — 보기만) — 7개 항목(저장 안 된 항목은 없음 0)
+ */
+export class StoreDetailFacilityResultDto {
+    /** 편의점 (0: 없음, 1: 있음) */
+    has_convenience_store: number;
+
+    /** 카페 (0: 없음, 1: 있음) */
+    has_cafe: number;
+
+    /** 온천 (0: 없음, 1: 있음) */
+    has_hot_spring: number;
+
+    /** 반려동물 동반 가능 (0: 없음, 1: 있음) */
+    is_pet_allowed: number;
+
+    /** 식사 제공 (0: 없음, 1: 있음) */
+    has_meal: number;
+
+    /** 배달 음식 가능 (0: 없음, 1: 있음) */
+    is_delivery_allowed: number;
+
+    /** 주차 가능 (0: 없음, 1: 있음) */
+    has_parking: number;
 }

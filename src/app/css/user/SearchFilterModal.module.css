@@ -1,0 +1,70 @@
+/* 검색필터 팝업 — 거리 한 줄 · 묶음 체크박스 목록 · 버튼 줄(공통 사유 팝업과 같은 줄 모양) */
+.description {
+    margin: 0 0 12px;
+    font-size: 14px;
+    color: var(--muted);
+}
+
+.state {
+    margin: 0 0 12px;
+    font-size: 14px;
+}
+
+/* 묶음 — 거리 · 객실 · 편의시설 */
+.section {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin-bottom: 16px;
+}
+
+/* 묶음 제목 — 콘솔 거르기 줄 앞 글자와 같은 값 */
+.sectionTitle {
+    margin: 0;
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--muted);
+}
+
+/* 거리 칩 한 줄 — 좁으면 가로로 밀어 본다(내 예약 상태 칩과 같은 값) */
+.radius {
+    display: flex;
+    gap: 6px;
+    overflow-x: auto;
+    padding-bottom: 2px;
+}
+
+.radius > * {
+    flex-shrink: 0;
+}
+
+.list {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    min-height: 44px;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.item input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--primary);
+}
+
+.actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+}
+
+.actions > * {
+    flex: 1;
+}

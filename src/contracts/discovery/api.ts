@@ -1,5 +1,5 @@
 import { request } from '@/shared/api/request';
-import { DiscoveryRoomGroupDetailFilterListResultDto } from './dto/discovery-room-group-detail-filter.dto';
+import { DiscoveryDetailFilterListResultDto } from './dto/discovery-detail-filter.dto';
 import { DiscoveryRoomGroupListResultDto } from './dto/discovery-room-group-list.dto';
 import { DiscoveryStoreDetailResultDto } from './dto/discovery-store-detail.dto';
 import { DiscoveryStoreListDto, DiscoveryStoreListResultDto } from './dto/discovery-store-list.dto';
@@ -20,12 +20,12 @@ export function getNearbyStores(query: DiscoveryStoreListDto, signal?: AbortSign
 }
 
 /**
- * 추가정보 필터 항목 — 동기 · 공개 (GET /user-service/discovery/room-group-detail-filter) — 보일 순서, 백엔드가 항목을 더하면 저절로 나온다
+ * 검색필터 체크 항목 — 동기 · 공개 (GET /user-service/discovery/detail-filter) — 보일 순서(객실 ROOM_GROUP 다음 업체 편의시설 STORE), 백엔드가 항목을 더하면 저절로 나온다(frontend/changes/2026-11-24-store-facility.md)
  *
  * @param signal 화면을 떠날 때 취소
  */
-export function getRoomGroupDetailFilters(signal?: AbortSignal): Promise<DiscoveryRoomGroupDetailFilterListResultDto | null> {
-    return request<DiscoveryRoomGroupDetailFilterListResultDto>({path: '/user-service/discovery/room-group-detail-filter', signal});
+export function getDetailFilters(signal?: AbortSignal): Promise<DiscoveryDetailFilterListResultDto | null> {
+    return request<DiscoveryDetailFilterListResultDto>({path: '/user-service/discovery/detail-filter', signal});
 }
 
 /**

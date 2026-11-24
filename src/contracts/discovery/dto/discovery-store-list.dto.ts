@@ -19,7 +19,7 @@ export class DiscoveryStoreListDto {
     @IsNotEmpty({message: '반경을 입력해주세요.'})
     radius_km: string;
 
-    // 추가정보 필터 — 객실 그룹 상세 항목 키를 쉼표로(항목은 GET /api/v1/user-service/discovery/room-group-detail-filter). 고른 조건을 모두 갖춘 객실 그룹이 있는 업체만
+    // 추가정보 필터 — 항목 키를 쉼표로(항목은 GET /api/v1/user-service/discovery/detail-filter). 객실 항목은 고른 조건을 모두 갖춘 객실 그룹이 있는 업체만, 업체 편의시설 항목은 그 시설이 있는 업체만
     @IsOptional()
     @Matches(/^[a-z_]+(,[a-z_]+)*$/, {message: '추가정보 필터가 올바르지 않습니다.'})
     @MaxLength(200, {message: '추가정보 필터가 올바르지 않습니다.'})

@@ -1,20 +1,44 @@
+import { STORE_FACILITY_OPTIONS, StoreFacilityKeyType, StoreFacilityValuesType } from '@/contracts/common/store.constants';
+import { StoreMineDetailDto } from '@/contracts/store/dto/store-mine-detail.dto';
 import { StoreMineHourDto, StoreMineHoursDto } from '@/contracts/store/dto/store-mine-hours.dto';
 import { StoreMineHourItemResultDto } from '@/contracts/store/dto/store-mine.dto';
 import { TabItemType } from '@/shared/components/ui/nav/Tabs';
 import { DAY_NAMES } from '@/shared/utils/format';
 
 /** 내 업체 설정 탭 */
-export type StoreTabType = 'profile' | 'photos' | 'hours' | 'policy' | 'unavailable' | 'door';
+export type StoreTabType = 'profile' | 'facility' | 'photos' | 'hours' | 'policy' | 'unavailable' | 'door';
 
-/** 탭 6개 — 문 연동은 업체 총관리자에게만(머리가 거른다) */
+/** 탭 7개 — 문 연동은 업체 총관리자에게만(머리가 거른다), 편의시설은 기본 정보 다음(사용자 결정 2026-11-24) */
 export const STORE_TABS: Array<TabItemType<StoreTabType>> = [
     {value: 'profile', label: '기본 정보'},
+    {value: 'facility', label: '편의시설'},
     {value: 'photos', label: '사진'},
     {value: 'hours', label: '영업시간 · 브레이크'},
     {value: 'policy', label: '운영 규정'},
     {value: 'unavailable', label: '일시 예약불가'},
     {value: 'door', label: '문 연동'},
 ];
+
+/** 편의시설 스위치 — 켜짐 여부 */
+export type FacilityFormType = Record<StoreFacilityKeyType, boolean>;
+
+/**
+ * 받은 편의시설 → 스위치 — 1 이면 켜짐, 응답에 없으면(백엔드 배포 전) 모두 끔
+ *
+ * @param detail 내 업체의 store_detail
+ */
+export function facilityFormOf(detail: StoreFacilityValuesType | null | undefined): FacilityFormType {
+    return Object.fromEntries(STORE_FACILITY_OPTIONS.map((option) => [option.key, detail?.[option.key] === 1])) as FacilityFormType;
+}
+
+/**
+ * 스위치 → 보낼 값 — 7개 모두 0 · 1(통째로 교체라 꺼진 것도 보낸다 — frontend/changes/2026-11-24-store-facility.md)
+ *
+ * @param form 스위치
+ */
+export function facilityDtoOf(form: FacilityFormType): StoreMineDetailDto {
+    return Object.assign(new StoreMineDetailDto(), Object.fromEntries(STORE_FACILITY_OPTIONS.map((option) => [option.key, form[option.key] ? 1 : 0])));
+}
 
 /** 업체 정보 파일 용도 */
 export const STORE_FILE_PURPOSE = {LICENSE: 'BUSINESS_LICENSE', IMAGE: 'STORE_IMAGE'} as const;

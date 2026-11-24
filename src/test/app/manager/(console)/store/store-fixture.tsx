@@ -29,6 +29,7 @@ export function storeMine(extra: Partial<StoreMineResultDto> = {}): StoreMineRes
         latitude: 37.4979,
         longitude: 127.0276,
         introduction: '강남역 11번 출구에서 걸어서 3분.',
+        store_detail: {has_convenience_store: 0, has_cafe: 0, has_hot_spring: 0, is_pet_allowed: 0, has_meal: 0, is_delivery_allowed: 0, has_parking: 0},
         is_always_open: 0,
         is_open: 1,
         maintenance_minutes: 30,
