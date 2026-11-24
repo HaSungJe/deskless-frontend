@@ -68,14 +68,16 @@ const FILTER_ITEMS: Array<DiscoveryDetailFilterItemResultDto> = [
 ];
 
 /**
- * 로그인 안 한 상태로 그린다
+ * 홈을 그린다 — 기본은 로그인 안 한 상태
+ *
+ * @param isLogin 로그인했는지
  */
-function renderHome(): void {
-    render(
-        <RootLayoutProvider rootLayoutLoading={false} auth={{area: 'user', token: null, isLogin: false, setToken: vi.fn(), onExpired: vi.fn(), logout: vi.fn()}}>
+function renderHome(isLogin: boolean = false): () => void {
+    return render(
+        <RootLayoutProvider rootLayoutLoading={false} auth={{area: 'user', token: isLogin ? 'user-token' : null, isLogin, setToken: vi.fn(), onExpired: vi.fn(), logout: vi.fn()}}>
             <HomeContent />
         </RootLayoutProvider>,
-    );
+    ).unmount;
 }
 
 /**
@@ -218,6 +220,17 @@ describe('HomeContent', () => {
         expect(getNearbyStores.mock.calls[1][0]).toMatchObject({latitude: '37.500000', longitude: '127.030000', radius_km: 'ALL', detail_filter: null});
         expect(mapProps.current?.radiusKm).toBeUndefined();
         expect(screen.getByRole('button', {name: '검색필터'})).toBeTruthy();
+    });
+
+    it('[SUCCESS] 로그인한 이용자 · 로그인 전 이용자가 지도를 연다 → "여행 도우미" 버튼 주소가 /chat/ · 로그인 주소(돌아올 곳 /chat/) — "가까운 순" 글자 없음', () => {
+        const unmount = renderHome(true);
+        expect(screen.getByRole('link', {name: '여행 도우미'}).getAttribute('href')).toBe('/chat/');
+        expect(screen.queryByText('가까운 순')).toBeNull();
+        unmount();
+
+        renderHome(false);
+        expect(screen.getByRole('link', {name: '여행 도우미'}).getAttribute('href')).toBe('/login/?return_url=%2Fchat%2F');
+        expect(screen.queryByText('가까운 순')).toBeNull();
     });
 
     it('[FAIL:same-query] 거의 같은 중심(약 11m 안)으로 다시 멈추면 부르지 않는다', async () => {

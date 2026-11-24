@@ -1,0 +1,67 @@
+/* 여행 도우미 업체 카드 — 사진 · 글은 문의하기 업체 고르기 줄, 칩은 업체 상세 옵션 칩과 같은 값 */
+.card {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px;
+    border: 1px solid var(--line);
+    border-radius: var(--radius);
+    background: var(--surface);
+    color: var(--fg);
+    text-decoration: none;
+}
+
+.thumb {
+    position: relative;
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    overflow: hidden;
+    border-radius: var(--radius);
+    background: var(--neutral-bg);
+    color: var(--neutral-fg);
+}
+
+.thumbImg {
+    object-fit: cover;
+}
+
+.info {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 2px;
+    min-width: 0;
+}
+
+.name {
+    font-size: 15px;
+    font-weight: 700;
+}
+
+.address {
+    font-size: 13px;
+    color: var(--muted);
+}
+
+.chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-top: 4px;
+}
+
+.chip {
+    display: inline-flex;
+    align-items: center;
+    height: var(--badge-h);
+    padding: 0 10px;
+    border-radius: 999px;
+    background: var(--bg);
+    color: var(--neutral-fg);
+    font-size: 12px;
+    font-weight: 500;
+}

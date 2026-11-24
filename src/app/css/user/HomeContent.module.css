@@ -79,7 +79,7 @@
 
 .listHead {
     display: flex;
-    align-items: baseline;
+    align-items: center;
     justify-content: space-between;
 }
 
@@ -87,12 +87,6 @@
     margin: 0;
     font-size: 16px;
     font-weight: 700;
-}
-
-.listSort {
-    font-size: 13px;
-    font-weight: 500;
-    color: var(--muted);
 }
 
 .card {

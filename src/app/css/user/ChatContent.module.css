@@ -1,0 +1,119 @@
+/* 여행 도우미 — 시안 없음(요청서 — 주소 · 배치는 프론트), 머리 · 말풍선 목록 · 아래 입력 */
+/* 보통 화면 — 머리(UserTopBar) 아래를 다 쓴다 */
+.chat {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+    padding: 16px;
+}
+
+/* 지도 위 팝업 — 팝업 안 높이를 정해 목록만 스크롤 */
+.modal {
+    display: flex;
+    flex-direction: column;
+}
+
+.chatInModal {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    height: min(70vh, 640px);
+}
+
+/* 남은 질문 수 · 초기화 한 줄 */
+.head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.quota {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--muted);
+}
+
+/* 말풍선 목록 */
+.messages {
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    gap: 12px;
+    min-height: 0;
+    overflow-y: auto;
+}
+
+/* 첫 안내 */
+.welcome {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 16px;
+    border-radius: var(--radius-lg);
+    background: var(--surface-2);
+}
+
+.welcomeTitle {
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.welcomeText {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+    color: var(--muted);
+}
+
+.examples {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.example {
+    padding: 6px 12px;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: var(--surface);
+    color: var(--fg);
+    font-size: 13px;
+    cursor: pointer;
+}
+
+/* 아래 입력 */
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding-top: 12px;
+    border-top: 1px solid var(--line);
+}
+
+/* 칸 + 버튼 한 줄 — 입점 신청 주소 찾기 줄과 같은 값 */
+.inputRow {
+    display: flex;
+    gap: 8px;
+}
+
+.inputRow > :first-child {
+    flex: 1;
+    min-width: 0;
+}
+
+.note {
+    margin: 0;
+    font-size: 12px;
+    color: var(--muted);
+}
+
+/* 보통 화면은 목록이 길면 화면이 스크롤된다 — 입력은 아래에 붙여 둔다 */
+.chat .form {
+    position: sticky;
+    bottom: 0;
+    padding-bottom: 8px;
+    background: var(--bg);
+}

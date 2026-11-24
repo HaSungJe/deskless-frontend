@@ -8,6 +8,7 @@ import { DiscoveryDetailFilterItemResultDto, DiscoveryDetailFilterListResultDto 
 import { DiscoveryStoreItemResultDto, DiscoveryStoreListDto, DiscoveryStoreListResultDto } from '@/contracts/discovery/dto/discovery-store-list.dto';
 import { handleApiError } from '@/shared/api/error';
 import StoreMap from '@/shared/components/map/StoreMap';
+import { buttonClass } from '@/shared/components/ui/button/Button';
 import Badge from '@/shared/components/ui/display/Badge';
 import Band from '@/shared/components/ui/display/Band';
 import EmptyState from '@/shared/components/ui/display/EmptyState';
@@ -20,6 +21,7 @@ import { formatPrice } from '@/shared/utils/format';
 import { SITE_NAME } from '@/shared/utils/site';
 import { DEFAULT_RADIUS, RadiusType, searchFilterLabel } from './_components/search-filter';
 import SearchFilterModal from './_components/SearchFilterModal';
+import { CHAT_NAME, CHAT_PATH } from './chat/chat-format';
 import { formatDistance } from './distance';
 import styles from '@/app/css/user/HomeContent.module.css';
 
@@ -46,7 +48,7 @@ type StoreQueryType = MapPointType & {
 export default function HomeContent(): React.ReactNode {
     // 변수
     const router = useRouter();                                    // 핀을 누르면 업체 상세로
-    const auth = useContext(AuthContext);                          // 로그인했으면 "내 예약", 아니면 "로그인"
+    const auth = useContext(AuthContext);                          // 로그인 전이면 머리 "로그인" · 여행 도우미는 로그인을 거쳐
     const {location, isDefault, loading} = useMyLocation();        // 내 위치 — 못 읽으면 서울시청
     const lastQueryRef = useRef<StoreQueryType | null>(null);      // 마지막 조회 — 같은 조회를 거른다(실패하면 비워 다음에 다시)
     const centerRef = useRef<MapPointType | null>(null);           // 마지막으로 멈춘 지도 중심 — 검색필터를 적용할 때 쓴다(실패해도 둔다)
@@ -178,7 +180,8 @@ export default function HomeContent(): React.ReactNode {
             <section className={styles.list} aria-labelledby="home-list-title">
                 <div className={styles.listHead}>
                     <h2 id="home-list-title" className={styles.listTitle}>주변 업체</h2>
-                    <span className={styles.listSort}>가까운 순</span>
+                    {/* 여행 도우미 — 로그인했으면 대화창(지도 위 팝업), 아니면 로그인 뒤 대화창으로 */}
+                    <Link href={auth.isLogin ? CHAT_PATH : loginUrl('user', CHAT_PATH)} className={buttonClass({size: 'sm'})}>{CHAT_NAME}</Link>
                 </div>
 
                 {/* 빈 목록 */}

@@ -12,13 +12,14 @@ src/
 │  │  ├─ globals.css                 디자인 토큰(색 한 벌 · 영역별 크기) · 기본 스타일
 │  │  └─ <영역>/                      화면 css — <화면>Content.module.css (user · manager · admin · console(두 콘솔 공통 화면) · dev)
 │  ├─ RootLayoutContent.tsx          ('use client') 영역 판별 · 그 영역 토큰 확인 + Provider + TopLoader + ErrorPopup
-│  ├─ @modal/                        경로 모달 슬롯(루트 하나) — default · [...catchAll] · (.)<주소>/page.tsx
+│  ├─ @modal/                        경로 모달 슬롯(루트 하나) — default · [...catchAll] · page(홈 — 슬롯 비움) · (.)chat/(여행 도우미 — 지도 위 팝업)
 │  ├─ dev/ui/                        개발 전용 — /dev/ui 공통 UI 미리보기 · UiPreviewContent.tsx (운영 404)
 │  ├─ (user)/                        이용자 `/` · 모바일 (괄호 폴더는 주소에 안 나옴)
 │  │  ├─ layout.tsx · UserLayoutContent.tsx  이용자 틀(모바일 폭 · 하단 탭 · 내 정보 Context)
 │  │  ├─ _components/                UserMeProvider · UserTopBar(이전 화면 · 바로방 · 지나온 화면 › 지금 화면) · UserBackButton · UserHistoryProvider(referrer · 이동 → canGoBack) · user-history.ts(UserHistoryContext · canGoHistoryBack) · UserTabBar · MemberStateBand
 │  │  ├─ page.tsx · HomeContent.tsx  U1 `/`
 │  │  ├─ login/ · signup/ · phone-verification/ · find-login-id/  U5
+│  │  ├─ chat/                      여행 도우미(screens.md 밖 — AI 대화) — ChatContent(inModal 이면 머리 없이) · _components/(ChatBubble · ChatStoreCard) · chat-format.ts(이름 · 주소 · 스트림으로 답 만들기 · 막는 이유 · 굵게 · 목록)
 │  │  └─ inquiries/                 문의(screens.md 밖) — 내 문의 목록 · new/(문의하기 · _components/ StorePicker · StoreMapModal) · [inquiry_id]/ · inquiry-format.ts(주소 · 문의 대상 이름)
 │  ├─ manager/                       업체 관리자 `/manager` · PC 콘솔 — layout.tsx(data-area="console") · manager-auth.ts(업체코드 쿠키 · 업체 로그인 주소 · 권한 배지)
 │  │  ├─ [store_code]/login · find-login-id · password-reset   M1 업체별 로그인 · 아이디 찾기 · 비밀번호 초기화(로그인 전)
@@ -34,7 +35,7 @@ src/
 │     ├─ dto/<파일>.dto.ts           지침서 파일 이름 그대로
 │     └─ api.ts                      그 도메인 엔드포인트 함수
 ├─ shared/                           도메인을 모르는 공통
-   ├─ api/                           request.ts(동기 · ApiError · NetworkError) · queue.ts(큐 SSE) · sse.ts · auth.ts(withAuth) · error.ts(handleApiError) · cookie.ts(영역 토큰 쿠키 route handler 부르기) · route.ts(가입 · 로그인 route 부르기 postRoute · routeFailure · loginFailureOf) · upload.ts(uploadFile) · payment.ts(requestTossConfirm)
+   ├─ api/                           request.ts(동기 · ApiError · NetworkError) · queue.ts(큐 SSE) · stream.ts(스트림 SSE — 이벤트 여러 번 callStream) · sse.ts · auth.ts(withAuth) · error.ts(handleApiError) · cookie.ts(영역 토큰 쿠키 route handler 부르기) · route.ts(가입 · 로그인 route 부르기 postRoute · routeFailure · loginFailureOf) · upload.ts(uploadFile) · payment.ts(requestTossConfirm)
    ├─ components/                    AuthGuard · Editor · Loading · Timer · Scripts · chart/ · console/(ConsoleShell · ConsoleAuthFrame · ConsoleAuthCard · console-menu.ts · 목록 거르기 ListFilter · FilterChips · FilterSelect) · 외부 연동 map/(StoreMap) · sms/(SmsVerification) · upload/(ImageUploader) · payment/(TossPaymentWidget) (docs/integrations.md)
    │  └─ ui/                         공통 UI 부품 — button/ · form/ · display/ · nav/(Tabs · Pagination) · modal/(… · ErrorPopup) (docs/conventions.md 스타일)
    ├─ css/                           공통 부품 css — components/ 와 같은 경로 (ui/form/Input.module.css · Loading.module.css)
@@ -120,8 +121,9 @@ src/contracts/<도메인>/api.ts                      (처음 쓰는 API 면) �
 - 같은 주소의 보통 페이지(`src/app/<주소>/page.tsx`)를 반드시 같이 둔다 — 새로고침 · 직접 접속 · 공유 링크용.
 - 화면 내용(`<화면>Content.tsx`)은 보통 페이지 폴더에 두고, 가로채기 page 가 `@/app/<영역 경로>/<주소>/<화면>Content` 로 가져온다 — 두 page 가 같은 Content 를 그린다.
 - `@modal/default.tsx`(null) · `@modal/[...catchAll]/page.tsx`(null) 는 지우지 않는다 — 팝업을 연 채 다른 주소로 가면 이것이 슬롯을 비운다.
-- 미적용: `[...catchAll]` 은 `/` 에 맞지 않아, 팝업 안 링크로 홈(`/`)에 가면 팝업이 남을 수 있다(코드상 추론 · 미확인). 실제 경로 모달을 처음 만들 때 `@modal/page.tsx`(null) 를 같이 추가한다.
+- `[...catchAll]` 은 `/` 에 맞지 않아 `@modal/page.tsx`(null)가 홈에서 슬롯을 비운다 — 첫 실제 경로 모달(여행 도우미 `@modal/(.)chat/`)과 함께 추가(2026-11-25). 팝업 안 링크로 홈에 가도 팝업이 남지 않는다(코드상 · 화면 미확인).
 - 닫기는 `RouteModal` 이 `router.back()`. 주소가 필요 없는 확인 · 사유 입력은 경로 모달이 아니라 `ConfirmModal` · `ReasonModal`.
+- 실제: 지도 "여행 도우미" → `/chat/`(`src/app/@modal/(.)chat/page.tsx` 가 `RouteModal` 안에 `<AuthGuard><ChatContent inModal /></AuthGuard>` · 보통 페이지 `src/app/(user)/chat/page.tsx`). 화면이 팝업 · 보통 화면 둘 다면 Content 가 `inModal` 로 머리(`UserTopBar`)만 뺀다.
 - 예시: `/dev/ui` → "경로 모달 열기"(`src/app/@modal/(.)dev/ui/modal-demo/page.tsx` 가 `src/app/dev/ui/modal-demo/ModalDemoContent.tsx` 를 가져온다 · 보통 페이지 `src/app/dev/ui/modal-demo/page.tsx`).
 
 ### SSR 에서 뺄 라이브러리

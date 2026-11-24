@@ -1,0 +1,51 @@
+/* 여행 도우미 말풍선 — 질문 오른쪽 · 답 왼쪽 */
+.bubble {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    max-width: 85%;
+    padding: 10px 14px;
+    border-radius: var(--radius-lg);
+    font-size: 15px;
+    line-height: 1.6;
+    word-break: break-word;
+}
+
+.user {
+    align-self: flex-end;
+    background: var(--primary-soft);
+    white-space: pre-wrap;
+}
+
+.ai {
+    align-self: flex-start;
+    background: var(--surface-2);
+}
+
+.progress,
+.failed {
+    margin: 0;
+    font-size: 13px;
+    color: var(--muted);
+}
+
+/* 문단 — 줄바꿈 그대로 */
+.paragraph {
+    margin: 0;
+    white-space: pre-wrap;
+}
+
+.list {
+    margin: 0;
+    padding-left: 18px;
+}
+
+/* 업체 카드 */
+.cards {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
